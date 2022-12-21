@@ -5,6 +5,8 @@ import {
 } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as expressBasicAuth from 'express-basic-auth';
 import { AppModule } from './app.module';
 import { HttpApiExceptionFilter } from './common/exceptions/http-api-exceptions.filter';
 
@@ -13,6 +15,8 @@ class Application {
   private DEV_MODE: boolean;
   private PORT: string;
   private corsOriginList: string[];
+  private ADMIN_USER: string;
+  private ADMIN_PASSWORD: string;
 
   constructor(private server: NestExpressApplication) {
     this.server = server;
@@ -23,6 +27,35 @@ class Application {
     this.corsOriginList = process.env.CORS_ORIGIN_LIST
       ? process.env.CORS_ORIGIN_LIST.split(',').map((origin) => origin.trim())
       : ['*'];
+    this.ADMIN_USER = process.env.ADMIN_USER || 'admin';
+    this.ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+  }
+
+  private setUpBasicAuth() {
+    this.server.use(
+      ['/docs', '/docs-json'],
+      expressBasicAuth({
+        challenge: true,
+        users: {
+          [this.ADMIN_USER]: this.ADMIN_PASSWORD,
+        },
+      }),
+    );
+  }
+
+  private setUpOpenAPIMidleware() {
+    SwaggerModule.setup(
+      'docs',
+      this.server,
+      SwaggerModule.createDocument(
+        this.server,
+        new DocumentBuilder()
+          .setTitle('A Daily Diary - API')
+          .setDescription('TypeORM In Nest')
+          .setVersion('0.0.1')
+          .build(),
+      ),
+    );
   }
 
   private async setUpGlobalMiddleware() {
@@ -30,6 +63,8 @@ class Application {
       origin: this.corsOriginList,
       credentials: true,
     });
+    this.setUpBasicAuth();
+    this.setUpOpenAPIMidleware();
     this.server.useGlobalPipes(
       new ValidationPipe({
         transform: true,
