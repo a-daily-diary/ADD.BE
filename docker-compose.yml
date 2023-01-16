@@ -19,7 +19,6 @@ services:
   postgres:
     container_name: postgres
     image: postgres:9.6.23
-    restart: always
     env_file:
       - ./.env
     ports:
