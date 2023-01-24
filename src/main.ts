@@ -7,6 +7,7 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as expressBasicAuth from 'express-basic-auth';
+import * as path from 'path';
 import { AppModule } from './app.module';
 import { HttpApiExceptionFilter } from './common/exceptions/http-api-exceptions.filter';
 
@@ -74,6 +75,9 @@ class Application {
       new ClassSerializerInterceptor(this.server.get(Reflector)),
     ); // 해당 interceptor를 통해 exclude 데코레이터가 붙은 필드를 조회 결과에서 제외해준다.
     this.server.useGlobalFilters(new HttpApiExceptionFilter());
+    this.server.useStaticAssets(path.join(__dirname, './common', 'uploads'), {
+      prefix: '/media',
+    });
   }
 
   async bootstrap() {
