@@ -4,18 +4,19 @@ import * as fs from 'fs';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 
 const createFolder = (folder: string) => {
-  try {
-    console.log('Create a root uploads folder...🗂️');
-    fs.mkdirSync(path.join(__dirname, '..', 'uploads'));
-  } catch (error) {
-    console.log('The folder already exists...🔥');
+  const uploadsFolderPath = path.join(__dirname, '..', 'uploads');
+  const newFolderPath = path.join(uploadsFolderPath, folder);
+
+  if (!fs.existsSync(uploadsFolderPath)) {
+    fs.mkdirSync(uploadsFolderPath);
+  } else {
+    console.log('The root folder already exists...🔥');
   }
 
-  try {
-    console.log(`Create a ${folder} uploads folders...🗂️`);
-    fs.mkdirSync(path.join(__dirname, '..', `uploads/${folder}`));
-  } catch (error) {
-    console.log(`The ${folder} folder already exists...🔥`);
+  if (!fs.existsSync(newFolderPath)) {
+    fs.mkdirSync(newFolderPath);
+  } else {
+    console.log('The folder already exists...🔥');
   }
 };
 
