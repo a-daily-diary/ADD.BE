@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm/dist';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UsersModule } from './users/users.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (): Promise<TypeOrmModuleOptions> => {
@@ -29,6 +30,7 @@ const typeOrmModuleOptions = {
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
