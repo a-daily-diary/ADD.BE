@@ -10,7 +10,11 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation } from '@nestjs/swagger';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
 import { multerOption } from 'src/common/utils/multer.options';
-import { UserEmailCheckDTO, UserJoinDTO } from './dto/user-join.dto';
+import {
+  UserEmailCheckDTO,
+  UserJoinDTO,
+  UsernameCheckDTO,
+} from './dto/user-join.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -42,5 +46,13 @@ export class UsersController {
   @Post('email-check')
   emailCheck(@Body() userEmail: UserEmailCheckDTO) {
     return this.usersService.emailCheck(userEmail);
+  }
+
+  @ApiOperation({
+    summary: '유저 이름 중복 체크',
+  })
+  @Post('username-check')
+  usernameCheck(@Body() username: UsernameCheckDTO) {
+    return this.usersService.usernameCheck(username);
   }
 }
