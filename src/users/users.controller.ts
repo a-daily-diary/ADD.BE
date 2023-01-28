@@ -7,7 +7,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
 import { multerOption } from 'src/common/utils/multer.options';
 import {
@@ -17,11 +18,17 @@ import {
 } from './dto/user-join.dto';
 import { UsersService } from './users.service';
 
+@ApiTags('USER')
 @Controller('users')
 @UseFilters(HttpApiExceptionFilter)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'formdata instance에 append 시 key값을 image로 설정해주세요.',
+    type: FileUploadDto,
+  })
   @ApiOperation({
     summary: '유저 thumbnail 업로드',
   })
