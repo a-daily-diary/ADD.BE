@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-import { UserJoinDTO } from './dto/user-join.dto';
+import { UserEmailCheckDTO, UserJoinDTO } from './dto/user-join.dto';
 import { UserEntity } from './users.entity';
 
 @Injectable()
@@ -39,5 +39,16 @@ export class UsersService {
     });
 
     return { message: '회원가입에 성공하였습니다.' };
+  }
+
+  async emailCheck(userEmail: UserEmailCheckDTO) {
+    const { email } = userEmail;
+
+    const user = await this.usersRepository.findOneBy({ email });
+    if (user) {
+      throw new UnauthorizedException('해당하는 이메일은 이미 존재합니다.');
+    }
+
+    return { message: '사용가능한 이메일입니다.' };
   }
 }
