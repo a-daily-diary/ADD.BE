@@ -1,11 +1,17 @@
+FROM node:16 As builder
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+
+RUN npm run build
+
 FROM node:16-alpine
 
 WORKDIR /app
 
-COPY package*.json .
+COPY --from=builder /app ./
 
-RUN npm install
-
-COPY . .
-
-ENTRYPOINT ["npm", "run", "start:dev"]
+ENTRYPOINT ["npm", "run", "start:prod"]

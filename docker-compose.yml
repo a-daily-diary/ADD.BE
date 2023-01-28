@@ -13,8 +13,6 @@ services:
       - add_net
     depends_on:
       - postgres
-    volumes:
-      - ./:/app/
     restart: always
   postgres:
     container_name: postgres
