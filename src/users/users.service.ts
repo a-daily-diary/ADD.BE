@@ -77,6 +77,15 @@ export class UsersService {
     return { message: '사용가능한 유저이름입니다.' };
   }
 
+  async findUserById(id: string) {
+    const user = this.usersRepository.findOneBy({ id });
+
+    if (!user) {
+      throw new UnauthorizedException('해당하는 유저가 존재하지 않습니다.');
+    }
+    return user;
+  }
+
   async login(userloginDto: UserLoginDTO) {
     const { email, password } = userloginDto;
     const user = await this.usersRepository.findOneBy({ email });
