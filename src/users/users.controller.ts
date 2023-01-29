@@ -1,13 +1,16 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   UploadedFile,
   UseFilters,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
 import { multerOption } from 'src/common/utils/multer.options';
@@ -17,6 +20,8 @@ import {
   UsernameCheckDTO,
 } from './dto/user-join.dto';
 import { UserLoginDTO } from './dto/user-login.dto';
+import { UserDTO } from './dto/user.dto';
+import { JwtAuthGuard } from './jwt/jwt.guard';
 import { UsersService } from './users.service';
 
 @ApiTags('USER')
@@ -38,6 +43,12 @@ export class UsersController {
   uploadUserImg(@UploadedFile() file: Express.Multer.File) {
     console.log(file);
     return this.usersService.uploadImg(file);
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  async getCurrentUser(@CurrentUser() currentUser: UserDTO) {
+    return currentUser;
   }
 
   @ApiOperation({
