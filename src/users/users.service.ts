@@ -1,17 +1,14 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-import {
-  UserEmailCheckDTO,
-  UserJoinDTO,
-  UsernameCheckDTO,
-} from './dto/user-join.dto';
+import { UserEmailDTO, UserJoinDTO } from './dto/user-join.dto';
 import { UserEntity } from './users.entity';
 import { UserLoginDTO } from './dto/user-login.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -52,7 +49,7 @@ export class UsersService {
     return { message: '회원가입에 성공하였습니다.' };
   }
 
-  async emailCheck(userEmail: UserEmailCheckDTO) {
+  async emailCheck(userEmail: UserEmailDTO) {
     const { email } = userEmail;
 
     const user = await this.usersRepository.findOneBy({ email });
@@ -63,11 +60,9 @@ export class UsersService {
     return { message: '사용가능한 이메일입니다.' };
   }
 
-  async usernameCheck(username: UsernameCheckDTO) {
-    const { username: usernameCheck } = username;
-
+  async usernameCheck(username: string) {
     const user = await this.usersRepository.findOneBy({
-      username: usernameCheck,
+      username,
     });
 
     if (user) {
@@ -75,15 +70,6 @@ export class UsersService {
     }
 
     return { message: '사용가능한 유저이름입니다.' };
-  }
-
-  async findUserById(id: string) {
-    const user = this.usersRepository.findOneBy({ id });
-
-    if (!user) {
-      throw new UnauthorizedException('해당하는 유저가 존재하지 않습니다.');
-    }
-    return user;
   }
 
   async login(userloginDto: UserLoginDTO) {
@@ -104,5 +90,25 @@ export class UsersService {
     } catch (error) {
       throw new BadRequestException(error.message);
     }
+  }
+
+  async findUserById(id: string) {
+    const user = this.usersRepository.findOneBy({ id });
+
+    if (!user) {
+      throw new UnauthorizedException('해당하는 유저가 존재하지 않습니다.');
+    }
+    return user;
+  }
+
+  async findUserByUsername(username: string) {
+    const user = await this.usersRepository.findOneBy({ username });
+
+    console.log(user);
+
+    if (!user) {
+      throw new NotFoundException('해당 유저 정보를 찾을 수 없습니다.');
+    }
+    return user;
   }
 }

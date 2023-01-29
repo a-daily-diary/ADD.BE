@@ -12,10 +12,6 @@ export class UserJoinDTO extends PickType(UserEntity, [
   password: string;
 }
 
-export class UserEmailCheckDTO extends PickType(UserEntity, [
-  'email',
-] as const) {}
+export class UserEmailDTO extends PickType(UserEntity, ['email'] as const) {}
 
-export class UsernameCheckDTO extends PickType(UserEntity, [
-  'username',
-] as const) {}
+export class UsernameDTO extends PickType(UserEntity, ['username'] as const) {}

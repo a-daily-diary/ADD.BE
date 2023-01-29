@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   UploadedFile,
   UseFilters,
@@ -14,11 +15,7 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
 import { multerOption } from 'src/common/utils/multer.options';
-import {
-  UserEmailCheckDTO,
-  UserJoinDTO,
-  UsernameCheckDTO,
-} from './dto/user-join.dto';
+import { UserEmailDTO, UserJoinDTO, UsernameDTO } from './dto/user-join.dto';
 import { UserLoginDTO } from './dto/user-login.dto';
 import { UserDTO } from './dto/user.dto';
 import { JwtAuthGuard } from './jwt/jwt.guard';
@@ -47,8 +44,16 @@ export class UsersController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async getCurrentUser(@CurrentUser() currentUser: UserDTO) {
+  getCurrentUser(@CurrentUser() currentUser: UserDTO) {
     return currentUser;
+  }
+
+  @ApiOperation({
+    summary: '유저 정보 조회',
+  })
+  @Get(':username')
+  getUserInfo(@Param() { username }: UsernameDTO) {
+    return this.usersService.findUserByUsername(username);
   }
 
   @ApiOperation({
@@ -63,7 +68,7 @@ export class UsersController {
     summary: '이메일 중복 체크',
   })
   @Post('email-check')
-  emailCheck(@Body() userEmail: UserEmailCheckDTO) {
+  emailCheck(@Body() userEmail: UserEmailDTO) {
     return this.usersService.emailCheck(userEmail);
   }
 
@@ -71,7 +76,7 @@ export class UsersController {
     summary: '유저 이름 중복 체크',
   })
   @Post('username-check')
-  usernameCheck(@Body() username: UsernameCheckDTO) {
+  usernameCheck(@Body() { username }: UsernameDTO) {
     return this.usersService.usernameCheck(username);
   }
 
