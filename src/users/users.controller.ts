@@ -16,6 +16,7 @@ import {
   UserJoinDTO,
   UsernameCheckDTO,
 } from './dto/user-join.dto';
+import { UserLoginDTO } from './dto/user-login.dto';
 import { UsersService } from './users.service';
 
 @ApiTags('USER')
@@ -61,5 +62,13 @@ export class UsersController {
   @Post('username-check')
   usernameCheck(@Body() username: UsernameCheckDTO) {
     return this.usersService.usernameCheck(username);
+  }
+
+  @ApiOperation({
+    summary: '로그인',
+  })
+  @Post('login')
+  login(@Body() userLoginDto: UserLoginDTO) {
+    return this.usersService.login(userLoginDto);
   }
 }

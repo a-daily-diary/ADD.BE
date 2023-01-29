@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -9,12 +13,15 @@ import {
   UsernameCheckDTO,
 } from './dto/user-join.dto';
 import { UserEntity } from './users.entity';
+import { UserLoginDTO } from './dto/user-login.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
+    private readonly jwtService: JwtService,
   ) {}
   uploadImg(file: Express.Multer.File) {
     const port = process.env.PORT;
@@ -68,5 +75,25 @@ export class UsersService {
     }
 
     return { message: '사용가능한 유저이름입니다.' };
+  }
+
+  async login(userloginDto: UserLoginDTO) {
+    const { email, password } = userloginDto;
+    const user = await this.usersRepository.findOneBy({ email });
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      throw new UnauthorizedException('로그인 정보를 확인해주세요.');
+    }
+
+    try {
+      const jwt = await this.jwtService.signAsync(
+        { sub: user.id },
+        { secret: process.env.SECRET_KEY },
+      );
+
+      return { token: jwt, user };
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }
