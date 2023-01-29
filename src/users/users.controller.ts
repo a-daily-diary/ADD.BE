@@ -14,6 +14,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
+  ApiCreatedResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
@@ -21,6 +22,7 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
 import { multerOption } from 'src/common/utils/multer.options';
+import { responseExample } from 'src/constants/swagger';
 import { UserEmailDTO, UserJoinDTO, UsernameDTO } from './dto/user-join.dto';
 import { UserLoginDTO } from './dto/user-login.dto';
 import { UserDTO } from './dto/user.dto';
@@ -33,6 +35,7 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Post('upload')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'formdata instance에 append 시 key값을 image로 설정해주세요.',
@@ -41,59 +44,65 @@ export class UsersController {
   @ApiOperation({
     summary: '유저 thumbnail 업로드',
   })
+  @ApiCreatedResponse(responseExample.uploadUserImg)
   @UseInterceptors(FileInterceptor('image', multerOption('users')))
-  @Post('upload')
   uploadUserImg(@UploadedFile() file: Express.Multer.File) {
     console.log(file);
     return this.usersService.uploadImg(file);
   }
 
+  @Get()
   @ApiOperation({
     summary: '내 정보 조회 (토큰 필요)',
   })
   @ApiBearerAuth('access-token')
-  @Get()
+  @ApiCreatedResponse(responseExample.getCurrentUser)
   @UseGuards(JwtAuthGuard)
   getCurrentUser(@CurrentUser() currentUser: UserDTO) {
     return currentUser;
   }
 
+  @Get(':username')
   @ApiOperation({
     summary: '유저 정보 조회',
   })
-  @Get(':username')
+  @ApiCreatedResponse(responseExample.getUserInfo)
   getUserInfo(@Param() { username }: UsernameDTO) {
     return this.usersService.findUserByUsername(username);
   }
 
+  @Post()
   @ApiOperation({
     summary: '회원가입',
   })
-  @Post()
+  @ApiCreatedResponse(responseExample.join)
   join(@Body() userJoinDto: UserJoinDTO) {
     return this.usersService.join(userJoinDto);
   }
 
+  @Post('email-check')
   @ApiOperation({
     summary: '이메일 중복 체크',
   })
-  @Post('email-check')
+  @ApiCreatedResponse(responseExample.emailCheck)
   emailCheck(@Body() userEmail: UserEmailDTO) {
     return this.usersService.emailCheck(userEmail);
   }
 
+  @Post('username-check')
   @ApiOperation({
     summary: '유저 이름 중복 체크',
   })
-  @Post('username-check')
+  @ApiCreatedResponse(responseExample.usernameCheck)
   usernameCheck(@Body() { username }: UsernameDTO) {
     return this.usersService.usernameCheck(username);
   }
 
+  @Post('login')
   @ApiOperation({
     summary: '로그인',
   })
-  @Post('login')
+  @ApiCreatedResponse(responseExample.login)
   login(@Body() userLoginDto: UserLoginDTO) {
     return this.usersService.login(userLoginDto);
   }
