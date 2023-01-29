@@ -54,6 +54,15 @@ class Application {
           .setTitle('A Daily Diary - API')
           .setDescription('TypeORM In Nest')
           .setVersion('0.0.1')
+          .addBearerAuth(
+            {
+              type: 'http',
+              scheme: 'bearer',
+              name: 'JWT',
+              in: 'header',
+            },
+            'access-token',
+          )
           .build(),
       ),
     );

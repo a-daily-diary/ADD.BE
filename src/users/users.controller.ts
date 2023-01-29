@@ -10,7 +10,13 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
@@ -42,6 +48,10 @@ export class UsersController {
     return this.usersService.uploadImg(file);
   }
 
+  @ApiOperation({
+    summary: '내 정보 조회 (토큰 필요)',
+  })
+  @ApiBearerAuth('access-token')
   @Get()
   @UseGuards(JwtAuthGuard)
   getCurrentUser(@CurrentUser() currentUser: UserDTO) {
