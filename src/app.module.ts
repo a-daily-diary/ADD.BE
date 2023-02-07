@@ -7,6 +7,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { UserEntity } from './users/users.entity';
+import { DiariesModule } from './diaries/diaries.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (): Promise<TypeOrmModuleOptions> => {
@@ -32,6 +33,7 @@ const typeOrmModuleOptions = {
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
     UsersModule,
+    DiariesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
