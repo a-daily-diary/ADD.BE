@@ -2,7 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { IsBoolean, IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { CommonEntity } from 'src/common/entities/common.entity';
-import { Column, Entity, Index } from 'typeorm';
+import { DiaryEntity } from 'src/diaries/diaries.entity';
+import { Column, Entity, Index, OneToMany } from 'typeorm';
 
 @Index('email', ['email'], { unique: true })
 @Entity({
@@ -39,4 +40,10 @@ export class UserEntity extends CommonEntity {
   @IsBoolean()
   @Column({ type: 'boolean', default: false })
   isAdmin: boolean;
+
+  @ApiProperty()
+  @OneToMany(() => DiaryEntity, (diary: DiaryEntity) => diary.author, {
+    cascade: true,
+  })
+  diaries: DiaryEntity[];
 }

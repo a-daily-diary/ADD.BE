@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { UserEntity } from './users/users.entity';
 import { DiariesModule } from './diaries/diaries.module';
+import { DiaryEntity } from './diaries/diaries.entity';
 
 const typeOrmModuleOptions = {
   useFactory: async (): Promise<TypeOrmModuleOptions> => {
@@ -19,7 +20,7 @@ const typeOrmModuleOptions = {
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [UserEntity],
+      entities: [UserEntity, DiaryEntity],
       synchronize: true, // set 'false' in production
       autoLoadEntities: true,
       logging: true, // production에서는 false로
