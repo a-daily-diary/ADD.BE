@@ -11,6 +11,11 @@ export class DiariesService {
   ) {}
 
   async getAll() {
-    return await this.diaryRepository.find();
+    const diaries = await this.diaryRepository
+      .createQueryBuilder('diary')
+      .leftJoinAndSelect('diary.author', 'author')
+      .getMany();
+
+    return diaries;
   }
 }
