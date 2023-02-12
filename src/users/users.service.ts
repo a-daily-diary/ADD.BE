@@ -102,9 +102,11 @@ export class UsersService {
   }
 
   async findUserByUsername(username: string) {
-    const user = await this.usersRepository.findOneBy({ username });
-
-    console.log(user);
+    const user = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.diaries', 'diaries')
+      .where('user.username = :username', { username })
+      .getOne();
 
     if (!user) {
       throw new NotFoundException('해당 유저 정보를 찾을 수 없습니다.');
