@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  Param,
+  ParseUUIDPipe,
   Post,
   UseFilters,
   UseGuards,
@@ -21,6 +23,11 @@ export class DiariesController {
   @Get()
   getDiaries() {
     return this.diariesService.getAll();
+  }
+
+  @Get(':id')
+  getDiary(@Param('id', ParseUUIDPipe) id: string) {
+    return this.diariesService.getOne(id);
   }
 
   @Post()

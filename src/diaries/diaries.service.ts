@@ -21,9 +21,16 @@ export class DiariesService {
     return diaries;
   }
 
+  async getOne(id: string) {
+    return await this.diaryRepository
+      .createQueryBuilder('diary')
+      .leftJoinAndSelect('diary.author', 'author')
+      .where('diary.id = :id', { id })
+      .getOne();
+  }
+
   async create(diaryFormDto: DiaryFormDTO, author: UserDTO) {
     const { title, content, imgUrl } = diaryFormDto;
-
     const newDiary = await this.diaryRepository.create({
       title,
       content,
