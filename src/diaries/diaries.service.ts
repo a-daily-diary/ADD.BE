@@ -11,6 +11,12 @@ export class DiariesService {
     @InjectRepository(DiaryEntity)
     private readonly diaryRepository: Repository<DiaryEntity>,
   ) {}
+  uploadImg(file: Express.Multer.File) {
+    const port = process.env.PORT;
+    const imgHostUrl = process.env.IMG_HOST_URL;
+    const diaryUploadImg = `${imgHostUrl}:${port}/media/diaries/${file.filename}`;
+    return { imgUrl: diaryUploadImg };
+  }
 
   async getAll() {
     const diaries = await this.diaryRepository

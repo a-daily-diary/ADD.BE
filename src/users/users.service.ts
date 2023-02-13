@@ -22,7 +22,8 @@ export class UsersService {
   ) {}
   uploadImg(file: Express.Multer.File) {
     const port = process.env.PORT;
-    const thumbnailUrl = `http://127.0.0.1:${port}/media/users/${file.filename}`;
+    const imgHostUrl = process.env.IMG_HOST_URL;
+    const thumbnailUrl = `${imgHostUrl}:${port}/media/users/${file.filename}`;
     return { imgUrl: thumbnailUrl };
   }
 
