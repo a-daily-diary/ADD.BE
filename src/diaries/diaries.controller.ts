@@ -5,6 +5,7 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Put,
   UploadedFile,
   UseFilters,
   UseGuards,
@@ -48,5 +49,15 @@ export class DiariesController {
     @CurrentUser() currentUser: UserDTO,
   ) {
     return this.diariesService.create(diaryFormDto, currentUser);
+  }
+
+  @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  updateDiary(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() diaryFormDto: DiaryFormDTO,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.diariesService.update(id, diaryFormDto, currentUser);
   }
 }

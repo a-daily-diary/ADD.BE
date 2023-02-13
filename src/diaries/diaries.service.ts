@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { Repository } from 'typeorm';
@@ -45,5 +45,21 @@ export class DiariesService {
     });
 
     return await this.diaryRepository.save(newDiary);
+  }
+
+  async update(id: string, diaryFormDto: DiaryFormDTO, author: UserDTO) {
+    const targetDiary = await this.getOne(id);
+    const writer = targetDiary.author;
+
+    if (writer.id !== author.id) {
+      throw new UnauthorizedException('일기 작성자만 수정이 가능합니다.');
+    }
+
+    await this.diaryRepository.update(id, {
+      ...diaryFormDto,
+      author,
+    });
+
+    return this.getOne(id);
   }
 }
