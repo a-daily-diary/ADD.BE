@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -59,5 +60,14 @@ export class DiariesController {
     @CurrentUser() currentUser: UserDTO,
   ) {
     return this.diariesService.update(id, diaryFormDto, currentUser);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  deleteDiary(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.diariesService.delete(id, currentUser);
   }
 }

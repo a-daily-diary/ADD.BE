@@ -47,19 +47,32 @@ export class DiariesService {
     return await this.diaryRepository.save(newDiary);
   }
 
-  async update(id: string, diaryFormDto: DiaryFormDTO, author: UserDTO) {
+  async update(id: string, diaryFormDto: DiaryFormDTO, accessUser: UserDTO) {
     const targetDiary = await this.getOne(id);
     const writer = targetDiary.author;
 
-    if (writer.id !== author.id) {
+    if (writer.id !== accessUser.id) {
       throw new UnauthorizedException('일기 작성자만 수정이 가능합니다.');
     }
 
     await this.diaryRepository.update(id, {
       ...diaryFormDto,
-      author,
+      author: accessUser,
     });
 
     return this.getOne(id);
+  }
+
+  async delete(id: string, accessUser: UserDTO) {
+    const targetDiary = await this.getOne(id);
+    const writer = targetDiary.author;
+
+    if (writer.id !== accessUser.id) {
+      throw new UnauthorizedException('일기 작성자만 삭제가 가능합니다.');
+    }
+
+    await this.diaryRepository.softDelete(id);
+
+    return { message: '삭제되었습니다.' };
   }
 }
