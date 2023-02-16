@@ -39,7 +39,6 @@ export class UserEntity extends CommonEntity {
 
   @ApiProperty()
   @IsBoolean()
-  @Exclude()
   @Column({ type: 'boolean', default: false })
   isAdmin: boolean;
 
