@@ -21,9 +21,19 @@ export const responseExample = {
     email: 'email string',
     username: 'username string',
     thumbnailUrl: 'url image path',
-    isAgree: true,
     isAdmin: false,
   }),
+  getAllUsers: responseTemplate([
+    {
+      id: 'b63d1c3f-9308-4fe4-b9f7-b80c504f3699',
+      createdAt: '2023-02-08T11:58:52.163Z',
+      updateddAt: '2023-02-08T11:58:52.163Z',
+      email: 'woosang@test.com',
+      username: 'yws',
+      thumbnailUrl: 'http://127.0.0.1:5000',
+      isAdmin: false,
+    },
+  ]),
   getUserInfo: responseTemplate({
     id: 'uuid',
     createdAt: 'Data string',
@@ -31,7 +41,6 @@ export const responseExample = {
     email: 'email string',
     username: 'username string',
     thumbnailUrl: 'url image path',
-    isAgree: true,
     isAdmin: false,
   }),
   join: responseTemplate({
@@ -53,7 +62,6 @@ export const responseExample = {
       email: 'email string',
       username: 'username string',
       thumbnailUrl: 'url image path',
-      isAgree: true,
       isAdmin: false,
     },
   }),

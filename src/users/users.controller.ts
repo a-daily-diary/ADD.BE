@@ -62,6 +62,15 @@ export class UsersController {
     return currentUser;
   }
 
+  @Get('all')
+  @ApiOperation({
+    summary: '전체 유저 조회',
+  })
+  @ApiCreatedResponse(responseExample.getAllUsers)
+  getAllUser() {
+    return this.usersService.findAllUsers();
+  }
+
   @Get(':username')
   @ApiOperation({
     summary: '유저 정보 조회',

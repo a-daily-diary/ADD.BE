@@ -114,4 +114,9 @@ export class UsersService {
     }
     return user;
   }
+
+  async findAllUsers() {
+    const users = await this.usersRepository.find();
+    return users;
+  }
 }
