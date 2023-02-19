@@ -33,7 +33,6 @@ export class UserEntity extends CommonEntity {
 
   @ApiProperty()
   @IsBoolean()
-  @Exclude()
   @Column({ type: 'boolean', nullable: false })
   isAgree: boolean;
 

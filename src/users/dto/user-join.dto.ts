@@ -5,6 +5,7 @@ import { IsString, IsNotEmpty } from 'class-validator';
 export class UserJoinDTO extends PickType(UserEntity, [
   'email',
   'username',
+  'isAgree',
 ] as const) {
   @ApiProperty()
   @IsString()
