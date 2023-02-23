@@ -6,10 +6,11 @@ import { UsersController } from './users.controller';
 import { UserEntity } from './users.entity';
 import { UsersService } from './users.service';
 import { JwtStrategy } from './jwt/jwt.strategy';
+import { FavoriteEntity } from 'src/diaries/favorites.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature([UserEntity, FavoriteEntity]),
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({
       secret: process.env.SECRET_KEY,

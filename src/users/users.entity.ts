@@ -3,6 +3,7 @@ import { Exclude } from 'class-transformer';
 import { IsBoolean, IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { CommonEntity } from 'src/common/entities/common.entity';
 import { DiaryEntity } from 'src/diaries/diaries.entity';
+import { FavoriteEntity } from 'src/diaries/favorites.entity';
 import { Column, Entity, Index, OneToMany } from 'typeorm';
 
 @Index('email', ['email'], { unique: true })
@@ -46,4 +47,14 @@ export class UserEntity extends CommonEntity {
     cascade: true,
   })
   diaries: DiaryEntity[];
+
+  @ApiProperty()
+  @OneToMany(
+    () => FavoriteEntity,
+    (favorite: FavoriteEntity) => favorite.author,
+    {
+      cascade: true,
+    },
+  )
+  favorites: FavoriteEntity[];
 }
