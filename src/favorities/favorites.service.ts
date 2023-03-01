@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class FavoritiesService {
+export class FavoritesService {
   get() {
     return '좋아요 조회 api';
   }
