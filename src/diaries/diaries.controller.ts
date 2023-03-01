@@ -136,6 +136,11 @@ export class DiariesController {
   }
 
   @Delete(':id/favorite')
+  @ApiOperation({
+    summary: '일기 좋아요 취소',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiCreatedResponse(responseExampleForFavorite.deleteFavorite)
   @UseGuards(JwtAuthGuard)
   deleteFavorite(
     @Param('id', ParseUUIDPipe) id: string,

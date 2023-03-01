@@ -184,4 +184,7 @@ export const responseExampleForFavorite = {
     createdAt: '2023-03-01T08:37:20.062Z',
     updatedAt: '2023-03-01T08:37:20.062Z',
   }),
+  deleteFavorite: responseTemplate({
+    message: '취소 되었습니다.',
+  }),
 };
