@@ -17,7 +17,7 @@ export class FavoriteEntity extends CommonEntity {
     name: 'author_id',
     referencedColumnName: 'id',
   })
-  author: string;
+  author: UserEntity;
 
   @ApiProperty()
   @ManyToOne(() => DiaryEntity, (diary: DiaryEntity) => diary.favorites, {
@@ -27,5 +27,5 @@ export class FavoriteEntity extends CommonEntity {
     name: 'diary_id',
     referencedColumnName: 'id',
   })
-  diary: string;
+  diary: DiaryEntity;
 }
