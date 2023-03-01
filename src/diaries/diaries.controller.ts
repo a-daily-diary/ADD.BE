@@ -64,6 +64,7 @@ export class DiariesController {
   @ApiOperation({
     summary: '일기 전체 리스트 조회',
   })
+  @ApiBearerAuth('access-token')
   @ApiCreatedResponse(responseExampleForDiary.getDiaries)
   @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
   getDiaries(@CurrentUser() currentUser: UserDTO) {
@@ -74,6 +75,7 @@ export class DiariesController {
   @ApiOperation({
     summary: '일기 상세 조회',
   })
+  @ApiBearerAuth('access-token')
   @ApiCreatedResponse(responseExampleForDiary.getDiary)
   @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
   getDiary(

@@ -81,6 +81,8 @@ export const responseExampleForDiary = {
       imgUrl: null,
       favoriteCount: 0,
       commentCount: 0,
+      isFavorite: true,
+      isBookmark: false,
       author: {
         id: 'b63d1c3f-9308-4fe4-b9f7-b80c504f3699',
         createdAt: '2023-02-08T11:58:52.163Z',
@@ -102,6 +104,8 @@ export const responseExampleForDiary = {
     imgUrl: null,
     favoriteCount: 0,
     commentCount: 0,
+    isFavorite: true,
+    isBookmark: false,
     author: {
       id: 'b63d1c3f-9308-4fe4-b9f7-b80c504f3699',
       createdAt: '2023-02-08T11:58:52.163Z',
