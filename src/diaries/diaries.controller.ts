@@ -26,6 +26,7 @@ import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
 import { multerOption } from 'src/common/utils/multer.options';
 import { responseExample } from 'src/constants/swagger';
+import { FavoritesService } from 'src/favorities/favorites.service';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { JwtAuthGuard } from 'src/users/jwt/jwt.guard';
 import { DiariesService } from './diaries.service';
@@ -35,7 +36,10 @@ import { DiaryFormDTO } from './dto/diary-form.dto';
 @Controller('diaries')
 @UseFilters(HttpApiExceptionFilter)
 export class DiariesController {
-  constructor(private readonly diariesService: DiariesService) {}
+  constructor(
+    private readonly diariesService: DiariesService,
+    private readonly favoritesService: FavoritesService,
+  ) {}
 
   @Post('upload')
   @ApiConsumes('multipart/form-data')
@@ -112,5 +116,14 @@ export class DiariesController {
     @CurrentUser() currentUser: UserDTO,
   ) {
     return this.diariesService.delete(id, currentUser);
+  }
+
+  @Post(':id/favorite')
+  @UseGuards(JwtAuthGuard)
+  createFavorite(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.favoritesService.create(id, currentUser);
   }
 }
