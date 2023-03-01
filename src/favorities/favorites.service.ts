@@ -15,6 +15,7 @@ export class FavoritesService {
   ) {}
 
   async create(diaryId: string, likedUser: UserDTO) {
+    // FIXME: targetUser로 변경
     const targetDiary = await this.diaryRepository
       .createQueryBuilder('diary')
       .leftJoinAndSelect('diary.favorites', 'favorites')
@@ -44,5 +45,22 @@ export class FavoritesService {
     delete newFavorite.diary.favorites;
 
     return newFavorite;
+  }
+
+  async delete(diaryId: string, targetUser: UserDTO) {
+    const targetDiary = await this.diaryRepository.findOneBy({ id: diaryId });
+    const targetFavoriteInstance = await this.favoriteRepository
+      .createQueryBuilder('favorite')
+      .leftJoin('favorite.author', 'author')
+      .leftJoinAndSelect('favorite.diary', 'diary')
+      .where({ author: targetUser, diary: targetDiary })
+      .getOne();
+
+    targetDiary.favoriteCount -= 1;
+
+    this.diaryRepository.save(targetDiary);
+    await this.favoriteRepository.delete(targetFavoriteInstance.id);
+
+    return { message: '취소 되었습니다.' };
   }
 }

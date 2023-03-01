@@ -134,4 +134,13 @@ export class DiariesController {
   ) {
     return this.favoritesService.create(id, currentUser);
   }
+
+  @Delete(':id/favorite')
+  @UseGuards(JwtAuthGuard)
+  deleteFavorite(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.favoritesService.delete(id, currentUser);
+  }
 }
