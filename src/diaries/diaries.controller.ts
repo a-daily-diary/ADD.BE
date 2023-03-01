@@ -119,6 +119,11 @@ export class DiariesController {
   }
 
   @Post(':id/favorite')
+  @ApiOperation({
+    summary: '일기 좋아요 추가',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiCreatedResponse(responseExample.createFavorite)
   @UseGuards(JwtAuthGuard)
   createFavorite(
     @Param('id', ParseUUIDPipe) id: string,
