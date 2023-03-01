@@ -22,7 +22,7 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
 import { multerOption } from 'src/common/utils/multer.options';
-import { responseExample } from 'src/constants/swagger';
+import { responseExampleForUser } from 'src/constants/swagger';
 import { UserEmailDTO, UserJoinDTO, UsernameDTO } from './dto/user-join.dto';
 import { UserLoginDTO } from './dto/user-login.dto';
 import { UserDTO } from './dto/user.dto';
@@ -44,7 +44,7 @@ export class UsersController {
   @ApiOperation({
     summary: '유저 thumbnail 업로드',
   })
-  @ApiCreatedResponse(responseExample.uploadUserImg)
+  @ApiCreatedResponse(responseExampleForUser.uploadUserImg)
   @UseInterceptors(FileInterceptor('image', multerOption('users')))
   uploadUserImg(@UploadedFile() file: Express.Multer.File) {
     console.log(file);
@@ -56,7 +56,7 @@ export class UsersController {
     summary: '내 정보 조회 (토큰 필요)',
   })
   @ApiBearerAuth('access-token')
-  @ApiCreatedResponse(responseExample.getCurrentUser)
+  @ApiCreatedResponse(responseExampleForUser.getCurrentUser)
   @UseGuards(JwtAuthGuard)
   getCurrentUser(@CurrentUser() currentUser: UserDTO) {
     return currentUser;
@@ -66,7 +66,7 @@ export class UsersController {
   @ApiOperation({
     summary: '전체 유저 조회',
   })
-  @ApiCreatedResponse(responseExample.getAllUsers)
+  @ApiCreatedResponse(responseExampleForUser.getAllUsers)
   getAllUser() {
     return this.usersService.findAllUsers();
   }
@@ -75,7 +75,7 @@ export class UsersController {
   @ApiOperation({
     summary: '유저 정보 조회',
   })
-  @ApiCreatedResponse(responseExample.getUserInfo)
+  @ApiCreatedResponse(responseExampleForUser.getUserInfo)
   getUserInfo(@Param() { username }: UsernameDTO) {
     return this.usersService.findUserByUsername(username);
   }
@@ -84,7 +84,7 @@ export class UsersController {
   @ApiOperation({
     summary: '회원가입',
   })
-  @ApiCreatedResponse(responseExample.join)
+  @ApiCreatedResponse(responseExampleForUser.join)
   join(@Body() userJoinDto: UserJoinDTO) {
     return this.usersService.join(userJoinDto);
   }
@@ -93,7 +93,7 @@ export class UsersController {
   @ApiOperation({
     summary: '이메일 중복 체크',
   })
-  @ApiCreatedResponse(responseExample.emailCheck)
+  @ApiCreatedResponse(responseExampleForUser.emailCheck)
   emailCheck(@Body() userEmail: UserEmailDTO) {
     return this.usersService.emailCheck(userEmail);
   }
@@ -102,7 +102,7 @@ export class UsersController {
   @ApiOperation({
     summary: '유저 이름 중복 체크',
   })
-  @ApiCreatedResponse(responseExample.usernameCheck)
+  @ApiCreatedResponse(responseExampleForUser.usernameCheck)
   usernameCheck(@Body() { username }: UsernameDTO) {
     return this.usersService.usernameCheck(username);
   }
@@ -111,7 +111,7 @@ export class UsersController {
   @ApiOperation({
     summary: '로그인',
   })
-  @ApiCreatedResponse(responseExample.login)
+  @ApiCreatedResponse(responseExampleForUser.login)
   login(@Body() userLoginDto: UserLoginDTO) {
     return this.usersService.login(userLoginDto);
   }

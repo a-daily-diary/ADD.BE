@@ -9,15 +9,14 @@ const responseTemplate = (data: any) => {
   };
 };
 
-export const responseExample = {
-  // USER
+export const responseExampleForUser = {
   uploadUserImg: responseTemplate({
     imgUrl: 'url image path',
   }),
   getCurrentUser: responseTemplate({
     id: 'uuid',
     createdAt: 'Data string',
-    updateddAt: 'Data string',
+    updatedAt: 'Data string',
     email: 'email string',
     username: 'username string',
     thumbnailUrl: 'url image path',
@@ -28,7 +27,7 @@ export const responseExample = {
     {
       id: 'b63d1c3f-9308-4fe4-b9f7-b80c504f3699',
       createdAt: '2023-02-08T11:58:52.163Z',
-      updateddAt: '2023-02-08T11:58:52.163Z',
+      updatedAt: '2023-02-08T11:58:52.163Z',
       email: 'woosang@test.com',
       username: 'yws',
       thumbnailUrl: 'http://127.0.0.1:5000',
@@ -38,7 +37,7 @@ export const responseExample = {
   getUserInfo: responseTemplate({
     id: 'uuid',
     createdAt: 'Data string',
-    updateddAt: 'Data string',
+    updatedAt: 'Data string',
     email: 'email string',
     username: 'username string',
     thumbnailUrl: 'url image path',
@@ -59,20 +58,24 @@ export const responseExample = {
     user: {
       id: 'uuid',
       createdAt: 'Data string',
-      updateddAt: 'Data string',
+      updatedAt: 'Data string',
       email: 'email string',
       username: 'username string',
       thumbnailUrl: 'url image path',
       isAdmin: false,
     },
   }),
+};
 
-  // DIARY
+export const responseExampleForDiary = {
+  uploadDiaryImg: responseTemplate({
+    imgUrl: 'url image path',
+  }),
   getDiaries: responseTemplate([
     {
       id: '02797c95-179b-4dfc-9f91-29d8a4292859',
       createdAt: '2023-02-08T15:17:31.103Z',
-      updateddAt: '2023-02-08T15:17:31.103Z',
+      updatedAt: '2023-02-08T15:17:31.103Z',
       title: 'test',
       content: 'etsf',
       imgUrl: null,
@@ -81,7 +84,7 @@ export const responseExample = {
       author: {
         id: 'b63d1c3f-9308-4fe4-b9f7-b80c504f3699',
         createdAt: '2023-02-08T11:58:52.163Z',
-        updateddAt: '2023-02-08T11:58:52.163Z',
+        updatedAt: '2023-02-08T11:58:52.163Z',
         email: 'woosang@test.com',
         username: 'yws',
         thumbnailUrl: 'http://127.0.0.1:5000',
@@ -93,7 +96,7 @@ export const responseExample = {
   getDiary: responseTemplate({
     id: '02797c95-179b-4dfc-9f91-29d8a4292859',
     createdAt: '2023-02-08T15:17:31.103Z',
-    updateddAt: '2023-02-08T15:17:31.103Z',
+    updatedAt: '2023-02-08T15:17:31.103Z',
     title: 'test',
     content: 'etsf',
     imgUrl: null,
@@ -102,7 +105,7 @@ export const responseExample = {
     author: {
       id: 'b63d1c3f-9308-4fe4-b9f7-b80c504f3699',
       createdAt: '2023-02-08T11:58:52.163Z',
-      updateddAt: '2023-02-08T11:58:52.163Z',
+      updatedAt: '2023-02-08T11:58:52.163Z',
       email: 'woosang@test.com',
       username: 'yws',
       thumbnailUrl: 'http://127.0.0.1:5000',
@@ -116,7 +119,7 @@ export const responseExample = {
     author: {
       id: '7879231e-12d9-4184-a9c5-7aacfae9dc12',
       createdAt: '2023-02-12T14:16:41.386Z',
-      updateddAt: '2023-02-12T14:16:41.386Z',
+      updatedAt: '2023-02-12T14:16:41.386Z',
       email: 'test@test123.com',
       username: '아무개',
       thumbnailUrl: 'http://127.0.0.1:5000',
@@ -126,14 +129,14 @@ export const responseExample = {
     imgUrl: null,
     id: '2db91d6b-47bd-4516-9089-7d5b58bd3271',
     createdAt: '2023-02-16T11:44:54.702Z',
-    updateddAt: '2023-02-16T11:44:54.702Z',
+    updatedAt: '2023-02-16T11:44:54.702Z',
     favoriteCount: 0,
     commentCount: 0,
   }),
   updateDiary: responseTemplate({
     id: '2db91d6b-47bd-4516-9089-7d5b58bd3271',
     createdAt: '2023-02-16T11:44:54.702Z',
-    updateddAt: '2023-02-16T11:47:52.121Z',
+    updatedAt: '2023-02-16T11:47:52.121Z',
     title: 'test',
     content: '수정되었습니다.',
     imgUrl: null,
@@ -142,7 +145,7 @@ export const responseExample = {
     author: {
       id: '7879231e-12d9-4184-a9c5-7aacfae9dc12',
       createdAt: '2023-02-12T14:16:41.386Z',
-      updateddAt: '2023-02-12T14:16:41.386Z',
+      updatedAt: '2023-02-12T14:16:41.386Z',
       email: 'test@test123.com',
       username: '아무개',
       thumbnailUrl: 'http://127.0.0.1:5000',
@@ -153,8 +156,9 @@ export const responseExample = {
   softDeleteDiary: responseTemplate({
     message: '삭제되었습니다.',
   }),
+};
 
-  // Favorite
+export const responseExampleForFavorite = {
   createFavorite: responseTemplate({
     author: {
       id: 'd50d5458-dadf-4d29-b487-d64f75cca1d8',
