@@ -65,8 +65,9 @@ export class DiariesController {
     summary: '일기 전체 리스트 조회',
   })
   @ApiCreatedResponse(responseExampleForDiary.getDiaries)
-  getDiaries() {
-    return this.diariesService.getAll();
+  @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
+  getDiaries(@CurrentUser() currentUser: UserDTO) {
+    return this.diariesService.getAll(currentUser);
   }
 
   @Get(':id')
@@ -74,8 +75,12 @@ export class DiariesController {
     summary: '일기 상세 조회',
   })
   @ApiCreatedResponse(responseExampleForDiary.getDiary)
-  getDiary(@Param('id', ParseUUIDPipe) id: string) {
-    return this.diariesService.getOne(id);
+  @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
+  getDiary(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.diariesService.getOne(id, currentUser);
   }
 
   @Post()
