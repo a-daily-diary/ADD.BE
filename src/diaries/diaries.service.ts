@@ -24,15 +24,30 @@ export class DiariesService {
       .leftJoinAndSelect('diary.author', 'author')
       .getMany();
 
-    return diaries;
+    const responseDiaries = diaries.map((diary) => {
+      const { author, ...otherInfo } = diary;
+      return { ...otherInfo, isFavorite: false, isBookMark: false, author };
+    });
+
+    return responseDiaries;
   }
 
   async getOne(id: string) {
-    return await this.diaryRepository
+    const diary = await this.diaryRepository
       .createQueryBuilder('diary')
       .leftJoinAndSelect('diary.author', 'author')
       .where('diary.id = :id', { id })
       .getOne();
+
+    const { author, ...otherInfo } = diary;
+    const responseDiary = {
+      ...otherInfo,
+      isFavorite: false,
+      isBookmark: false,
+      author,
+    };
+
+    return responseDiary;
   }
 
   async create(diaryFormDto: DiaryFormDTO, author: UserDTO) {
