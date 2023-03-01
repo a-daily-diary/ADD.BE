@@ -2,7 +2,15 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { CommonEntity } from 'src/common/entities/common.entity';
 import { UserEntity } from 'src/users/users.entity';
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
+import { FavoriteEntity } from 'src/favorities/favorites.entity';
 
 @Index('id', ['id'], { unique: true })
 @Entity({
@@ -34,7 +42,7 @@ export class DiaryEntity extends CommonEntity {
   @Column({ type: 'int', default: 0 })
   commentCount: number;
 
-  // TODO: User, favorite, bookmark, comment table relationship 필요
+  // TODO: bookmark, comment table relationship 필요
   @ApiProperty()
   @ManyToOne(() => UserEntity, (author: UserEntity) => author.diaries, {
     onDelete: 'CASCADE',
@@ -44,4 +52,14 @@ export class DiaryEntity extends CommonEntity {
     referencedColumnName: 'id',
   })
   author: UserEntity;
+
+  @ApiProperty()
+  @OneToMany(
+    () => FavoriteEntity,
+    (favorite: FavoriteEntity) => favorite.diary,
+    {
+      cascade: true,
+    },
+  )
+  favorites: FavoriteEntity[];
 }
