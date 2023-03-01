@@ -22,7 +22,7 @@ export abstract class CommonEntity {
   @UpdateDateColumn({
     type: 'timestamptz' /* timestamp with time zone */,
   })
-  updateddAt: Date;
+  updatedAt: Date;
 
   // Soft Delete : 기존에는 null, 삭제 시 timestamp를 찍는다.
   @Exclude()
