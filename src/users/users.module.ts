@@ -6,7 +6,7 @@ import { UsersController } from './users.controller';
 import { UserEntity } from './users.entity';
 import { UsersService } from './users.service';
 import { JwtStrategy } from './jwt/jwt.strategy';
-import { FavoriteEntity } from 'src/diaries/favorites.entity';
+import { FavoriteEntity } from 'src/favorities/favorites.entity';
 
 @Module({
   imports: [

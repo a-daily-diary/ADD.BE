@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { CommonEntity } from 'src/common/entities/common.entity';
 import { UserEntity } from 'src/users/users.entity';
-import { Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
-import { DiaryEntity } from './diaries.entity';
+import { DiaryEntity } from 'src/diaries/diaries.entity';
 
 @Index('favoriteId', ['id'], { unique: true })
 @Entity({

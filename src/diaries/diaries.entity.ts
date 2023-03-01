@@ -10,7 +10,7 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { FavoriteEntity } from './favorites.entity';
+import { FavoriteEntity } from 'src/favorities/favorites.entity';
 
 @Index('id', ['id'], { unique: true })
 @Entity({
@@ -42,7 +42,7 @@ export class DiaryEntity extends CommonEntity {
   @Column({ type: 'int', default: 0 })
   commentCount: number;
 
-  // TODO: User, favorite, bookmark, comment table relationship 필요
+  // TODO: bookmark, comment table relationship 필요
   @ApiProperty()
   @ManyToOne(() => UserEntity, (author: UserEntity) => author.diaries, {
     onDelete: 'CASCADE',
