@@ -14,8 +14,7 @@ export class FavoritesService {
     private readonly diaryRepository: Repository<DiaryEntity>,
   ) {}
 
-  async create(diaryId: string, likedUser: UserDTO) {
-    // FIXME: targetUser로 변경
+  async create(diaryId: string, accessUser: UserDTO) {
     const targetDiary = await this.diaryRepository
       .createQueryBuilder('diary')
       .leftJoinAndSelect('diary.favorites', 'favorites')
@@ -26,7 +25,7 @@ export class FavoritesService {
     if (
       targetDiary.favorites
         .map((favorite) => favorite.author.id)
-        .includes(likedUser.id)
+        .includes(accessUser.id)
     ) {
       throw new BadRequestException(
         '한 개의 게시물에 한 번의 좋아요만 할 수 있습니다.',
@@ -35,7 +34,7 @@ export class FavoritesService {
 
     targetDiary.favoriteCount += 1;
     const newFavorite = await this.favoriteRepository.create({
-      author: likedUser,
+      author: accessUser,
       diary: targetDiary,
     });
 
@@ -47,13 +46,13 @@ export class FavoritesService {
     return newFavorite;
   }
 
-  async delete(diaryId: string, targetUser: UserDTO) {
+  async delete(diaryId: string, accessUser: UserDTO) {
     const targetDiary = await this.diaryRepository.findOneBy({ id: diaryId });
     const targetFavoriteInstance = await this.favoriteRepository
       .createQueryBuilder('favorite')
       .leftJoin('favorite.author', 'author')
       .leftJoinAndSelect('favorite.diary', 'diary')
-      .where({ author: targetUser, diary: targetDiary })
+      .where({ author: accessUser, diary: targetDiary })
       .getOne();
 
     targetDiary.favoriteCount -= 1;
