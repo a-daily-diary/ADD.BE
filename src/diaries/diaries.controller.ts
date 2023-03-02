@@ -25,7 +25,11 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
 import { multerOption } from 'src/common/utils/multer.options';
-import { responseExample } from 'src/constants/swagger';
+import {
+  responseExampleForDiary,
+  responseExampleForFavorite,
+} from 'src/constants/swagger';
+import { FavoritesService } from 'src/favorities/favorites.service';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { JwtAuthGuard } from 'src/users/jwt/jwt.guard';
 import { DiariesService } from './diaries.service';
@@ -35,7 +39,10 @@ import { DiaryFormDTO } from './dto/diary-form.dto';
 @Controller('diaries')
 @UseFilters(HttpApiExceptionFilter)
 export class DiariesController {
-  constructor(private readonly diariesService: DiariesService) {}
+  constructor(
+    private readonly diariesService: DiariesService,
+    private readonly favoritesService: FavoritesService,
+  ) {}
 
   @Post('upload')
   @ApiConsumes('multipart/form-data')
@@ -46,7 +53,7 @@ export class DiariesController {
   @ApiOperation({
     summary: '일기 이미지 업로드',
   })
-  @ApiCreatedResponse(responseExample.uploadUserImg)
+  @ApiCreatedResponse(responseExampleForDiary.uploadDiaryImg)
   @UseInterceptors(FileInterceptor('image', multerOption('diaries')))
   uploadUserImg(@UploadedFile() file: Express.Multer.File) {
     console.log(file);
@@ -57,18 +64,25 @@ export class DiariesController {
   @ApiOperation({
     summary: '일기 전체 리스트 조회',
   })
-  @ApiCreatedResponse(responseExample.getDiaries)
-  getDiaries() {
-    return this.diariesService.getAll();
+  @ApiBearerAuth('access-token')
+  @ApiCreatedResponse(responseExampleForDiary.getDiaries)
+  @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
+  getDiaries(@CurrentUser() currentUser: UserDTO) {
+    return this.diariesService.getAll(currentUser);
   }
 
   @Get(':id')
   @ApiOperation({
     summary: '일기 상세 조회',
   })
-  @ApiCreatedResponse(responseExample.getDiary)
-  getDiary(@Param('id', ParseUUIDPipe) id: string) {
-    return this.diariesService.getOne(id);
+  @ApiBearerAuth('access-token')
+  @ApiCreatedResponse(responseExampleForDiary.getDiary)
+  @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
+  getDiary(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.diariesService.getOne(id, currentUser);
   }
 
   @Post()
@@ -76,7 +90,7 @@ export class DiariesController {
     summary: '일기 생성',
   })
   @ApiBearerAuth('access-token')
-  @ApiCreatedResponse(responseExample.createDiary)
+  @ApiCreatedResponse(responseExampleForDiary.createDiary)
   @UseGuards(JwtAuthGuard)
   createDiary(
     @Body() diaryFormDto: DiaryFormDTO,
@@ -90,7 +104,7 @@ export class DiariesController {
     summary: '일기 수정',
   })
   @ApiBearerAuth('access-token')
-  @ApiCreatedResponse(responseExample.updateDiary)
+  @ApiCreatedResponse(responseExampleForDiary.updateDiary)
   @UseGuards(JwtAuthGuard)
   updateDiary(
     @Param('id', ParseUUIDPipe) id: string,
@@ -105,12 +119,40 @@ export class DiariesController {
     summary: '일기 삭제',
   })
   @ApiBearerAuth('access-token')
-  @ApiCreatedResponse(responseExample.softDeleteDiary)
+  @ApiCreatedResponse(responseExampleForDiary.softDeleteDiary)
   @UseGuards(JwtAuthGuard)
   deleteDiary(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() currentUser: UserDTO,
   ) {
     return this.diariesService.delete(id, currentUser);
+  }
+
+  @Post(':id/favorite')
+  @ApiOperation({
+    summary: '일기 좋아요 추가',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiCreatedResponse(responseExampleForFavorite.createFavorite)
+  @UseGuards(JwtAuthGuard)
+  createFavorite(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.favoritesService.create(id, currentUser);
+  }
+
+  @Delete(':id/favorite')
+  @ApiOperation({
+    summary: '일기 좋아요 취소',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiCreatedResponse(responseExampleForFavorite.deleteFavorite)
+  @UseGuards(JwtAuthGuard)
+  deleteFavorite(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.favoritesService.delete(id, currentUser);
   }
 }

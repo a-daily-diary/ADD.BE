@@ -18,21 +18,46 @@ export class DiariesService {
     return { imgUrl: diaryUploadImg };
   }
 
-  async getAll() {
+  generateCustomFieldForDiary(diary: DiaryEntity, accessUserId: string) {
+    const { author, favorites, deleteAt, ...otherInfo } = diary; // FIXME: nest의 classSerializerInterceptor로 처리할 수 있는 방법 고안하기
+
+    const isFavorite = favorites
+      .map((favorite) => favorite.author.id)
+      .includes(accessUserId);
+
+    return {
+      ...otherInfo,
+      isFavorite,
+      isBookmark: false,
+      author,
+    };
+  }
+
+  async getAll(accessUser: UserDTO) {
     const diaries = await this.diaryRepository
       .createQueryBuilder('diary')
       .leftJoinAndSelect('diary.author', 'author')
+      .leftJoinAndSelect('diary.favorites', 'favorites')
+      .leftJoinAndSelect('favorites.author', 'favoriteAuthor')
       .getMany();
 
-    return diaries;
+    const responseDiaries = diaries.map((diary) =>
+      this.generateCustomFieldForDiary(diary, accessUser.id),
+    );
+
+    return responseDiaries;
   }
 
-  async getOne(id: string) {
-    return await this.diaryRepository
+  async getOne(id: string, accessUser: UserDTO) {
+    const diary = await this.diaryRepository
       .createQueryBuilder('diary')
       .leftJoinAndSelect('diary.author', 'author')
+      .leftJoinAndSelect('diary.favorites', 'favorites')
+      .leftJoinAndSelect('favorites.author', 'favoriteAuthor')
       .where('diary.id = :id', { id })
       .getOne();
+
+    return this.generateCustomFieldForDiary(diary, accessUser.id);
   }
 
   async create(diaryFormDto: DiaryFormDTO, author: UserDTO) {
@@ -48,7 +73,7 @@ export class DiariesService {
   }
 
   async update(id: string, diaryFormDto: DiaryFormDTO, accessUser: UserDTO) {
-    const targetDiary = await this.getOne(id);
+    const targetDiary = await this.getOne(id, accessUser);
     const writer = targetDiary.author;
 
     if (writer.id !== accessUser.id) {
@@ -60,11 +85,11 @@ export class DiariesService {
       author: accessUser,
     });
 
-    return this.getOne(id);
+    return this.getOne(id, accessUser);
   }
 
   async delete(id: string, accessUser: UserDTO) {
-    const targetDiary = await this.getOne(id);
+    const targetDiary = await this.getOne(id, accessUser);
     const writer = targetDiary.author;
 
     if (writer.id !== accessUser.id) {
