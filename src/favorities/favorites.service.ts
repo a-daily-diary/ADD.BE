@@ -28,7 +28,7 @@ export class FavoritesService {
         .includes(accessUser.id)
     ) {
       throw new BadRequestException(
-        '한 개의 게시물에 한 번의 좋아요만 할 수 있습니다.',
+        '접근한 계정은 해당 게시물에 좋아요가 등록되어있습니다.',
       );
     }
 
