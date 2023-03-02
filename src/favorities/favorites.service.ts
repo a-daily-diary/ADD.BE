@@ -55,6 +55,12 @@ export class FavoritesService {
       .where({ author: accessUser, diary: targetDiary })
       .getOne();
 
+    if (!targetFavoriteInstance) {
+      throw new BadRequestException(
+        '접근한 계정으로 해당 게시물에 좋아요가 등록 되어있지 않아 좋아요 취소가 불가능합니다.',
+      );
+    }
+
     targetDiary.favoriteCount -= 1;
 
     this.diaryRepository.save(targetDiary);
