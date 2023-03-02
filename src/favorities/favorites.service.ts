@@ -51,7 +51,7 @@ export class FavoritesService {
     const targetFavoriteInstance = await this.favoriteRepository
       .createQueryBuilder('favorite')
       .leftJoin('favorite.author', 'author')
-      .leftJoinAndSelect('favorite.diary', 'diary')
+      .leftJoin('favorite.diary', 'diary')
       .where({ author: accessUser, diary: targetDiary })
       .getOne();
 
