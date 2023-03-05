@@ -21,6 +21,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { BookmarksService } from 'src/bookmarks/bookmarks.service';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
@@ -42,6 +43,7 @@ export class DiariesController {
   constructor(
     private readonly diariesService: DiariesService,
     private readonly favoritesService: FavoritesService,
+    private readonly bookmarksService: BookmarksService,
   ) {}
 
   @Post('upload')
@@ -69,6 +71,11 @@ export class DiariesController {
   @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
   getDiaries(@CurrentUser() currentUser: UserDTO) {
     return this.diariesService.getAll(currentUser);
+  }
+
+  @Get('bookmark')
+  getAllBookmark() {
+    return this.bookmarksService.getAll();
   }
 
   @Get(':id')
@@ -128,6 +135,7 @@ export class DiariesController {
     return this.diariesService.delete(id, currentUser);
   }
 
+  // 좋아요 API
   @Post(':id/favorite')
   @ApiOperation({
     summary: '일기 좋아요 추가',
