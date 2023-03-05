@@ -166,7 +166,7 @@ export class DiariesController {
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() currentUser: UserDTO,
   ) {
-    return this.bookmarksService.create(id, currentUser);
+    return this.bookmarksService.register(id, currentUser);
   }
 
   @Delete(':id/bookmark')
@@ -175,6 +175,6 @@ export class DiariesController {
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() currentUser: UserDTO,
   ) {
-    return this.bookmarksService.delete(id, currentUser);
+    return this.bookmarksService.unregister(id, currentUser);
   }
 }

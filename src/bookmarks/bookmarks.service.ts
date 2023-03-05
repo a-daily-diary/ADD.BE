@@ -18,13 +18,13 @@ export class BookmarksService {
   async findBookmarkByUserAndDiary(user: UserDTO, diary: DiaryEntity) {
     return await this.bookmarkRepository
       .createQueryBuilder('bookmark')
-      .leftJoin('bookmark.author', 'author')
+      .leftJoin('bookmark.user', 'user')
       .leftJoin('bookmark.diary', 'diary')
-      .where({ author: user, diary })
+      .where({ user, diary })
       .getOne();
   }
 
-  async create(diaryId: string, user: UserDTO) {
+  async register(diaryId: string, user: UserDTO) {
     const targetDiary = await this.diariesSerivce.findOneById(diaryId);
     const bookmarkByUserAndDiary = await this.findBookmarkByUserAndDiary(
       user,
@@ -36,14 +36,14 @@ export class BookmarksService {
     }
 
     const newBookmark = await this.bookmarkRepository.create({
-      author: user,
+      user,
       diary: targetDiary,
     });
 
     return await this.bookmarkRepository.save(newBookmark);
   }
 
-  async delete(diaryId: string, user: UserDTO) {
+  async unregister(diaryId: string, user: UserDTO) {
     const targetDiary = await this.diariesSerivce.findOneById(diaryId);
     const bookmarkByUserAndDiary = await this.findBookmarkByUserAndDiary(
       user,
