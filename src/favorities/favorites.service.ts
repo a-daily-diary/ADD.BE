@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { favoriteExceptionMessage } from 'src/constants/exceptionMessage';
 import { DiaryEntity } from 'src/diaries/diaries.entity';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { FavoriteEntity } from './favorites.entity';
@@ -14,8 +15,7 @@ export class FavoritesService {
     private readonly diaryRepository: Repository<DiaryEntity>,
   ) {}
 
-  async create(diaryId: string, likedUser: UserDTO) {
-    // FIXME: targetUser로 변경
+  async create(diaryId: string, user: UserDTO) {
     const targetDiary = await this.diaryRepository
       .createQueryBuilder('diary')
       .leftJoinAndSelect('diary.favorites', 'favorites')
@@ -23,19 +23,23 @@ export class FavoritesService {
       .where({ id: diaryId })
       .getOne();
 
+    if (!targetDiary) {
+      throw new BadRequestException(
+        favoriteExceptionMessage.DOES_NOT_EXIST_DIARY,
+      );
+    }
+
     if (
       targetDiary.favorites
         .map((favorite) => favorite.author.id)
-        .includes(likedUser.id)
+        .includes(user.id)
     ) {
-      throw new BadRequestException(
-        '한 개의 게시물에 한 번의 좋아요만 할 수 있습니다.',
-      );
+      throw new BadRequestException(favoriteExceptionMessage.ONLY_ONE_FAVORITE);
     }
 
     targetDiary.favoriteCount += 1;
     const newFavorite = await this.favoriteRepository.create({
-      author: likedUser,
+      author: user,
       diary: targetDiary,
     });
 
@@ -47,14 +51,26 @@ export class FavoritesService {
     return newFavorite;
   }
 
-  async delete(diaryId: string, targetUser: UserDTO) {
+  async delete(diaryId: string, user: UserDTO) {
     const targetDiary = await this.diaryRepository.findOneBy({ id: diaryId });
     const targetFavoriteInstance = await this.favoriteRepository
       .createQueryBuilder('favorite')
       .leftJoin('favorite.author', 'author')
-      .leftJoinAndSelect('favorite.diary', 'diary')
-      .where({ author: targetUser, diary: targetDiary })
+      .leftJoin('favorite.diary', 'diary')
+      .where({ author: user, diary: targetDiary })
       .getOne();
+
+    if (!targetDiary) {
+      throw new BadRequestException(
+        favoriteExceptionMessage.DOES_NOT_EXIST_DIARY,
+      );
+    }
+
+    if (!targetFavoriteInstance) {
+      throw new BadRequestException(
+        favoriteExceptionMessage.DOES_NOT_REGISTER_FAVORITE,
+      );
+    }
 
     targetDiary.favoriteCount -= 1;
 
