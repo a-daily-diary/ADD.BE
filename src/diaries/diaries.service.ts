@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { diaryExceptionMessage } from 'src/constants/exceptionMessage';
 import { UserDTO } from 'src/users/dto/user.dto';
@@ -12,6 +16,7 @@ export class DiariesService {
     @InjectRepository(DiaryEntity)
     private readonly diaryRepository: Repository<DiaryEntity>,
   ) {}
+
   uploadImg(file: Express.Multer.File) {
     const port = process.env.PORT;
     const imgHostUrl = process.env.IMG_HOST_URL;
@@ -58,6 +63,9 @@ export class DiariesService {
       .where('diary.id = :id', { id })
       .getOne();
 
+    if (!diary) {
+      throw new NotFoundException(diaryExceptionMessage.DOES_NOT_EXIST_DIARY);
+    }
     return this.generateCustomFieldForDiary(diary, accessUser.id);
   }
 

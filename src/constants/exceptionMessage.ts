@@ -8,6 +8,7 @@ export const favoriteExceptionMessage = {
 export const diaryExceptionMessage = {
   OWNER_ONLY_EDIT: '일기 작성자만 수정할 수 있습니다.',
   OWNER_ONLY_DELETE: '일기 작성자만 삭제할 수 있습니다.',
+  DOES_NOT_EXIST_DIARY: '해당하는 일기가 존재하지 않습니다.',
 };
 
 export const userExceptionMessage = {
