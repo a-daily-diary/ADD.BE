@@ -27,6 +27,7 @@ import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
 import { multerOption } from 'src/common/utils/multer.options';
 import {
+  responseExampleForBookmark,
   responseExampleForDiary,
   responseExampleForFavorite,
 } from 'src/constants/swagger';
@@ -133,7 +134,7 @@ export class DiariesController {
   // 좋아요 API
   @Post(':id/favorite')
   @ApiOperation({
-    summary: '일기 좋아요 추가',
+    summary: '일기 좋아요 등록',
   })
   @ApiBearerAuth('access-token')
   @ApiCreatedResponse(responseExampleForFavorite.createFavorite)
@@ -161,6 +162,11 @@ export class DiariesController {
 
   // 북마크 API
   @Post(':id/bookmark')
+  @ApiOperation({
+    summary: '일기 북마크 등록',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiCreatedResponse(responseExampleForBookmark.registerBookmark)
   @UseGuards(JwtAuthGuard)
   createBookmark(
     @Param('id', ParseUUIDPipe) id: string,
@@ -170,6 +176,11 @@ export class DiariesController {
   }
 
   @Delete(':id/bookmark')
+  @ApiOperation({
+    summary: '일기 북마크 취소',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiCreatedResponse(responseExampleForBookmark.unregisterBookmark)
   @UseGuards(JwtAuthGuard)
   deleteBookmark(
     @Param('id', ParseUUIDPipe) id: string,
