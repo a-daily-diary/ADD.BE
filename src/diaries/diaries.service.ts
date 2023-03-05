@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { diaryExceptionMessage } from 'src/constants/exceptionMessage';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { Repository } from 'typeorm';
 import { DiaryEntity } from './diaries.entity';
@@ -77,7 +78,7 @@ export class DiariesService {
     const writer = targetDiary.author;
 
     if (writer.id !== accessUser.id) {
-      throw new UnauthorizedException('일기 작성자만 수정이 가능합니다.');
+      throw new UnauthorizedException(diaryExceptionMessage.OWNER_ONLY_EDIT);
     }
 
     await this.diaryRepository.update(id, {
@@ -93,7 +94,7 @@ export class DiariesService {
     const writer = targetDiary.author;
 
     if (writer.id !== accessUser.id) {
-      throw new UnauthorizedException('일기 작성자만 삭제가 가능합니다.');
+      throw new UnauthorizedException(diaryExceptionMessage.OWNER_ONLY_DELETE);
     }
 
     await this.diaryRepository.softDelete(id);

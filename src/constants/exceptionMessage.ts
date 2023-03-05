@@ -4,3 +4,8 @@ export const favoriteExceptionMessage = {
   DOES_NOT_REGISTER_FAVORITE:
     '접근한 계정으로 해당 게시물에 좋아요가 등록 되어있지 않아 좋아요 취소가 불가능합니다.',
 };
+
+export const diaryExceptionMessage = {
+  OWNER_ONLY_EDIT: '일기 작성자만 수정할 수 있습니다.',
+  OWNER_ONLY_DELETE: '일기 작성자만 삭제할 수 있습니다.',
+};
