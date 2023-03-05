@@ -22,6 +22,10 @@ export class FavoritesService {
       .where({ id: diaryId })
       .getOne();
 
+    if (!targetDiary) {
+      throw new BadRequestException('존재하지 않는 게시물입니다.');
+    }
+
     if (
       targetDiary.favorites
         .map((favorite) => favorite.author.id)
@@ -54,6 +58,10 @@ export class FavoritesService {
       .leftJoin('favorite.diary', 'diary')
       .where({ author: accessUser, diary: targetDiary })
       .getOne();
+
+    if (!targetDiary) {
+      throw new BadRequestException('존재하지 않는 게시물입니다.');
+    }
 
     if (!targetFavoriteInstance) {
       throw new BadRequestException(
