@@ -40,16 +40,22 @@ export class BookmarksService {
       .getMany();
   }
 
+  async findBookmarkByUserAndDiary(user: UserDTO, diary: DiaryEntity) {
+    return await this.bookmarkRepository
+      .createQueryBuilder('bookmark')
+      .leftJoin('bookmark.author', 'author')
+      .leftJoin('bookmark.diary', 'diary')
+      .where({ author: user, diary })
+      .getOne();
+  }
+
   async create(diaryId: string, user: UserDTO) {
     const targetDiary = await this.findDiaryById(diaryId);
 
-    const registerHistoryAtBookmark = await this.bookmarkRepository
-      .createQueryBuilder('bookmark')
-      .leftJoin('bookmark.diary', 'diary')
-      .leftJoin('bookmark.author', 'author')
-      .where('author.id = :author_id', { author_id: user.id })
-      .andWhere('diary.id = :diary_id', { diary_id: diaryId })
-      .getOne();
+    const registerHistoryAtBookmark = await this.findBookmarkByUserAndDiary(
+      user,
+      targetDiary,
+    );
 
     if (registerHistoryAtBookmark) {
       throw new BadRequestException(bookmarkExceptionMessage.ONLY_ONE_BOOKMARK);
@@ -66,12 +72,10 @@ export class BookmarksService {
   async delete(diaryId: string, user: UserDTO) {
     const targetDiary = await this.findDiaryById(diaryId);
 
-    const registerHistoryAtBookmark = await this.bookmarkRepository
-      .createQueryBuilder('bookmark')
-      .leftJoin('bookmark.diary', 'diary')
-      .leftJoin('bookmark.author', 'author')
-      .where({ author: user, diary: targetDiary })
-      .getOne();
+    const registerHistoryAtBookmark = await this.findBookmarkByUserAndDiary(
+      user,
+      targetDiary,
+    );
 
     if (!registerHistoryAtBookmark) {
       throw new BadRequestException(
