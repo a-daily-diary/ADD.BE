@@ -16,6 +16,15 @@ export class DiariesService {
     @InjectRepository(DiaryEntity)
     private readonly diaryRepository: Repository<DiaryEntity>,
   ) {}
+  async findOneById(id: string) {
+    const diary = await this.diaryRepository.findOneBy({ id });
+
+    if (!diary) {
+      throw new NotFoundException(diaryExceptionMessage.DOES_NOT_EXIST_DIARY);
+    }
+
+    return diary;
+  }
 
   uploadImg(file: Express.Multer.File) {
     const port = process.env.PORT;

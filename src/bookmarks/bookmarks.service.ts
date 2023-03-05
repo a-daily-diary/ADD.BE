@@ -1,14 +1,8 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  bookmarkExceptionMessage,
-  diaryExceptionMessage,
-} from 'src/constants/exceptionMessage';
+import { bookmarkExceptionMessage } from 'src/constants/exceptionMessage';
 import { DiaryEntity } from 'src/diaries/diaries.entity';
+import { DiariesService } from 'src/diaries/diaries.service';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { Repository } from 'typeorm';
 import { BookmarkEntity } from './bookmarks.entity';
@@ -18,19 +12,8 @@ export class BookmarksService {
   constructor(
     @InjectRepository(BookmarkEntity)
     private readonly bookmarkRepository: Repository<BookmarkEntity>,
-    @InjectRepository(DiaryEntity)
-    private readonly diaryRepository: Repository<DiaryEntity>,
+    private readonly diariesSerivce: DiariesService,
   ) {}
-
-  async findDiaryById(id: string) {
-    const diary = await this.diaryRepository.findOneBy({ id });
-
-    if (!diary) {
-      throw new NotFoundException(diaryExceptionMessage.DOES_NOT_EXIST_DIARY);
-    }
-
-    return diary;
-  }
 
   async getAll() {
     return await this.bookmarkRepository
@@ -50,14 +33,13 @@ export class BookmarksService {
   }
 
   async create(diaryId: string, user: UserDTO) {
-    const targetDiary = await this.findDiaryById(diaryId);
-
-    const registerHistoryAtBookmark = await this.findBookmarkByUserAndDiary(
+    const targetDiary = await this.diariesSerivce.findOneById(diaryId);
+    const bookmarkByUserAndDiary = await this.findBookmarkByUserAndDiary(
       user,
       targetDiary,
     );
 
-    if (registerHistoryAtBookmark) {
+    if (bookmarkByUserAndDiary) {
       throw new BadRequestException(bookmarkExceptionMessage.ONLY_ONE_BOOKMARK);
     }
 
@@ -70,20 +52,19 @@ export class BookmarksService {
   }
 
   async delete(diaryId: string, user: UserDTO) {
-    const targetDiary = await this.findDiaryById(diaryId);
-
-    const registerHistoryAtBookmark = await this.findBookmarkByUserAndDiary(
+    const targetDiary = await this.diariesSerivce.findOneById(diaryId);
+    const bookmarkByUserAndDiary = await this.findBookmarkByUserAndDiary(
       user,
       targetDiary,
     );
 
-    if (!registerHistoryAtBookmark) {
+    if (!bookmarkByUserAndDiary) {
       throw new BadRequestException(
         bookmarkExceptionMessage.DOES_NOT_REGISTER_BOOKMARK,
       );
     }
 
-    await this.bookmarkRepository.delete(registerHistoryAtBookmark.id);
+    await this.bookmarkRepository.delete(bookmarkByUserAndDiary.id);
 
     return { message: '취소 되었습니다.' };
   }
