@@ -20,5 +20,12 @@ export class BookmarkEntity extends CommonEntity {
   author: UserEntity;
 
   @ApiProperty()
+  @ManyToOne(() => DiaryEntity, (diary: DiaryEntity) => diary.bookmarks, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({
+    name: 'diary_id',
+    referencedColumnName: 'id',
+  })
   diary: DiaryEntity;
 }
