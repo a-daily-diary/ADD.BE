@@ -19,6 +19,11 @@ export class DiariesService {
     private readonly awsService: AwsService,
   ) {}
 
+  async uploadImg(file: Express.Multer.File) {
+    const uploadInfo = await this.awsService.uploadFileToS3('diaries', file);
+    return { imgUrl: this.awsService.getAwsS3FileUrl(uploadInfo.key) };
+  }
+
   async findOneById(id: string) {
     const diary = await this.diaryRepository.findOneBy({ id });
 
@@ -27,11 +32,6 @@ export class DiariesService {
     }
 
     return diary;
-  }
-
-  async uploadImg(file: Express.Multer.File) {
-    const uploadInfo = await this.awsService.uploadFileToS3('diaries', file);
-    return { imgUrl: this.awsService.getAwsS3FileUrl(uploadInfo.key) };
   }
 
   generateCustomFieldForDiary(diary: DiaryEntity, accessUserId: string) {
