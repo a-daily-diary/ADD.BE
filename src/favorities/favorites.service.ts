@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { favoriteExceptionMessage } from 'src/constants/exceptionMessage';
 import { DiaryEntity } from 'src/diaries/diaries.entity';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { FavoriteEntity } from './favorites.entity';
@@ -23,7 +24,9 @@ export class FavoritesService {
       .getOne();
 
     if (!targetDiary) {
-      throw new BadRequestException('존재하지 않는 게시물입니다.');
+      throw new BadRequestException(
+        favoriteExceptionMessage.DOES_NOT_EXIST_DIARY,
+      );
     }
 
     if (
@@ -31,9 +34,7 @@ export class FavoritesService {
         .map((favorite) => favorite.author.id)
         .includes(accessUser.id)
     ) {
-      throw new BadRequestException(
-        '접근한 계정은 해당 게시물에 좋아요가 등록되어있습니다.',
-      );
+      throw new BadRequestException(favoriteExceptionMessage.ONLY_ONE_FAVORITE);
     }
 
     targetDiary.favoriteCount += 1;
@@ -60,12 +61,14 @@ export class FavoritesService {
       .getOne();
 
     if (!targetDiary) {
-      throw new BadRequestException('존재하지 않는 게시물입니다.');
+      throw new BadRequestException(
+        favoriteExceptionMessage.DOES_NOT_EXIST_DIARY,
+      );
     }
 
     if (!targetFavoriteInstance) {
       throw new BadRequestException(
-        '접근한 계정으로 해당 게시물에 좋아요가 등록 되어있지 않아 좋아요 취소가 불가능합니다.',
+        favoriteExceptionMessage.DOES_NOT_REGISTER_FAVORITE,
       );
     }
 
