@@ -12,6 +12,7 @@ import { UserEmailDTO, UserJoinDTO } from './dto/user-join.dto';
 import { UserEntity } from './users.entity';
 import { UserLoginDTO } from './dto/user-login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { userExceptionMessage } from 'src/constants/exceptionMessage';
 
 @Injectable()
 export class UsersService {
@@ -32,12 +33,12 @@ export class UsersService {
 
     const userByEmail = await this.usersRepository.findOneBy({ email });
     if (userByEmail) {
-      throw new UnauthorizedException('해당하는 이메일은 이미 존재합니다.');
+      throw new UnauthorizedException(userExceptionMessage.EXIST_EMAIL);
     }
 
     const userByUsername = await this.usersRepository.findOneBy({ username });
     if (userByUsername) {
-      throw new UnauthorizedException('해당하는 유저이름이 이미 존재합니다.');
+      throw new UnauthorizedException(userExceptionMessage.EXIST_USERNAME);
     }
 
     const hashedPassword = await bcrypt.hashSync(password, 10);
@@ -55,7 +56,7 @@ export class UsersService {
 
     const user = await this.usersRepository.findOneBy({ email });
     if (user) {
-      throw new UnauthorizedException('해당하는 이메일은 이미 존재합니다.');
+      throw new UnauthorizedException(userExceptionMessage.EXIST_EMAIL);
     }
 
     return { message: '사용가능한 이메일입니다.' };
@@ -67,7 +68,7 @@ export class UsersService {
     });
 
     if (user) {
-      throw new UnauthorizedException('해당하는 유저 이름이 이미 존재합니다.');
+      throw new UnauthorizedException(userExceptionMessage.EXIST_USERNAME);
     }
 
     return { message: '사용가능한 유저이름입니다.' };
@@ -78,7 +79,7 @@ export class UsersService {
     const user = await this.usersRepository.findOneBy({ email });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw new UnauthorizedException('로그인 정보를 확인해주세요.');
+      throw new UnauthorizedException(userExceptionMessage.INCORRECT_LOGIN);
     }
 
     try {
@@ -97,7 +98,7 @@ export class UsersService {
     const user = this.usersRepository.findOneBy({ id });
 
     if (!user) {
-      throw new UnauthorizedException('해당하는 유저가 존재하지 않습니다.');
+      throw new NotFoundException(userExceptionMessage.DOES_NOT_EXIST_USER);
     }
     return user;
   }
@@ -110,7 +111,7 @@ export class UsersService {
       .getOne();
 
     if (!user) {
-      throw new NotFoundException('해당 유저 정보를 찾을 수 없습니다.');
+      throw new NotFoundException(userExceptionMessage.DOES_NOT_EXIST_USER);
     }
     return user;
   }
