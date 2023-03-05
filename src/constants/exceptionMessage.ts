@@ -20,4 +20,6 @@ export const userExceptionMessage = {
 
 export const bookmarkExceptionMessage = {
   ONLY_ONE_BOOKMARK: '접근한 계정은 해당 게시물에 북마크가 등록되어있습니다.',
+  DOES_NOT_REGISTER_BOOKMARK:
+    '접근한 계정으로 해당 게시물에 북마크가 등록 되어있지 않아 북마크 취소가 불가능합니다.',
 };

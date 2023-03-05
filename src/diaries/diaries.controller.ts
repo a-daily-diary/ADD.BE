@@ -173,4 +173,13 @@ export class DiariesController {
   ) {
     return this.bookmarksService.create(id, currentUser);
   }
+
+  @Delete(':id/bookmark')
+  @UseGuards(JwtAuthGuard)
+  deleteBookmark(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.bookmarksService.delete(id, currentUser);
+  }
 }

@@ -63,6 +63,27 @@ export class BookmarksService {
     return await this.bookmarkRepository.save(newBookmark);
   }
 
+  async delete(diaryId: string, user: UserDTO) {
+    const targetDiary = await this.findDiaryById(diaryId);
+
+    const registerHistoryAtBookmark = await this.bookmarkRepository
+      .createQueryBuilder('bookmark')
+      .leftJoin('bookmark.diary', 'diary')
+      .leftJoin('bookmark.author', 'author')
+      .where({ author: user, diary: targetDiary })
+      .getOne();
+
+    if (!registerHistoryAtBookmark) {
+      throw new BadRequestException(
+        bookmarkExceptionMessage.DOES_NOT_REGISTER_BOOKMARK,
+      );
+    }
+
+    await this.bookmarkRepository.delete(registerHistoryAtBookmark.id);
+
+    return { message: '취소 되었습니다.' };
+  }
+
   async allDelete() {
     const bookmarks = await this.bookmarkRepository.find();
 
