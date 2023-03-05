@@ -73,11 +73,6 @@ export class DiariesController {
     return this.diariesService.getAll(currentUser);
   }
 
-  @Get('bookmark')
-  getAllBookmark() {
-    return this.bookmarksService.getAll();
-  }
-
   @Get(':id')
   @ApiOperation({
     summary: '일기 상세 조회',

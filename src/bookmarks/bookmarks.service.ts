@@ -15,14 +15,6 @@ export class BookmarksService {
     private readonly diariesSerivce: DiariesService,
   ) {}
 
-  async getAll() {
-    return await this.bookmarkRepository
-      .createQueryBuilder('bookmark')
-      .leftJoinAndSelect('bookmark.author', 'author')
-      .leftJoinAndSelect('bookmark.diary', 'diary')
-      .getMany();
-  }
-
   async findBookmarkByUserAndDiary(user: UserDTO, diary: DiaryEntity) {
     return await this.bookmarkRepository
       .createQueryBuilder('bookmark')
@@ -67,13 +59,5 @@ export class BookmarksService {
     await this.bookmarkRepository.delete(bookmarkByUserAndDiary.id);
 
     return { message: '취소 되었습니다.' };
-  }
-
-  async allDelete() {
-    const bookmarks = await this.bookmarkRepository.find();
-
-    bookmarks.forEach(async (bookmark) => {
-      await this.bookmarkRepository.delete(bookmark.id);
-    });
   }
 }
