@@ -17,3 +17,7 @@ export const userExceptionMessage = {
   INCORRECT_LOGIN: '로그인 정보를 확인해주세요.',
   DOES_NOT_EXIST_USER: '해당하는 유저가 존재하지 않습니다.',
 };
+
+export const bookmarkExceptionMessage = {
+  ONLY_ONE_BOOKMARK: '접근한 계정은 해당 게시물에 북마크가 등록되어있습니다.',
+};

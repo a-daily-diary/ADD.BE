@@ -163,4 +163,14 @@ export class DiariesController {
   ) {
     return this.favoritesService.delete(id, currentUser);
   }
+
+  // 북마크 API
+  @Post(':id/bookmark')
+  @UseGuards(JwtAuthGuard)
+  createBookmark(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.bookmarksService.create(id, currentUser);
+  }
 }
