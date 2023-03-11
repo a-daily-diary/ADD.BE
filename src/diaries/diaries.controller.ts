@@ -75,6 +75,11 @@ export class DiariesController {
   }
 
   @Get('bookmark/:username')
+  @ApiOperation({
+    summary: '유저별 북마크한 일기 리스트 조회',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiCreatedResponse(responseExampleForDiary.getDiariesByUsersBookmark)
   @UseGuards(JwtAuthGuard)
   getDiariesByUsersBookmark(
     @Param('username') username: string,
