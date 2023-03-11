@@ -40,7 +40,9 @@ export class BookmarksService {
       diary: targetDiary,
     });
 
-    return await this.bookmarkRepository.save(newBookmark);
+    await this.bookmarkRepository.save(newBookmark);
+
+    return { message: '북마크가 등록되었습니다.' };
   }
 
   async unregister(diaryId: string, user: UserDTO) {
