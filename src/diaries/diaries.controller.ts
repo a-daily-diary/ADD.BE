@@ -182,7 +182,7 @@ export class DiariesController {
   @ApiBearerAuth('access-token')
   @ApiCreatedResponse(responseExampleForBookmark.registerBookmark)
   @UseGuards(JwtAuthGuard)
-  createBookmark(
+  registerBookmark(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() currentUser: UserDTO,
   ) {
@@ -196,7 +196,7 @@ export class DiariesController {
   @ApiBearerAuth('access-token')
   @ApiCreatedResponse(responseExampleForBookmark.unregisterBookmark)
   @UseGuards(JwtAuthGuard)
-  deleteBookmark(
+  unregisterBookmark(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() currentUser: UserDTO,
   ) {
