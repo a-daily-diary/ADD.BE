@@ -117,6 +117,30 @@ export const responseExampleForDiary = {
       isAdmin: false,
     },
   }),
+  getDiariesByUsersBookmark: responseTemplate([
+    {
+      id: '926cc4a2-df70-4566-ae40-e6862c72dd78',
+      createdAt: '2023-03-02T14:36:37.157Z',
+      updatedAt: '2023-03-11T03:48:37.015Z',
+      title: 'qweqwe',
+      content: '하하하 공부 열심히 해야되는데...ㅎㅎ',
+      imgUrl: null,
+      favoriteCount: 1,
+      commentCount: 0,
+      isFavorite: false,
+      isBookmark: true,
+      author: {
+        id: '3affee04-e5d8-471d-a666-9310e05e1b6e',
+        createdAt: '2023-03-02T14:36:03.062Z',
+        updatedAt: '2023-03-02T14:36:03.062Z',
+        email: 'test@test.com',
+        username: 'test',
+        thumbnailUrl: 'http://127.0.0.1:5000',
+        isAgree: true,
+        isAdmin: false,
+      },
+    },
+  ]),
   createDiary: responseTemplate({
     title: 'qweqwe',
     content: '하하하 공부 열심히 해야되는데...ㅎㅎ',
@@ -189,6 +213,37 @@ export const responseExampleForFavorite = {
     updatedAt: '2023-03-01T08:37:20.062Z',
   }),
   deleteFavorite: responseTemplate({
+    message: '취소 되었습니다.',
+  }),
+};
+
+export const responseExampleForBookmark = {
+  registerBookmark: responseTemplate({
+    user: {
+      id: '65925e42-e8d6-41f6-a345-43e50dafc981',
+      createdAt: '2023-03-02T14:36:07.436Z',
+      updatedAt: '2023-03-02T14:36:07.436Z',
+      email: 'test@test1.com',
+      username: 'test1',
+      thumbnailUrl: 'http://127.0.0.1:5000',
+      isAgree: true,
+      isAdmin: false,
+    },
+    diary: {
+      id: '926cc4a2-df70-4566-ae40-e6862c72dd78',
+      createdAt: '2023-03-02T14:36:37.157Z',
+      updatedAt: '2023-03-05T01:49:27.155Z',
+      title: 'qweqwe',
+      content: '하하하 공부 열심히 해야되는데...ㅎㅎ',
+      imgUrl: null,
+      favoriteCount: 1,
+      commentCount: 0,
+    },
+    id: 'e1f7cf3a-dc8d-494b-a5f4-c748dfb7375b',
+    createdAt: '2023-03-05T13:44:49.975Z',
+    updatedAt: '2023-03-05T13:44:49.975Z',
+  }),
+  unregisterBookmark: responseTemplate({
     message: '취소 되었습니다.',
   }),
 };

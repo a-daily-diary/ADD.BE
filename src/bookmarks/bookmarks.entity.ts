@@ -10,14 +10,14 @@ import { Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 })
 export class BookmarkEntity extends CommonEntity {
   @ApiProperty()
-  @ManyToOne(() => UserEntity, (author: UserEntity) => author.bookmarks, {
+  @ManyToOne(() => UserEntity, (user: UserEntity) => user.bookmarks, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({
-    name: 'author_id',
+    name: 'user_id',
     referencedColumnName: 'id',
   })
-  author: UserEntity;
+  user: UserEntity;
 
   @ApiProperty()
   @ManyToOne(() => DiaryEntity, (diary: DiaryEntity) => diary.bookmarks, {

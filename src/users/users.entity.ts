@@ -62,7 +62,7 @@ export class UserEntity extends CommonEntity {
   @ApiProperty()
   @OneToMany(
     () => BookmarkEntity,
-    (bookmark: BookmarkEntity) => bookmark.author,
+    (bookmark: BookmarkEntity) => bookmark.user,
     {
       cascade: true,
     },
