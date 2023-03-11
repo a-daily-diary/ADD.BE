@@ -34,16 +34,20 @@ export class DiariesService {
   }
 
   generateCustomFieldForDiary(diary: DiaryEntity, accessUserId: string) {
-    const { author, favorites, deleteAt, ...otherInfo } = diary; // FIXME: nest의 classSerializerInterceptor로 처리할 수 있는 방법 고안하기
+    const { author, favorites, bookmarks, deleteAt, ...otherInfo } = diary; // FIXME: nest의 classSerializerInterceptor로 처리할 수 있는 방법 고안하기
 
     const isFavorite = favorites
       .map((favorite) => favorite.author.id)
       .includes(accessUserId);
 
+    const isBookmark = bookmarks
+      .map((bookmark) => bookmark.user.id)
+      .includes(accessUserId);
+
     return {
       ...otherInfo,
       isFavorite,
-      isBookmark: false,
+      isBookmark,
       author,
     };
   }
@@ -54,11 +58,13 @@ export class DiariesService {
       .leftJoinAndSelect('diary.author', 'author')
       .leftJoinAndSelect('diary.favorites', 'favorites')
       .leftJoinAndSelect('favorites.author', 'favoriteAuthor')
+      .leftJoinAndSelect('diary.bookmarks', 'bookmarks')
+      .leftJoinAndSelect('bookmarks.user', 'bookmarkUser')
       .getMany();
 
-    const responseDiaries = diaries.map((diary) =>
-      this.generateCustomFieldForDiary(diary, accessUser.id),
-    );
+    const responseDiaries = diaries.map((diary) => {
+      return this.generateCustomFieldForDiary(diary, accessUser.id);
+    });
 
     return responseDiaries;
   }
@@ -69,6 +75,8 @@ export class DiariesService {
       .leftJoinAndSelect('diary.author', 'author')
       .leftJoinAndSelect('diary.favorites', 'favorites')
       .leftJoinAndSelect('favorites.author', 'favoriteAuthor')
+      .leftJoinAndSelect('diary.bookmarks', 'bookmarks')
+      .leftJoinAndSelect('bookmarks.user', 'bookmarkUser')
       .where('diary.id = :id', { id })
       .getOne();
 
