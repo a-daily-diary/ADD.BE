@@ -86,6 +86,24 @@ export class DiariesService {
     return this.generateCustomFieldForDiary(diary, accessUser.id);
   }
 
+  async getDiariesByUsersBookmark(username: string, accessUser: UserDTO) {
+    const diariesByUsername = await this.diaryRepository
+      .createQueryBuilder('diary')
+      .leftJoinAndSelect('diary.author', 'author')
+      .leftJoinAndSelect('diary.favorites', 'favorites')
+      .leftJoinAndSelect('favorites.author', 'favoriteAuthor')
+      .leftJoinAndSelect('diary.bookmarks', 'bookmarks')
+      .leftJoinAndSelect('bookmarks.user', 'bookmarkUser')
+      .where('bookmarkUser.username = :username', { username })
+      .getMany();
+
+    const responseDiariesByUsername = diariesByUsername.map((diary) => {
+      return this.generateCustomFieldForDiary(diary, accessUser.id);
+    });
+
+    return responseDiariesByUsername;
+  }
+
   async create(diaryFormDto: DiaryFormDTO, author: UserDTO) {
     const { title, content, imgUrl } = diaryFormDto;
     const newDiary = await this.diaryRepository.create({

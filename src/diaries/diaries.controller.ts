@@ -74,6 +74,15 @@ export class DiariesController {
     return this.diariesService.getAll(currentUser);
   }
 
+  @Get('bookmark/:username')
+  @UseGuards(JwtAuthGuard)
+  getDiariesByUsersBookmark(
+    @Param('username') username: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.diariesService.getDiariesByUsersBookmark(username, currentUser);
+  }
+
   @Get(':id')
   @ApiOperation({
     summary: '일기 상세 조회',
