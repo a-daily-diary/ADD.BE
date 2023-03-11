@@ -52,15 +52,31 @@ export class DiariesService {
     };
   }
 
+  generateSelectDiaryInstance() {
+    const aliasInfo = {
+      diary: 'diary',
+      diaryAuthor: 'author',
+      diaryFavorites: 'favorites',
+      favoritesAuthor: 'favoriteAuthor',
+      diaryBookmarks: 'bookmarks',
+      bookmarksUser: 'bookmarkUser',
+    };
+
+    const selectDiaryInstance = this.diaryRepository
+      .createQueryBuilder(aliasInfo.diary)
+      .leftJoinAndSelect('diary.author', aliasInfo.diaryAuthor)
+      .leftJoinAndSelect('diary.favorites', aliasInfo.diaryFavorites)
+      .leftJoinAndSelect('favorites.author', aliasInfo.favoritesAuthor)
+      .leftJoinAndSelect('diary.bookmarks', aliasInfo.diaryBookmarks)
+      .leftJoinAndSelect('bookmarks.user', aliasInfo.bookmarksUser);
+
+    return { selectDiaryInstance, aliasInfo };
+  }
+
   async getAll(accessUser: UserDTO) {
-    const diaries = await this.diaryRepository
-      .createQueryBuilder('diary')
-      .leftJoinAndSelect('diary.author', 'author')
-      .leftJoinAndSelect('diary.favorites', 'favorites')
-      .leftJoinAndSelect('favorites.author', 'favoriteAuthor')
-      .leftJoinAndSelect('diary.bookmarks', 'bookmarks')
-      .leftJoinAndSelect('bookmarks.user', 'bookmarkUser')
-      .getMany();
+    const { selectDiaryInstance } = this.generateSelectDiaryInstance();
+
+    const diaries = await selectDiaryInstance.getMany();
 
     const responseDiaries = diaries.map((diary) => {
       return this.generateCustomFieldForDiary(diary, accessUser.id);
@@ -70,31 +86,27 @@ export class DiariesService {
   }
 
   async getOne(id: string, accessUser: UserDTO) {
-    const diary = await this.diaryRepository
-      .createQueryBuilder('diary')
-      .leftJoinAndSelect('diary.author', 'author')
-      .leftJoinAndSelect('diary.favorites', 'favorites')
-      .leftJoinAndSelect('favorites.author', 'favoriteAuthor')
-      .leftJoinAndSelect('diary.bookmarks', 'bookmarks')
-      .leftJoinAndSelect('bookmarks.user', 'bookmarkUser')
-      .where('diary.id = :id', { id })
+    const { selectDiaryInstance, aliasInfo } =
+      await this.generateSelectDiaryInstance();
+
+    const diaryByDiaryId = await selectDiaryInstance
+      .where(`${aliasInfo.diary}.id = :id`, { id })
       .getOne();
 
-    if (!diary) {
+    if (!diaryByDiaryId) {
       throw new NotFoundException(diaryExceptionMessage.DOES_NOT_EXIST_DIARY);
     }
-    return this.generateCustomFieldForDiary(diary, accessUser.id);
+    return this.generateCustomFieldForDiary(diaryByDiaryId, accessUser.id);
   }
 
   async getDiariesByUsersBookmark(username: string, accessUser: UserDTO) {
-    const diariesByUsername = await this.diaryRepository
-      .createQueryBuilder('diary')
-      .leftJoinAndSelect('diary.author', 'author')
-      .leftJoinAndSelect('diary.favorites', 'favorites')
-      .leftJoinAndSelect('favorites.author', 'favoriteAuthor')
-      .leftJoinAndSelect('diary.bookmarks', 'bookmarks')
-      .leftJoinAndSelect('bookmarks.user', 'bookmarkUser')
-      .where('bookmarkUser.username = :username', { username })
+    const { selectDiaryInstance, aliasInfo } =
+      this.generateSelectDiaryInstance();
+
+    const diariesByUsername = await selectDiaryInstance
+      .where(`${aliasInfo.bookmarksUser}.username = :username`, {
+        username,
+      })
       .getMany();
 
     const responseDiariesByUsername = diariesByUsername.map((diary) => {
