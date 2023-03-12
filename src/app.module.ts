@@ -11,6 +11,7 @@ import { DiariesModule } from './diaries/diaries.module';
 import { DiaryEntity } from './diaries/diaries.entity';
 import { FavoritesModule } from './favorities/favorites.module';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
+import { AwsService } from './aws.service';
 
 const typeOrmModuleOptions = {
   useFactory: async (): Promise<TypeOrmModuleOptions> => {
@@ -41,6 +42,7 @@ const typeOrmModuleOptions = {
     BookmarksModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AwsService],
+  exports: [AwsService],
 })
 export class AppModule {}
