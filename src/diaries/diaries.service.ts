@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AwsService } from 'src/aws.service';
 import { diaryExceptionMessage } from 'src/constants/exceptionMessage';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { Repository } from 'typeorm';
@@ -11,12 +12,11 @@ export class DiariesService {
   constructor(
     @InjectRepository(DiaryEntity)
     private readonly diaryRepository: Repository<DiaryEntity>,
+    private readonly awsService: AwsService,
   ) {}
-  uploadImg(file: Express.Multer.File) {
-    const port = process.env.PORT;
-    const imgHostUrl = process.env.IMG_HOST_URL;
-    const diaryUploadImg = `${imgHostUrl}:${port}/media/diaries/${file.filename}`;
-    return { imgUrl: diaryUploadImg };
+  async uploadImg(file: Express.Multer.File) {
+    const uploadInfo = await this.awsService.uploadFileToS3('diaries', file);
+    return { imgUrl: this.awsService.getAwsS3FileUrl(uploadInfo.key) };
   }
 
   generateCustomFieldForDiary(diary: DiaryEntity, accessUserId: string) {

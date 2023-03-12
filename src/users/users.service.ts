@@ -13,6 +13,7 @@ import { UserEntity } from './users.entity';
 import { UserLoginDTO } from './dto/user-login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { userExceptionMessage } from 'src/constants/exceptionMessage';
+import { AwsService } from 'src/aws.service';
 
 @Injectable()
 export class UsersService {
@@ -20,12 +21,11 @@ export class UsersService {
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
     private readonly jwtService: JwtService,
+    private readonly awsService: AwsService,
   ) {}
-  uploadImg(file: Express.Multer.File) {
-    const port = process.env.PORT;
-    const imgHostUrl = process.env.IMG_HOST_URL;
-    const thumbnailUrl = `${imgHostUrl}:${port}/media/users/${file.filename}`;
-    return { imgUrl: thumbnailUrl };
+  async uploadImg(file: Express.Multer.File) {
+    const uploadInfo = await this.awsService.uploadFileToS3('users', file);
+    return { imgUrl: this.awsService.getAwsS3FileUrl(uploadInfo.key) };
   }
 
   async join(userJoinDto: UserJoinDTO) {

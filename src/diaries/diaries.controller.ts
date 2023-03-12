@@ -54,7 +54,7 @@ export class DiariesController {
     summary: '일기 이미지 업로드',
   })
   @ApiCreatedResponse(responseExampleForDiary.uploadDiaryImg)
-  @UseInterceptors(FileInterceptor('image', multerOption('diaries')))
+  @UseInterceptors(FileInterceptor('image'))
   uploadUserImg(@UploadedFile() file: Express.Multer.File) {
     console.log(file);
     return this.diariesService.uploadImg(file);
