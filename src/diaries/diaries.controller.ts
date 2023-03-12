@@ -24,7 +24,6 @@ import {
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
-import { multerOption } from 'src/common/utils/multer.options';
 import {
   responseExampleForDiary,
   responseExampleForFavorite,
