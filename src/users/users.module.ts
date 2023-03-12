@@ -8,6 +8,7 @@ import { UsersService } from './users.service';
 import { JwtStrategy } from './jwt/jwt.strategy';
 import { FavoriteEntity } from 'src/favorities/favorites.entity';
 import { BookmarkEntity } from 'src/bookmarks/bookmarks.entity';
+import { AwsService } from 'src/aws.service';
 
 @Module({
   imports: [
@@ -20,6 +21,6 @@ import { BookmarkEntity } from 'src/bookmarks/bookmarks.entity';
     }),
   ],
   controllers: [UsersController],
-  providers: [UsersService, JwtStrategy],
+  providers: [UsersService, JwtStrategy, AwsService],
 })
 export class UsersModule {}

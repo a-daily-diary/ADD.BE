@@ -45,7 +45,7 @@ export class UsersController {
     summary: '유저 thumbnail 업로드',
   })
   @ApiCreatedResponse(responseExampleForUser.uploadUserImg)
-  @UseInterceptors(FileInterceptor('image', multerOption('users')))
+  @UseInterceptors(FileInterceptor('image'))
   uploadUserImg(@UploadedFile() file: Express.Multer.File) {
     console.log(file);
     return this.usersService.uploadImg(file);
