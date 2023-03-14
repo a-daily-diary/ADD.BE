@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AwsService } from 'src/aws.service';
 import { diaryExceptionMessage } from 'src/constants/exceptionMessage';
@@ -19,46 +23,97 @@ export class DiariesService {
     return { imgUrl: this.awsService.getAwsS3FileUrl(uploadInfo.key) };
   }
 
+  async findOneById(id: string) {
+    const diary = await this.diaryRepository.findOneBy({ id });
+
+    if (!diary) {
+      throw new NotFoundException(diaryExceptionMessage.DOES_NOT_EXIST_DIARY);
+    }
+
+    return diary;
+  }
+
   generateCustomFieldForDiary(diary: DiaryEntity, accessUserId: string) {
-    const { author, favorites, deleteAt, ...otherInfo } = diary; // FIXME: nest의 classSerializerInterceptor로 처리할 수 있는 방법 고안하기
+    const { author, favorites, bookmarks, deleteAt, ...otherInfo } = diary; // FIXME: nest의 classSerializerInterceptor로 처리할 수 있는 방법 고안하기
 
     const isFavorite = favorites
       .map((favorite) => favorite.author.id)
       .includes(accessUserId);
 
+    const isBookmark = bookmarks
+      .map((bookmark) => bookmark.user.id)
+      .includes(accessUserId);
+
     return {
       ...otherInfo,
       isFavorite,
-      isBookmark: false,
+      isBookmark,
       author,
     };
   }
 
-  async getAll(accessUser: UserDTO) {
-    const diaries = await this.diaryRepository
-      .createQueryBuilder('diary')
-      .leftJoinAndSelect('diary.author', 'author')
-      .leftJoinAndSelect('diary.favorites', 'favorites')
-      .leftJoinAndSelect('favorites.author', 'favoriteAuthor')
-      .getMany();
+  generateSelectDiaryInstance() {
+    const tableAliasInfo = {
+      diary: 'diary',
+      diaryAuthor: 'author',
+      diaryFavorites: 'favorites',
+      favoritesAuthor: 'favoriteAuthor',
+      diaryBookmarks: 'bookmarks',
+      bookmarksUser: 'bookmarkUser',
+    };
 
-    const responseDiaries = diaries.map((diary) =>
-      this.generateCustomFieldForDiary(diary, accessUser.id),
-    );
+    const selectDiaryInstance = this.diaryRepository
+      .createQueryBuilder(tableAliasInfo.diary)
+      .leftJoinAndSelect('diary.author', tableAliasInfo.diaryAuthor)
+      .leftJoinAndSelect('diary.favorites', tableAliasInfo.diaryFavorites)
+      .leftJoinAndSelect('favorites.author', tableAliasInfo.favoritesAuthor)
+      .leftJoinAndSelect('diary.bookmarks', tableAliasInfo.diaryBookmarks)
+      .leftJoinAndSelect('bookmarks.user', tableAliasInfo.bookmarksUser);
+
+    return { selectDiaryInstance, tableAliasInfo };
+  }
+
+  async getAll(accessUser: UserDTO) {
+    const { selectDiaryInstance } = this.generateSelectDiaryInstance();
+
+    const diaries = await selectDiaryInstance.getMany();
+
+    const responseDiaries = diaries.map((diary) => {
+      return this.generateCustomFieldForDiary(diary, accessUser.id);
+    });
 
     return responseDiaries;
   }
 
   async getOne(id: string, accessUser: UserDTO) {
-    const diary = await this.diaryRepository
-      .createQueryBuilder('diary')
-      .leftJoinAndSelect('diary.author', 'author')
-      .leftJoinAndSelect('diary.favorites', 'favorites')
-      .leftJoinAndSelect('favorites.author', 'favoriteAuthor')
-      .where('diary.id = :id', { id })
+    const { selectDiaryInstance, tableAliasInfo } =
+      await this.generateSelectDiaryInstance();
+
+    const diaryByDiaryId = await selectDiaryInstance
+      .where(`${tableAliasInfo.diary}.id = :id`, { id })
       .getOne();
 
-    return this.generateCustomFieldForDiary(diary, accessUser.id);
+    if (!diaryByDiaryId) {
+      throw new NotFoundException(diaryExceptionMessage.DOES_NOT_EXIST_DIARY);
+    }
+    return this.generateCustomFieldForDiary(diaryByDiaryId, accessUser.id);
+  }
+
+  async getDiariesByUsersBookmark(username: string, accessUser: UserDTO) {
+    const { selectDiaryInstance, tableAliasInfo } =
+      this.generateSelectDiaryInstance();
+
+    const diariesByUsername = await selectDiaryInstance
+      .where(`${tableAliasInfo.bookmarksUser}.username = :username`, {
+        username,
+      })
+      .getMany();
+
+    const responseDiariesByUsername = diariesByUsername.map((diary) => {
+      return this.generateCustomFieldForDiary(diary, accessUser.id);
+    });
+
+    return responseDiariesByUsername;
   }
 
   async create(diaryFormDto: DiaryFormDTO, author: UserDTO) {

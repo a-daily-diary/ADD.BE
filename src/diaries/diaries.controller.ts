@@ -21,10 +21,12 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { BookmarksService } from 'src/bookmarks/bookmarks.service';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
 import {
+  responseExampleForBookmark,
   responseExampleForDiary,
   responseExampleForFavorite,
 } from 'src/constants/swagger';
@@ -41,6 +43,7 @@ export class DiariesController {
   constructor(
     private readonly diariesService: DiariesService,
     private readonly favoritesService: FavoritesService,
+    private readonly bookmarksService: BookmarksService,
   ) {}
 
   @Post('upload')
@@ -68,6 +71,20 @@ export class DiariesController {
   @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
   getDiaries(@CurrentUser() currentUser: UserDTO) {
     return this.diariesService.getAll(currentUser);
+  }
+
+  @Get('bookmark/:username')
+  @ApiOperation({
+    summary: '유저별 북마크한 일기 리스트 조회',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiCreatedResponse(responseExampleForDiary.getDiariesByUsersBookmark)
+  @UseGuards(JwtAuthGuard)
+  getDiariesByUsersBookmark(
+    @Param('username') username: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.diariesService.getDiariesByUsersBookmark(username, currentUser);
   }
 
   @Get(':id')
@@ -127,9 +144,10 @@ export class DiariesController {
     return this.diariesService.delete(id, currentUser);
   }
 
+  // 좋아요 API
   @Post(':id/favorite')
   @ApiOperation({
-    summary: '일기 좋아요 추가',
+    summary: '일기 좋아요 등록',
   })
   @ApiBearerAuth('access-token')
   @ApiCreatedResponse(responseExampleForFavorite.createFavorite)
@@ -153,5 +171,34 @@ export class DiariesController {
     @CurrentUser() currentUser: UserDTO,
   ) {
     return this.favoritesService.delete(id, currentUser);
+  }
+
+  // 북마크 API
+  @Post(':id/bookmark')
+  @ApiOperation({
+    summary: '일기 북마크 등록',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiCreatedResponse(responseExampleForBookmark.registerBookmark)
+  @UseGuards(JwtAuthGuard)
+  registerBookmark(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.bookmarksService.register(id, currentUser);
+  }
+
+  @Delete(':id/bookmark')
+  @ApiOperation({
+    summary: '일기 북마크 취소',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiCreatedResponse(responseExampleForBookmark.unregisterBookmark)
+  @UseGuards(JwtAuthGuard)
+  unregisterBookmark(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.bookmarksService.unregister(id, currentUser);
   }
 }

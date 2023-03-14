@@ -11,6 +11,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { FavoriteEntity } from 'src/favorities/favorites.entity';
+import { BookmarkEntity } from 'src/bookmarks/bookmarks.entity';
 
 @Index('id', ['id'], { unique: true })
 @Entity({
@@ -62,4 +63,14 @@ export class DiaryEntity extends CommonEntity {
     },
   )
   favorites: FavoriteEntity[];
+
+  @ApiProperty()
+  @OneToMany(
+    () => BookmarkEntity,
+    (bookmark: BookmarkEntity) => bookmark.diary,
+    {
+      cascade: true,
+    },
+  )
+  bookmarks: BookmarkEntity[];
 }
