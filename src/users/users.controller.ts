@@ -21,7 +21,6 @@ import {
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
-import { multerOption } from 'src/common/utils/multer.options';
 import { responseExampleForUser } from 'src/constants/swagger';
 import { UserEmailDTO, UserJoinDTO, UsernameDTO } from './dto/user-join.dto';
 import { UserLoginDTO } from './dto/user-login.dto';
@@ -45,7 +44,7 @@ export class UsersController {
     summary: '유저 thumbnail 업로드',
   })
   @ApiCreatedResponse(responseExampleForUser.uploadUserImg)
-  @UseInterceptors(FileInterceptor('image', multerOption('users')))
+  @UseInterceptors(FileInterceptor('image'))
   uploadUserImg(@UploadedFile() file: Express.Multer.File) {
     console.log(file);
     return this.usersService.uploadImg(file);

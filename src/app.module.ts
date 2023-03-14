@@ -10,6 +10,7 @@ import { UserEntity } from './users/users.entity';
 import { DiariesModule } from './diaries/diaries.module';
 import { DiaryEntity } from './diaries/diaries.entity';
 import { FavoritesModule } from './favorities/favorites.module';
+import { AwsService } from './aws.service';
 
 const typeOrmModuleOptions = {
   useFactory: async (): Promise<TypeOrmModuleOptions> => {
@@ -39,6 +40,7 @@ const typeOrmModuleOptions = {
     FavoritesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AwsService],
+  exports: [AwsService],
 })
 export class AppModule {}
