@@ -18,7 +18,6 @@ export class DiariesService {
     private readonly diaryRepository: Repository<DiaryEntity>,
     private readonly awsService: AwsService,
   ) {}
-
   async uploadImg(file: Express.Multer.File) {
     const uploadInfo = await this.awsService.uploadFileToS3('diaries', file);
     return { imgUrl: this.awsService.getAwsS3FileUrl(uploadInfo.key) };

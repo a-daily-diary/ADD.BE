@@ -15,6 +15,5 @@ import { DiariesService } from './diaries.service';
   ],
   controllers: [DiariesController],
   providers: [DiariesService, AwsService],
-  exports: [DiariesService],
 })
 export class DiariesModule {}
