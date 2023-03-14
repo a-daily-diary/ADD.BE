@@ -54,7 +54,7 @@ export class DiariesService {
   }
 
   generateSelectDiaryInstance() {
-    const aliasInfo = {
+    const tableAliasInfo = {
       diary: 'diary',
       diaryAuthor: 'author',
       diaryFavorites: 'favorites',
@@ -64,14 +64,14 @@ export class DiariesService {
     };
 
     const selectDiaryInstance = this.diaryRepository
-      .createQueryBuilder(aliasInfo.diary)
-      .leftJoinAndSelect('diary.author', aliasInfo.diaryAuthor)
-      .leftJoinAndSelect('diary.favorites', aliasInfo.diaryFavorites)
-      .leftJoinAndSelect('favorites.author', aliasInfo.favoritesAuthor)
-      .leftJoinAndSelect('diary.bookmarks', aliasInfo.diaryBookmarks)
-      .leftJoinAndSelect('bookmarks.user', aliasInfo.bookmarksUser);
+      .createQueryBuilder(tableAliasInfo.diary)
+      .leftJoinAndSelect('diary.author', tableAliasInfo.diaryAuthor)
+      .leftJoinAndSelect('diary.favorites', tableAliasInfo.diaryFavorites)
+      .leftJoinAndSelect('favorites.author', tableAliasInfo.favoritesAuthor)
+      .leftJoinAndSelect('diary.bookmarks', tableAliasInfo.diaryBookmarks)
+      .leftJoinAndSelect('bookmarks.user', tableAliasInfo.bookmarksUser);
 
-    return { selectDiaryInstance, aliasInfo };
+    return { selectDiaryInstance, tableAliasInfo };
   }
 
   async getAll(accessUser: UserDTO) {
@@ -87,11 +87,11 @@ export class DiariesService {
   }
 
   async getOne(id: string, accessUser: UserDTO) {
-    const { selectDiaryInstance, aliasInfo } =
+    const { selectDiaryInstance, tableAliasInfo } =
       await this.generateSelectDiaryInstance();
 
     const diaryByDiaryId = await selectDiaryInstance
-      .where(`${aliasInfo.diary}.id = :id`, { id })
+      .where(`${tableAliasInfo.diary}.id = :id`, { id })
       .getOne();
 
     if (!diaryByDiaryId) {
@@ -101,11 +101,11 @@ export class DiariesService {
   }
 
   async getDiariesByUsersBookmark(username: string, accessUser: UserDTO) {
-    const { selectDiaryInstance, aliasInfo } =
+    const { selectDiaryInstance, tableAliasInfo } =
       this.generateSelectDiaryInstance();
 
     const diariesByUsername = await selectDiaryInstance
-      .where(`${aliasInfo.bookmarksUser}.username = :username`, {
+      .where(`${tableAliasInfo.bookmarksUser}.username = :username`, {
         username,
       })
       .getMany();
