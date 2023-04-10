@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { IsBoolean, IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { BookmarkEntity } from 'src/bookmarks/bookmarks.entity';
 import { CommonEntity } from 'src/common/entities/common.entity';
 import { DiaryEntity } from 'src/diaries/diaries.entity';
 import { FavoriteEntity } from 'src/favorities/favorites.entity';
@@ -57,4 +58,14 @@ export class UserEntity extends CommonEntity {
     },
   )
   favorites: FavoriteEntity[];
+
+  @ApiProperty()
+  @OneToMany(
+    () => BookmarkEntity,
+    (bookmark: BookmarkEntity) => bookmark.user,
+    {
+      cascade: true,
+    },
+  )
+  bookmarks: BookmarkEntity[];
 }

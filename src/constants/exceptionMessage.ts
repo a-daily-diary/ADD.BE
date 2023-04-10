@@ -8,6 +8,7 @@ export const favoriteExceptionMessage = {
 export const diaryExceptionMessage = {
   OWNER_ONLY_EDIT: '일기 작성자만 수정할 수 있습니다.',
   OWNER_ONLY_DELETE: '일기 작성자만 삭제할 수 있습니다.',
+  DOES_NOT_EXIST_DIARY: '해당하는 일기가 존재하지 않습니다.',
 };
 
 export const userExceptionMessage = {
@@ -15,4 +16,10 @@ export const userExceptionMessage = {
   EXIST_USERNAME: '해당하는 유저이름이 이미 존재합니다.',
   INCORRECT_LOGIN: '로그인 정보를 확인해주세요.',
   DOES_NOT_EXIST_USER: '해당하는 유저가 존재하지 않습니다.',
+};
+
+export const bookmarkExceptionMessage = {
+  ONLY_ONE_BOOKMARK: '접근한 계정은 해당 게시물에 북마크가 등록되어있습니다.',
+  DOES_NOT_REGISTER_BOOKMARK:
+    '접근한 계정으로 해당 게시물에 북마크가 등록 되어있지 않아 북마크 취소가 불가능합니다.',
 };
