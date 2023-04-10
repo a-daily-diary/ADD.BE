@@ -188,29 +188,7 @@ export const responseExampleForDiary = {
 
 export const responseExampleForFavorite = {
   registerFavorite: responseTemplate({
-    author: {
-      id: 'd50d5458-dadf-4d29-b487-d64f75cca1d8',
-      createdAt: '2023-03-01T08:37:09.283Z',
-      updatedAt: '2023-03-01T08:37:09.283Z',
-      email: 'test@test6.com',
-      username: 'test6',
-      thumbnailUrl: 'http://127.0.0.1:5000',
-      isAgree: true,
-      isAdmin: false,
-    },
-    diary: {
-      id: '5528612e-2e34-478e-b300-235d27738cde',
-      createdAt: '2023-02-22T13:33:03.898Z',
-      updatedAt: '2023-03-01T08:35:53.473Z',
-      title: 'qweqwe',
-      content: '하하하 공부 열심히 해야되는데...ㅎㅎ',
-      imgUrl: null,
-      favoriteCount: 9,
-      commentCount: 0,
-    },
-    id: 'd5bee6d3-0d5d-4572-a1a0-bc31dcb4acc7',
-    createdAt: '2023-03-01T08:37:20.062Z',
-    updatedAt: '2023-03-01T08:37:20.062Z',
+    message: '좋아요가 등록되었습니다.',
   }),
   unregisterFavorite: responseTemplate({
     message: '취소 되었습니다.',
@@ -219,7 +197,7 @@ export const responseExampleForFavorite = {
 
 export const responseExampleForBookmark = {
   registerBookmark: responseTemplate({
-    message: '북마크가 등록되었습니다..',
+    message: '북마크가 등록되었습니다.',
   }),
   unregisterBookmark: responseTemplate({
     message: '취소 되었습니다.',

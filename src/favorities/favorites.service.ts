@@ -46,9 +46,7 @@ export class FavoritesService {
     await this.diaryRepository.save(targetDiary);
     await this.favoriteRepository.save(newFavorite);
 
-    delete newFavorite.diary.favorites;
-
-    return newFavorite;
+    return { message: '좋아요가 등록되었습니다.' };
   }
 
   async unregister(diaryId: string, user: UserDTO) {
