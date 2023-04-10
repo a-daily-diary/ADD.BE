@@ -34,10 +34,10 @@ export class DiariesService {
   }
 
   generateCustomFieldForDiary(diary: DiaryEntity, accessUserId: string) {
-    const { author, favorites, bookmarks, deleteAt, ...otherInfo } = diary; // FIXME: nest의 classSerializerInterceptor로 처리할 수 있는 방법 고안하기
+    const { author, favorites, bookmarks, deleteAt: _, ...otherInfo } = diary; // FIXME: nest의 classSerializerInterceptor로 처리할 수 있는 방법 고안하기
 
     const isFavorite = favorites
-      .map((favorite) => favorite.author.id)
+      .map((favorite) => favorite.user.id)
       .includes(accessUserId);
 
     const isBookmark = bookmarks

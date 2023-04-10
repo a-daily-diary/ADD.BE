@@ -31,7 +31,7 @@ export class FavoritesService {
 
     if (
       targetDiary.favorites
-        .map((favorite) => favorite.author.id)
+        .map((favorite) => favorite.user.id)
         .includes(user.id)
     ) {
       throw new BadRequestException(favoriteExceptionMessage.ONLY_ONE_FAVORITE);
@@ -39,7 +39,7 @@ export class FavoritesService {
 
     targetDiary.favoriteCount += 1;
     const newFavorite = await this.favoriteRepository.create({
-      author: user,
+      user,
       diary: targetDiary,
     });
 

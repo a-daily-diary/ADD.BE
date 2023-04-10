@@ -52,7 +52,7 @@ export class UserEntity extends CommonEntity {
   @ApiProperty()
   @OneToMany(
     () => FavoriteEntity,
-    (favorite: FavoriteEntity) => favorite.author,
+    (favorite: FavoriteEntity) => favorite.user,
     {
       cascade: true,
     },

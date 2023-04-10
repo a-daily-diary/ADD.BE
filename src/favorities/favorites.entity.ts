@@ -14,10 +14,10 @@ export class FavoriteEntity extends CommonEntity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({
-    name: 'author_id',
+    name: 'user_id',
     referencedColumnName: 'id',
   })
-  author: UserEntity;
+  user: UserEntity;
 
   @ApiProperty()
   @ManyToOne(() => DiaryEntity, (diary: DiaryEntity) => diary.favorites, {
