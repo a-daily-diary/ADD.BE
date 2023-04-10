@@ -15,7 +15,7 @@ export class FavoritesService {
     private readonly diaryRepository: Repository<DiaryEntity>,
   ) {}
 
-  async create(diaryId: string, user: UserDTO) {
+  async register(diaryId: string, user: UserDTO) {
     const targetDiary = await this.diaryRepository
       .createQueryBuilder('diary')
       .leftJoinAndSelect('diary.favorites', 'favorites')
@@ -51,7 +51,7 @@ export class FavoritesService {
     return newFavorite;
   }
 
-  async delete(diaryId: string, user: UserDTO) {
+  async unregister(diaryId: string, user: UserDTO) {
     const targetDiary = await this.diaryRepository.findOneBy({ id: diaryId });
     const targetFavoriteInstance = await this.favoriteRepository
       .createQueryBuilder('favorite')

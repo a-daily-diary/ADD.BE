@@ -150,13 +150,13 @@ export class DiariesController {
     summary: '일기 좋아요 등록',
   })
   @ApiBearerAuth('access-token')
-  @ApiCreatedResponse(responseExampleForFavorite.createFavorite)
+  @ApiCreatedResponse(responseExampleForFavorite.registerFavorite)
   @UseGuards(JwtAuthGuard)
-  createFavorite(
+  registerFavorite(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() currentUser: UserDTO,
   ) {
-    return this.favoritesService.create(id, currentUser);
+    return this.favoritesService.register(id, currentUser);
   }
 
   @Delete(':id/favorite')
@@ -164,13 +164,13 @@ export class DiariesController {
     summary: '일기 좋아요 취소',
   })
   @ApiBearerAuth('access-token')
-  @ApiCreatedResponse(responseExampleForFavorite.deleteFavorite)
+  @ApiCreatedResponse(responseExampleForFavorite.unregisterFavorite)
   @UseGuards(JwtAuthGuard)
-  deleteFavorite(
+  unregisterFavorite(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() currentUser: UserDTO,
   ) {
-    return this.favoritesService.delete(id, currentUser);
+    return this.favoritesService.unregister(id, currentUser);
   }
 
   // 북마크 API

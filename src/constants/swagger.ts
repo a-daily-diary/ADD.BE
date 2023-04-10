@@ -187,7 +187,7 @@ export const responseExampleForDiary = {
 };
 
 export const responseExampleForFavorite = {
-  createFavorite: responseTemplate({
+  registerFavorite: responseTemplate({
     author: {
       id: 'd50d5458-dadf-4d29-b487-d64f75cca1d8',
       createdAt: '2023-03-01T08:37:09.283Z',
@@ -212,7 +212,7 @@ export const responseExampleForFavorite = {
     createdAt: '2023-03-01T08:37:20.062Z',
     updatedAt: '2023-03-01T08:37:20.062Z',
   }),
-  deleteFavorite: responseTemplate({
+  unregisterFavorite: responseTemplate({
     message: '취소 되었습니다.',
   }),
 };
