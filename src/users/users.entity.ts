@@ -1,17 +1,35 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { IsBoolean, IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 import { BookmarkEntity } from 'src/bookmarks/bookmarks.entity';
-import { CommonEntity } from 'src/common/entities/common.entity';
 import { DiaryEntity } from 'src/diaries/diaries.entity';
 import { FavoriteEntity } from 'src/favorities/favorites.entity';
-import { Column, Entity, Index, OneToMany } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Index('email', ['email'], { unique: true })
 @Entity({
   name: 'USER',
 })
-export class UserEntity extends CommonEntity {
+export class UserEntity {
+  @IsUUID()
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
   @ApiProperty()
   @IsEmail({}, { message: '올바른 이메일을 작성해주세요.' })
   @IsNotEmpty({ message: '이메일을 작성해주세요. ' })
@@ -42,6 +60,22 @@ export class UserEntity extends CommonEntity {
   @IsBoolean()
   @Column({ type: 'boolean', default: false })
   isAdmin: boolean;
+
+  @Exclude()
+  @CreateDateColumn({
+    type: 'timestamptz' /* timestamp with time zone */,
+  })
+  createdAt: Date;
+
+  @Exclude()
+  @UpdateDateColumn({
+    type: 'timestamptz' /* timestamp with time zone */,
+  })
+  updatedAt: Date;
+
+  @Exclude()
+  @DeleteDateColumn({ type: 'timestamptz' })
+  deleteAt?: Date | null;
 
   @ApiProperty()
   @OneToMany(() => DiaryEntity, (diary: DiaryEntity) => diary.author, {
