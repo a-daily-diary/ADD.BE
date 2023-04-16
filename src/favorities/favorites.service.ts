@@ -15,7 +15,7 @@ export class FavoritesService {
     private readonly diaryRepository: Repository<DiaryEntity>,
   ) {}
 
-  async create(diaryId: string, user: UserDTO) {
+  async register(diaryId: string, user: UserDTO) {
     const targetDiary = await this.diaryRepository
       .createQueryBuilder('diary')
       .leftJoinAndSelect('diary.favorites', 'favorites')
@@ -31,7 +31,7 @@ export class FavoritesService {
 
     if (
       targetDiary.favorites
-        .map((favorite) => favorite.author.id)
+        .map((favorite) => favorite.user.id)
         .includes(user.id)
     ) {
       throw new BadRequestException(favoriteExceptionMessage.ONLY_ONE_FAVORITE);
@@ -39,19 +39,17 @@ export class FavoritesService {
 
     targetDiary.favoriteCount += 1;
     const newFavorite = await this.favoriteRepository.create({
-      author: user,
+      user,
       diary: targetDiary,
     });
 
     await this.diaryRepository.save(targetDiary);
     await this.favoriteRepository.save(newFavorite);
 
-    delete newFavorite.diary.favorites;
-
-    return newFavorite;
+    return { message: '좋아요가 등록되었습니다.' };
   }
 
-  async delete(diaryId: string, user: UserDTO) {
+  async unregister(diaryId: string, user: UserDTO) {
     const targetDiary = await this.diaryRepository.findOneBy({ id: diaryId });
     const targetFavoriteInstance = await this.favoriteRepository
       .createQueryBuilder('favorite')
