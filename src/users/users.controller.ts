@@ -41,7 +41,7 @@ export class UsersController {
     type: FileUploadDto,
   })
   @ApiOperation({
-    summary: '유저 thumbnail 업로드',
+    summary: '유저 img 업로드',
   })
   @ApiCreatedResponse(responseExampleForUser.uploadUserImg)
   @UseInterceptors(FileInterceptor('image'))
