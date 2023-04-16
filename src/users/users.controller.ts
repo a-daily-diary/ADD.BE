@@ -70,6 +70,14 @@ export class UsersController {
     return this.usersService.findAllUsers();
   }
 
+  @Get('default-thumbnail')
+  @ApiOperation({
+    summary: '회원가입 시 기본으로 제공되는 이미지 경로 조회',
+  })
+  getDefaultThumbnail() {
+    return this.usersService.getDefaultThumbnail();
+  }
+
   @Get(':username')
   @ApiOperation({
     summary: '유저 정보 조회',
