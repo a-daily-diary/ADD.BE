@@ -17,7 +17,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
-  ApiCreatedResponse,
+  ApiResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
@@ -55,7 +55,7 @@ export class DiariesController {
   @ApiOperation({
     summary: '일기 이미지 업로드',
   })
-  @ApiCreatedResponse(responseExampleForDiary.uploadDiaryImg)
+  @ApiResponse(responseExampleForDiary.uploadDiaryImg)
   @UseInterceptors(FileInterceptor('image'))
   uploadUserImg(@UploadedFile() file: Express.Multer.File) {
     console.log(file);
@@ -67,7 +67,7 @@ export class DiariesController {
     summary: '일기 전체 리스트 조회',
   })
   @ApiBearerAuth('access-token')
-  @ApiCreatedResponse(responseExampleForDiary.getDiaries)
+  @ApiResponse(responseExampleForDiary.getDiaries)
   @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
   getDiaries(@CurrentUser() currentUser: UserDTO) {
     return this.diariesService.getAll(currentUser);
@@ -78,7 +78,7 @@ export class DiariesController {
     summary: '유저별 북마크한 일기 리스트 조회',
   })
   @ApiBearerAuth('access-token')
-  @ApiCreatedResponse(responseExampleForDiary.getDiariesByUsersBookmark)
+  @ApiResponse(responseExampleForDiary.getDiariesByUsersBookmark)
   @UseGuards(JwtAuthGuard)
   getDiariesByUsersBookmark(
     @Param('username') username: string,
@@ -92,7 +92,7 @@ export class DiariesController {
     summary: '일기 상세 조회',
   })
   @ApiBearerAuth('access-token')
-  @ApiCreatedResponse(responseExampleForDiary.getDiary)
+  @ApiResponse(responseExampleForDiary.getDiary)
   @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
   getDiary(
     @Param('id', ParseUUIDPipe) id: string,
@@ -106,7 +106,7 @@ export class DiariesController {
     summary: '일기 생성',
   })
   @ApiBearerAuth('access-token')
-  @ApiCreatedResponse(responseExampleForDiary.createDiary)
+  @ApiResponse(responseExampleForDiary.createDiary)
   @UseGuards(JwtAuthGuard)
   createDiary(
     @Body() diaryFormDto: DiaryFormDTO,
@@ -120,7 +120,7 @@ export class DiariesController {
     summary: '일기 수정',
   })
   @ApiBearerAuth('access-token')
-  @ApiCreatedResponse(responseExampleForDiary.updateDiary)
+  @ApiResponse(responseExampleForDiary.updateDiary)
   @UseGuards(JwtAuthGuard)
   updateDiary(
     @Param('id', ParseUUIDPipe) id: string,
@@ -135,7 +135,7 @@ export class DiariesController {
     summary: '일기 삭제',
   })
   @ApiBearerAuth('access-token')
-  @ApiCreatedResponse(responseExampleForDiary.softDeleteDiary)
+  @ApiResponse(responseExampleForDiary.softDeleteDiary)
   @UseGuards(JwtAuthGuard)
   deleteDiary(
     @Param('id', ParseUUIDPipe) id: string,
@@ -150,7 +150,7 @@ export class DiariesController {
     summary: '일기 좋아요 등록',
   })
   @ApiBearerAuth('access-token')
-  @ApiCreatedResponse(responseExampleForFavorite.registerFavorite)
+  @ApiResponse(responseExampleForFavorite.registerFavorite)
   @UseGuards(JwtAuthGuard)
   registerFavorite(
     @Param('id', ParseUUIDPipe) id: string,
@@ -164,7 +164,7 @@ export class DiariesController {
     summary: '일기 좋아요 취소',
   })
   @ApiBearerAuth('access-token')
-  @ApiCreatedResponse(responseExampleForFavorite.unregisterFavorite)
+  @ApiResponse(responseExampleForFavorite.unregisterFavorite)
   @UseGuards(JwtAuthGuard)
   unregisterFavorite(
     @Param('id', ParseUUIDPipe) id: string,
@@ -179,7 +179,7 @@ export class DiariesController {
     summary: '일기 북마크 등록',
   })
   @ApiBearerAuth('access-token')
-  @ApiCreatedResponse(responseExampleForBookmark.registerBookmark)
+  @ApiResponse(responseExampleForBookmark.registerBookmark)
   @UseGuards(JwtAuthGuard)
   registerBookmark(
     @Param('id', ParseUUIDPipe) id: string,
@@ -193,7 +193,7 @@ export class DiariesController {
     summary: '일기 북마크 취소',
   })
   @ApiBearerAuth('access-token')
-  @ApiCreatedResponse(responseExampleForBookmark.unregisterBookmark)
+  @ApiResponse(responseExampleForBookmark.unregisterBookmark)
   @UseGuards(JwtAuthGuard)
   unregisterBookmark(
     @Param('id', ParseUUIDPipe) id: string,

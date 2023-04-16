@@ -14,7 +14,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
-  ApiCreatedResponse,
+  ApiResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
@@ -43,7 +43,7 @@ export class UsersController {
   @ApiOperation({
     summary: '유저 img 업로드',
   })
-  @ApiCreatedResponse(responseExampleForUser.uploadUserImg)
+  @ApiResponse(responseExampleForUser.uploadUserImg)
   @UseInterceptors(FileInterceptor('image'))
   uploadUserImg(@UploadedFile() file: Express.Multer.File) {
     console.log(file);
@@ -55,7 +55,7 @@ export class UsersController {
     summary: '내 정보 조회 (토큰 필요)',
   })
   @ApiBearerAuth('access-token')
-  @ApiCreatedResponse(responseExampleForUser.getCurrentUser)
+  @ApiResponse(responseExampleForUser.getCurrentUser)
   @UseGuards(JwtAuthGuard)
   getCurrentUser(@CurrentUser() currentUser: UserDTO) {
     return currentUser;
@@ -65,7 +65,7 @@ export class UsersController {
   @ApiOperation({
     summary: '전체 유저 조회',
   })
-  @ApiCreatedResponse(responseExampleForUser.getAllUsers)
+  @ApiResponse(responseExampleForUser.getAllUsers)
   getAllUser() {
     return this.usersService.findAllUsers();
   }
@@ -74,7 +74,7 @@ export class UsersController {
   @ApiOperation({
     summary: '유저 정보 조회',
   })
-  @ApiCreatedResponse(responseExampleForUser.getUserInfo)
+  @ApiResponse(responseExampleForUser.getUserInfo)
   getUserInfo(@Param() { username }: UsernameDTO) {
     return this.usersService.findUserByUsername(username);
   }
@@ -83,7 +83,7 @@ export class UsersController {
   @ApiOperation({
     summary: '회원가입',
   })
-  @ApiCreatedResponse(responseExampleForUser.join)
+  @ApiResponse(responseExampleForUser.join)
   join(@Body() userJoinDto: UserJoinDTO) {
     return this.usersService.join(userJoinDto);
   }
@@ -92,7 +92,7 @@ export class UsersController {
   @ApiOperation({
     summary: '이메일 중복 체크',
   })
-  @ApiCreatedResponse(responseExampleForUser.emailCheck)
+  @ApiResponse(responseExampleForUser.emailCheck)
   emailCheck(@Body() userEmail: UserEmailDTO) {
     return this.usersService.emailCheck(userEmail);
   }
@@ -101,7 +101,7 @@ export class UsersController {
   @ApiOperation({
     summary: '유저 이름 중복 체크',
   })
-  @ApiCreatedResponse(responseExampleForUser.usernameCheck)
+  @ApiResponse(responseExampleForUser.usernameCheck)
   usernameCheck(@Body() { username }: UsernameDTO) {
     return this.usersService.usernameCheck(username);
   }
@@ -110,7 +110,7 @@ export class UsersController {
   @ApiOperation({
     summary: '로그인',
   })
-  @ApiCreatedResponse(responseExampleForUser.login)
+  @ApiResponse(responseExampleForUser.login)
   login(@Body() userLoginDto: UserLoginDTO) {
     return this.usersService.login(userLoginDto);
   }
