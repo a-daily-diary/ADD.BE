@@ -57,7 +57,7 @@ export class DiariesService {
       diary: 'diary',
       diaryAuthor: 'author',
       diaryFavorites: 'favorites',
-      favoritesAuthor: 'favoriteAuthor',
+      favoriteUser: 'favoriteUser',
       diaryBookmarks: 'bookmarks',
       bookmarksUser: 'bookmarkUser',
     };
@@ -66,7 +66,7 @@ export class DiariesService {
       .createQueryBuilder(tableAliasInfo.diary)
       .leftJoinAndSelect('diary.author', tableAliasInfo.diaryAuthor)
       .leftJoinAndSelect('diary.favorites', tableAliasInfo.diaryFavorites)
-      .leftJoinAndSelect('favorites.author', tableAliasInfo.favoritesAuthor)
+      .leftJoinAndSelect('favorites.user', tableAliasInfo.favoriteUser)
       .leftJoinAndSelect('diary.bookmarks', tableAliasInfo.diaryBookmarks)
       .leftJoinAndSelect('bookmarks.user', tableAliasInfo.bookmarksUser);
 

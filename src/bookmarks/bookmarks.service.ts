@@ -60,6 +60,6 @@ export class BookmarksService {
 
     await this.bookmarkRepository.delete(bookmarkByUserAndDiary.id);
 
-    return { message: '취소 되었습니다.' };
+    return { message: '북마크 등록이 취소되었습니다.' };
   }
 }

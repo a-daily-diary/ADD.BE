@@ -49,10 +49,11 @@ export class UserEntity {
 
   @ApiProperty()
   @Column({ type: 'varchar', default: 'http://127.0.0.1:5000' }) // FIXME: default image 설정
-  thumbnailUrl: string;
+  imgUrl: string;
 
   @ApiProperty()
   @IsBoolean()
+  @Exclude()
   @Column({ type: 'boolean', nullable: false })
   isAgree: boolean;
 
