@@ -19,7 +19,7 @@ export class FavoritesService {
     const targetDiary = await this.diaryRepository
       .createQueryBuilder('diary')
       .leftJoinAndSelect('diary.favorites', 'favorites')
-      .leftJoinAndSelect('favorites.author', 'author')
+      .leftJoinAndSelect('favorites.user', 'user')
       .where({ id: diaryId })
       .getOne();
 
@@ -53,9 +53,9 @@ export class FavoritesService {
     const targetDiary = await this.diaryRepository.findOneBy({ id: diaryId });
     const targetFavoriteInstance = await this.favoriteRepository
       .createQueryBuilder('favorite')
-      .leftJoin('favorite.author', 'author')
+      .leftJoin('favorite.user', 'user')
       .leftJoin('favorite.diary', 'diary')
-      .where({ author: user, diary: targetDiary })
+      .where({ user, diary: targetDiary })
       .getOne();
 
     if (!targetDiary) {
@@ -75,6 +75,6 @@ export class FavoritesService {
     this.diaryRepository.save(targetDiary);
     await this.favoriteRepository.delete(targetFavoriteInstance.id);
 
-    return { message: '취소 되었습니다.' };
+    return { message: '좋아요 등록이 취소되었습니다.' };
   }
 }
