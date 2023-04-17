@@ -120,4 +120,11 @@ export class UsersService {
     const users = await this.usersRepository.find();
     return users;
   }
+
+  async getDefaultThumbnail() {
+    const thumbnailList = await this.awsService.getDefaultThumbnail();
+    return {
+      thumbnailList,
+    };
+  }
 }

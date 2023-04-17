@@ -6,6 +6,7 @@ import { Column } from 'typeorm';
 export class UserJoinDTO extends PickType(UserEntity, [
   'email',
   'username',
+  'imgUrl',
 ] as const) {
   @ApiProperty()
   @IsString()

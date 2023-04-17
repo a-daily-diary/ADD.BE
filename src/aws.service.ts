@@ -49,4 +49,32 @@ export class AwsService {
   public getAwsS3FileUrl(objectKey: string) {
     return `https://${this.S3_BUCKET_NAME}.s3.amazonaws.com/${objectKey}`;
   }
+
+  public async getDefaultThumbnail() {
+    const defaultThumbnailUrlList = [];
+
+    const params = {
+      Bucket: this.S3_BUCKET_NAME,
+      Prefix: 'default/', // 폴더 경로
+    };
+
+    try {
+      const data = await this.awsS3.listObjects(params).promise();
+
+      data.Contents.forEach((content, idx) => {
+        if (idx === 0) return; // 0 인덱스 해당 폴더를 의미함
+        defaultThumbnailUrlList.push({
+          fileName: content.Key.split('/')[1],
+          path: this.getAwsS3FileUrl(content.Key),
+        });
+      });
+
+      return defaultThumbnailUrlList;
+    } catch (error) {
+      console.log(error);
+      throw new Error(
+        'AWS S3에서 default 이미지를 가져오는 로직에서 에러 발생',
+      );
+    }
+  }
 }
