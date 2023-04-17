@@ -5,6 +5,7 @@ import {
   IsEmail,
   IsNotEmpty,
   IsString,
+  IsUrl,
   IsUUID,
 } from 'class-validator';
 import { BookmarkEntity } from 'src/bookmarks/bookmarks.entity';
@@ -48,7 +49,9 @@ export class UserEntity {
   password: string;
 
   @ApiProperty()
-  @Column({ type: 'varchar', default: 'http://127.0.0.1:5000' }) // FIXME: default image 설정
+  @IsUrl()
+  @IsNotEmpty({ message: '프로필 사진을 설정해주세요. ' })
+  @Column({ type: 'varchar', nullable: false })
   imgUrl: string;
 
   @ApiProperty()
