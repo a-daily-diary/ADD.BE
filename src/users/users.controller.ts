@@ -74,6 +74,7 @@ export class UsersController {
   @ApiOperation({
     summary: '회원가입 시 기본으로 제공되는 이미지 경로 조회',
   })
+  @ApiResponse(responseExampleForUser.getDefaultThumbnail)
   getDefaultThumbnail() {
     return this.usersService.getDefaultThumbnail();
   }

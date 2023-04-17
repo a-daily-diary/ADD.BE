@@ -45,6 +45,22 @@ export const responseExampleForUser = {
     token: 'token',
     user: userResponse,
   }),
+  getDefaultThumbnail: responseTemplate({
+    thumbnailList: [
+      {
+        fileName: 'dd_blue.PNG',
+        path: 'https://add.bucket.s3.amazonaws.com/default/dd_blue.PNG',
+      },
+      {
+        fileName: 'dd_green.PNG',
+        path: 'https://add.bucket.s3.amazonaws.com/default/dd_green.PNG',
+      },
+      {
+        fileName: 'dd_red.PNG',
+        path: 'https://add.bucket.s3.amazonaws.com/default/dd_red.PNG',
+      },
+    ],
+  }),
   getCurrentUser: responseTemplate(userResponse),
   getUserInfo: responseTemplate({
     ...userResponse,
