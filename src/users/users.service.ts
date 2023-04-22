@@ -106,7 +106,6 @@ export class UsersService {
   async findUserByUsername(username: string) {
     const user = await this.usersRepository
       .createQueryBuilder('user')
-      .leftJoinAndSelect('user.diaries', 'diaries')
       .where('user.username = :username', { username })
       .getOne();
 
