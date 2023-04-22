@@ -85,6 +85,25 @@ export class DiariesService {
     return responseDiaries;
   }
 
+  async getDiaries(accessUser: UserDTO, diaryAuthorName?: string) {
+    const { selectDiaryInstance, tableAliasInfo } =
+      this.generateSelectDiaryInstance();
+
+    const diaries = !diaryAuthorName
+      ? await selectDiaryInstance.getMany()
+      : await selectDiaryInstance
+          .where(`${tableAliasInfo.diaryAuthor}.username = :username`, {
+            username: diaryAuthorName,
+          })
+          .getMany();
+
+    const responseDiaries = diaries.map((diary) => {
+      return this.generateCustomFieldForDiary(diary, accessUser.id);
+    });
+
+    return responseDiaries;
+  }
+
   async getOne(id: string, accessUser: UserDTO) {
     const { selectDiaryInstance, tableAliasInfo } =
       await this.generateSelectDiaryInstance();

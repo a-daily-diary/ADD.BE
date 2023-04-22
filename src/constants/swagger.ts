@@ -62,10 +62,7 @@ export const responseExampleForUser = {
     ],
   }),
   getCurrentUser: responseTemplate(userResponse),
-  getUserInfo: responseTemplate({
-    ...userResponse,
-    diaries: [diaryResponse],
-  }),
+  getUserInfo: responseTemplate(userResponse),
   getAllUsers: responseTemplate([userResponse]),
 };
 
