@@ -21,6 +21,7 @@ import {
   ApiResponse,
   ApiOperation,
   ApiTags,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { BookmarksService } from 'src/bookmarks/bookmarks.service';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
@@ -65,9 +66,10 @@ export class DiariesController {
 
   @Get()
   @ApiOperation({
-    summary: '일기 전체 리스트 조회',
+    summary: '일기 리스트 조회',
   })
   @ApiBearerAuth('access-token')
+  @ApiQuery({ name: 'username', required: false })
   @ApiResponse(responseExampleForDiary.getDiaries)
   @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
   getDiaries(
