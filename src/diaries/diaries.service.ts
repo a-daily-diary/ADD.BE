@@ -87,6 +87,7 @@ export class DiariesService {
 
     const [diaries, totalCount] = !diaryAuthorName
       ? await selectDiaryInstance
+          .orderBy(`${tableAliasInfo.diary}.createdAt`, 'DESC')
           .take(take ?? defaultTake)
           .skip(skip ?? defaultSkip)
           .getManyAndCount()
@@ -94,6 +95,7 @@ export class DiariesService {
           .where(`${tableAliasInfo.diaryAuthor}.username = :username`, {
             username: diaryAuthorName,
           })
+          .orderBy(`${tableAliasInfo.diary}.createdAt`, 'DESC')
           .take(take ?? defaultTake)
           .skip(skip ?? defaultSkip)
           .getManyAndCount();
