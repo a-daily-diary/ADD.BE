@@ -73,18 +73,6 @@ export class DiariesService {
     return { selectDiaryInstance, tableAliasInfo };
   }
 
-  async getAll(accessUser: UserDTO) {
-    const { selectDiaryInstance } = this.generateSelectDiaryInstance();
-
-    const diaries = await selectDiaryInstance.getMany();
-
-    const responseDiaries = diaries.map((diary) => {
-      return this.generateCustomFieldForDiary(diary, accessUser.id);
-    });
-
-    return responseDiaries;
-  }
-
   async getDiaries(accessUser: UserDTO, diaryAuthorName?: string) {
     const { selectDiaryInstance, tableAliasInfo } =
       this.generateSelectDiaryInstance();
