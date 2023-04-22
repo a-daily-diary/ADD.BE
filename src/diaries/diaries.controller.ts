@@ -31,6 +31,7 @@ import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
 import {
   responseExampleForBookmark,
+  responseExampleForComment,
   responseExampleForDiary,
   responseExampleForFavorite,
 } from 'src/constants/swagger';
@@ -217,6 +218,11 @@ export class DiariesController {
 
   // 댓글 API
   @Post(':diaryId/comment')
+  @ApiOperation({
+    summary: '댓글 생성',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForComment.createComment)
   @UseGuards(JwtAuthGuard)
   createComment(
     @Param('diaryId', ParseUUIDPipe) diaryId: string,
