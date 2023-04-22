@@ -70,13 +70,18 @@ export class DiariesController {
   })
   @ApiBearerAuth('access-token')
   @ApiQuery({ name: 'username', required: false })
+  @ApiQuery({ name: 'take', required: false })
+  @ApiQuery({ name: 'skip', required: false })
   @ApiResponse(responseExampleForDiary.getDiaries)
   @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
   getDiaries(
-    @Query('username') username: string,
     @CurrentUser() currentUser: UserDTO,
+    @Query('username') username?: string,
+    @Query('take') take?: number | typeof NaN,
+    @Query('skip') skip?: number | typeof NaN,
   ) {
-    return this.diariesService.getDiaries(currentUser, username);
+    console.log(username, take, skip);
+    return this.diariesService.getDiaries(currentUser, username, take, skip);
   }
 
   @Get('bookmark/:username')
