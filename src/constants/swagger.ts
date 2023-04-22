@@ -74,14 +74,18 @@ export const responseExampleForDiary = {
     ...diaryResponse,
     author: userResponse,
   }),
-  getDiaries: responseTemplate([
-    {
-      ...diaryResponse,
-      isFavorite: 'boolean',
-      isBookmark: 'boolean',
-      author: userResponse,
-    },
-  ]),
+  getDiaries: responseTemplate({
+    diaries: [
+      {
+        ...diaryResponse,
+        isFavorite: 'boolean',
+        isBookmark: 'boolean',
+        author: userResponse,
+      },
+    ],
+    totalCount: 'number',
+    totalPage: 'number',
+  }),
   getDiary: responseTemplate({
     ...diaryResponse,
     isFavorite: 'boolean',
