@@ -6,12 +6,14 @@ import { FavoritesModule } from 'src/favorities/favorites.module';
 import { DiariesController } from './diaries.controller';
 import { DiaryEntity } from './diaries.entity';
 import { DiariesService } from './diaries.service';
+import { CommentsModule } from 'src/comments/comments.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([DiaryEntity]),
     FavoritesModule,
     BookmarksModule,
+    CommentsModule,
   ],
   controllers: [DiariesController],
   providers: [DiariesService, AwsService],
