@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseFilters,
   UseGuards,
@@ -69,8 +70,11 @@ export class DiariesController {
   @ApiBearerAuth('access-token')
   @ApiResponse(responseExampleForDiary.getDiaries)
   @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
-  getDiaries(@CurrentUser() currentUser: UserDTO) {
-    return this.diariesService.getAll(currentUser);
+  getDiaries(
+    @Query('username') username: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.diariesService.getDiaries(currentUser, username);
   }
 
   @Get('bookmark/:username')
