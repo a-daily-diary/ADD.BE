@@ -23,3 +23,7 @@ export const bookmarkExceptionMessage = {
   DOES_NOT_REGISTER_BOOKMARK:
     '접근한 계정으로 해당 게시물에 북마크가 등록 되어있지 않아 북마크 취소가 불가능합니다.',
 };
+
+export const commentExceptionMessage = {
+  DOES_NOT_DIARY: '해당하는 게시물은 존재하지 않습니다.',
+};
