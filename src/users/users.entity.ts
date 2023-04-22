@@ -9,6 +9,7 @@ import {
   IsUUID,
 } from 'class-validator';
 import { BookmarkEntity } from 'src/bookmarks/bookmarks.entity';
+import { CommentEntity } from 'src/comments/comments.entity';
 import { DiaryEntity } from 'src/diaries/diaries.entity';
 import { FavoriteEntity } from 'src/favorities/favorites.entity';
 import {
@@ -106,4 +107,14 @@ export class UserEntity {
     },
   )
   bookmarks: BookmarkEntity[];
+
+  @ApiProperty()
+  @OneToMany(
+    () => CommentEntity,
+    (comment: CommentEntity) => comment.commenter,
+    {
+      cascade: true,
+    },
+  )
+  comments: CommentEntity[];
 }
