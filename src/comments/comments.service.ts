@@ -23,17 +23,9 @@ export class CommentsService {
   ) {
     const targetDiary = await this.diaryRepository.findOneBy({ id: diaryId });
 
-    const targetDiary1 = await this.diaryRepository
-      .createQueryBuilder('diary')
-      .leftJoinAndSelect('diary.comments', 'comments')
-      .where({ id: diaryId })
-      .getOne();
-
     if (!targetDiary) {
       return new NotFoundException(commentExceptionMessage.DOES_NOT_DIARY);
     }
-
-    console.log(targetDiary1);
 
     targetDiary.commentCount += 1;
     const newComment = await this.commentRepository.create({
