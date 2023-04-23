@@ -68,6 +68,43 @@ export class CommentsService {
     };
   }
 
+  async updateComment(
+    diaryId: string,
+    commentId: string,
+    accessedUser: UserDTO,
+    commentFormDTO: CommentFormDTO,
+  ) {
+    const targetDiary = await this.diaryRepository.findOneBy({ id: diaryId });
+
+    if (!targetDiary) {
+      throw new NotFoundException(diaryExceptionMessage.DOES_NOT_EXIST_DIARY);
+    }
+
+    const targetComment = await this.commentRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.commenter', 'commenter')
+      .where('comment.id = :id', { id: commentId })
+      .getOne();
+
+    if (!targetComment) {
+      throw new NotFoundException(
+        commentExceptionMessage.DOES_NOT_EXIST_COMMENT,
+      );
+    }
+
+    if (targetComment.commenter.id !== accessedUser.id) {
+      throw new BadRequestException(commentExceptionMessage.OWNER_ONLY_EDIT);
+    }
+
+    await this.commentRepository.update(commentId, commentFormDTO);
+
+    return await this.commentRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.commenter', 'commenter')
+      .where('comment.id = :id', { id: commentId })
+      .getOne();
+  }
+
   async deleteComment(
     diaryId: string,
     commentId: string,
