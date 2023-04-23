@@ -128,3 +128,37 @@ export const responseExampleForBookmark = {
     message: '북마크 등록이 취소되었습니다.',
   }),
 };
+
+export const responseExampleForComment = {
+  createComment: responseTemplate({
+    id: 'uuid',
+    createdAt: '2023-04-22T10:24:58.188Z',
+    updatedAt: '2023-04-22T10:24:58.188Z',
+    comment: 'text',
+    commenter: userResponse,
+    diary: diaryResponse,
+  }),
+  getCommentList: responseTemplate({
+    comments: [
+      {
+        id: 'uuid',
+        createdAt: '2023-04-23T03:29:33.979Z',
+        updatedAt: '2023-04-23T03:29:33.979Z',
+        comment: 'text',
+        commenter: userResponse,
+      },
+    ],
+    totalCount: 'number',
+    totalPage: 'number',
+  }),
+  updateComment: responseTemplate({
+    id: 'uuid',
+    createdAt: '2023-04-22T10:24:58.188Z',
+    updatedAt: '2023-04-22T10:24:58.188Z',
+    comment: 'text',
+    commenter: userResponse,
+  }),
+  deleteComment: responseTemplate({
+    message: '삭제되었습니다.',
+  }),
+};

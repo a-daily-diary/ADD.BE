@@ -24,11 +24,14 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { BookmarksService } from 'src/bookmarks/bookmarks.service';
+import { CommentsService } from 'src/comments/comments.service';
+import { CommentFormDTO } from 'src/comments/dto/comment-form.dto';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
 import {
   responseExampleForBookmark,
+  responseExampleForComment,
   responseExampleForDiary,
   responseExampleForFavorite,
 } from 'src/constants/swagger';
@@ -46,6 +49,7 @@ export class DiariesController {
     private readonly diariesService: DiariesService,
     private readonly favoritesService: FavoritesService,
     private readonly bookmarksService: BookmarksService,
+    private readonly commentsService: CommentsService,
   ) {}
 
   @Post('upload')
@@ -210,5 +214,78 @@ export class DiariesController {
     @CurrentUser() currentUser: UserDTO,
   ) {
     return this.bookmarksService.unregister(id, currentUser);
+  }
+
+  // 댓글 API
+  @Post(':diaryId/comment')
+  @ApiOperation({
+    summary: '댓글 생성',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForComment.createComment)
+  @UseGuards(JwtAuthGuard)
+  createComment(
+    @Param('diaryId', ParseUUIDPipe) diaryId: string,
+    @CurrentUser() currentUser: UserDTO,
+    @Body() commentFormDTO: CommentFormDTO,
+  ) {
+    return this.commentsService.createComment(
+      diaryId,
+      currentUser,
+      commentFormDTO,
+    );
+  }
+
+  @Get(':diaryId/comment')
+  @ApiOperation({
+    summary: '댓글 리스트 조회',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiQuery({ name: 'take', required: false, description: 'default value: 5' })
+  @ApiQuery({ name: 'skip', required: false, description: 'default value: 0' })
+  @ApiResponse(responseExampleForComment.getCommentList)
+  @UseGuards(JwtAuthGuard)
+  getCommentList(
+    @Param('diaryId', ParseUUIDPipe) diaryId: string,
+    @Query('take') take?: number | typeof NaN,
+    @Query('skip') skip?: number | typeof NaN,
+  ) {
+    return this.commentsService.getCommentList(diaryId, take, skip);
+  }
+
+  @Put(':diaryId/comment/:commentId')
+  @ApiOperation({
+    summary: '댓글 수정',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForComment.updateComment)
+  @UseGuards(JwtAuthGuard)
+  updateComment(
+    @Param('diaryId', ParseUUIDPipe) diaryId: string,
+    @Param('commentId', ParseUUIDPipe) commentId: string,
+    @Body() commentFormDTO: CommentFormDTO,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.commentsService.updateComment(
+      diaryId,
+      commentId,
+      currentUser,
+      commentFormDTO,
+    );
+  }
+
+  @Delete(':diaryId/comment/:commentId')
+  @ApiOperation({
+    summary: '댓글 삭제',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForComment.deleteComment)
+  @UseGuards(JwtAuthGuard)
+  deleteComment(
+    @Param('diaryId', ParseUUIDPipe) diaryId: string,
+    @Param('commentId', ParseUUIDPipe) commentId: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.commentsService.deleteComment(diaryId, commentId, currentUser);
   }
 }
