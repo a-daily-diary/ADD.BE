@@ -253,6 +253,27 @@ export class DiariesController {
     return this.commentsService.getCommentList(diaryId, take, skip);
   }
 
+  @Put(':diaryId/comment/:commentId')
+  @ApiOperation({
+    summary: '댓글 수정',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForComment.updateComment)
+  @UseGuards(JwtAuthGuard)
+  updateComment(
+    @Param('diaryId', ParseUUIDPipe) diaryId: string,
+    @Param('commentId', ParseUUIDPipe) commentId: string,
+    @Body() commentFormDTO: CommentFormDTO,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.commentsService.updateComment(
+      diaryId,
+      commentId,
+      currentUser,
+      commentFormDTO,
+    );
+  }
+
   @Delete(':diaryId/comment/:commentId')
   @ApiOperation({
     summary: '댓글 삭제',

@@ -27,5 +27,6 @@ export const bookmarkExceptionMessage = {
 export const commentExceptionMessage = {
   DOES_NOT_EXIST_COMMENT: '해당하는 댓글은 존재하지 않습니다.',
   OWNER_ONLY_DELETE:
-    '일기 작성자 혹은 댓글 작성자만이 해당 댓글을 삭제할 수 있습니다.',
+    '일기 작성자 혹은 댓글 작성자만 해당 댓글을 삭제할 수 있습니다.',
+  OWNER_ONLY_EDIT: '댓글 작성자만 해당 댓글을 수정할 수 있습니다.',
 };
