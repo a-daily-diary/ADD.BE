@@ -73,35 +73,42 @@ export class DiariesService {
     return { selectDiaryInstance, tableAliasInfo };
   }
 
-  async getAll(accessUser: UserDTO) {
-    const { selectDiaryInstance } = this.generateSelectDiaryInstance();
+  async getDiaries(
+    accessUser: UserDTO,
+    diaryAuthorName?: string,
+    take?: number | typeof NaN,
+    skip?: number | typeof NaN,
+  ) {
+    const defaultTake = 10;
+    const defaultSkip = 0;
 
-    const diaries = await selectDiaryInstance.getMany();
-
-    const responseDiaries = diaries.map((diary) => {
-      return this.generateCustomFieldForDiary(diary, accessUser.id);
-    });
-
-    return responseDiaries;
-  }
-
-  async getDiaries(accessUser: UserDTO, diaryAuthorName?: string) {
     const { selectDiaryInstance, tableAliasInfo } =
       this.generateSelectDiaryInstance();
 
-    const diaries = !diaryAuthorName
-      ? await selectDiaryInstance.getMany()
+    const [diaries, totalCount] = !diaryAuthorName
+      ? await selectDiaryInstance
+          .orderBy(`${tableAliasInfo.diary}.createdAt`, 'DESC')
+          .take(take ?? defaultTake)
+          .skip(skip ?? defaultSkip)
+          .getManyAndCount()
       : await selectDiaryInstance
           .where(`${tableAliasInfo.diaryAuthor}.username = :username`, {
             username: diaryAuthorName,
           })
-          .getMany();
+          .orderBy(`${tableAliasInfo.diary}.createdAt`, 'DESC')
+          .take(take ?? defaultTake)
+          .skip(skip ?? defaultSkip)
+          .getManyAndCount();
 
-    const responseDiaries = diaries.map((diary) => {
+    const resultDiaries = diaries.map((diary) => {
       return this.generateCustomFieldForDiary(diary, accessUser.id);
     });
 
-    return responseDiaries;
+    return {
+      diaries: resultDiaries,
+      totalCount,
+      totalPage: Math.ceil(totalCount / (take ?? defaultTake)),
+    };
   }
 
   async getOne(id: string, accessUser: UserDTO) {
