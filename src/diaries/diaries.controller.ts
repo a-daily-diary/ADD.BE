@@ -80,7 +80,6 @@ export class DiariesController {
     @Query('take') take?: number | typeof NaN,
     @Query('skip') skip?: number | typeof NaN,
   ) {
-    console.log(username, take, skip);
     return this.diariesService.getDiaries(currentUser, username, take, skip);
   }
 
