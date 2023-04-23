@@ -151,4 +151,7 @@ export const responseExampleForComment = {
     totalCount: 'number',
     totalPage: 'number',
   }),
+  deleteComment: responseTemplate({
+    message: '삭제되었습니다.',
+  }),
 };

@@ -252,4 +252,19 @@ export class DiariesController {
   ) {
     return this.commentsService.getCommentList(diaryId, take, skip);
   }
+
+  @Delete(':diaryId/comment/:commentId')
+  @ApiOperation({
+    summary: '댓글 삭제',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForComment.deleteComment)
+  @UseGuards(JwtAuthGuard)
+  deleteComment(
+    @Param('diaryId', ParseUUIDPipe) diaryId: string,
+    @Param('commentId', ParseUUIDPipe) commentId: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.commentsService.deleteComment(diaryId, commentId, currentUser);
+  }
 }
