@@ -134,4 +134,17 @@ export const responseExampleForComment = {
     commenter: userResponse,
     diary: diaryResponse,
   }),
+  getCommentList: responseTemplate({
+    comments: [
+      {
+        id: 'uuid',
+        createdAt: '2023-04-23T03:29:33.979Z',
+        updatedAt: '2023-04-23T03:29:33.979Z',
+        comment: 'text',
+        commenter: userResponse,
+      },
+    ],
+    totalCount: 'number',
+    totalPage: 'number',
+  }),
 };
