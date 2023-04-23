@@ -254,6 +254,11 @@ export class DiariesController {
   }
 
   @Delete(':diaryId/comment/:commentId')
+  @ApiOperation({
+    summary: '댓글 삭제',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForComment.deleteComment)
   @UseGuards(JwtAuthGuard)
   deleteComment(
     @Param('diaryId', ParseUUIDPipe) diaryId: string,
