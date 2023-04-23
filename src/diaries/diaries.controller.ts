@@ -252,4 +252,14 @@ export class DiariesController {
   ) {
     return this.commentsService.getCommentList(diaryId, take, skip);
   }
+
+  @Delete(':diaryId/comment/:commentId')
+  @UseGuards(JwtAuthGuard)
+  deleteComment(
+    @Param('diaryId', ParseUUIDPipe) diaryId: string,
+    @Param('commentId', ParseUUIDPipe) commentId: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.commentsService.deleteComment(diaryId, commentId, currentUser);
+  }
 }

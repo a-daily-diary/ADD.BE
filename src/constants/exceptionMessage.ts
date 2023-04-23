@@ -25,5 +25,7 @@ export const bookmarkExceptionMessage = {
 };
 
 export const commentExceptionMessage = {
-  DOES_NOT_DIARY: '해당하는 게시물은 존재하지 않습니다.',
+  DOES_NOT_EXIST_COMMENT: '해당하는 댓글은 존재하지 않습니다.',
+  OWNER_ONLY_DELETE:
+    '일기 작성자 혹은 댓글 작성자만이 해당 댓글을 삭제할 수 있습니다.',
 };
