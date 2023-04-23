@@ -101,7 +101,7 @@ export class DiariesController {
     return this.diariesService.getDiariesByUsersBookmark(username, currentUser);
   }
 
-  @Get(':id')
+  @Get(':diaryId')
   @ApiOperation({
     summary: '일기 상세 조회',
   })
@@ -109,10 +109,10 @@ export class DiariesController {
   @ApiResponse(responseExampleForDiary.getDiary)
   @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
   getDiary(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('diaryId', ParseUUIDPipe) diaryId: string,
     @CurrentUser() currentUser: UserDTO,
   ) {
-    return this.diariesService.getOne(id, currentUser);
+    return this.diariesService.getOne(diaryId, currentUser);
   }
 
   @Post()
@@ -129,7 +129,7 @@ export class DiariesController {
     return this.diariesService.create(diaryFormDto, currentUser);
   }
 
-  @Put(':id')
+  @Put(':diaryId')
   @ApiOperation({
     summary: '일기 수정',
   })
@@ -137,14 +137,14 @@ export class DiariesController {
   @ApiResponse(responseExampleForDiary.updateDiary)
   @UseGuards(JwtAuthGuard)
   updateDiary(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('diaryId', ParseUUIDPipe) diaryId: string,
     @Body() diaryFormDto: DiaryFormDTO,
     @CurrentUser() currentUser: UserDTO,
   ) {
-    return this.diariesService.update(id, diaryFormDto, currentUser);
+    return this.diariesService.update(diaryId, diaryFormDto, currentUser);
   }
 
-  @Delete(':id')
+  @Delete(':diaryId')
   @ApiOperation({
     summary: '일기 삭제',
   })
@@ -152,14 +152,14 @@ export class DiariesController {
   @ApiResponse(responseExampleForDiary.softDeleteDiary)
   @UseGuards(JwtAuthGuard)
   deleteDiary(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('diaryId', ParseUUIDPipe) diaryId: string,
     @CurrentUser() currentUser: UserDTO,
   ) {
-    return this.diariesService.delete(id, currentUser);
+    return this.diariesService.delete(diaryId, currentUser);
   }
 
   // 좋아요 API
-  @Post(':id/favorite')
+  @Post(':diaryId/favorite')
   @ApiOperation({
     summary: '일기 좋아요 등록',
   })
@@ -167,13 +167,13 @@ export class DiariesController {
   @ApiResponse(responseExampleForFavorite.registerFavorite)
   @UseGuards(JwtAuthGuard)
   registerFavorite(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('diaryId', ParseUUIDPipe) diaryId: string,
     @CurrentUser() currentUser: UserDTO,
   ) {
-    return this.favoritesService.register(id, currentUser);
+    return this.favoritesService.register(diaryId, currentUser);
   }
 
-  @Delete(':id/favorite')
+  @Delete(':diaryId/favorite')
   @ApiOperation({
     summary: '일기 좋아요 취소',
   })
@@ -181,14 +181,14 @@ export class DiariesController {
   @ApiResponse(responseExampleForFavorite.unregisterFavorite)
   @UseGuards(JwtAuthGuard)
   unregisterFavorite(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('diaryId', ParseUUIDPipe) diaryId: string,
     @CurrentUser() currentUser: UserDTO,
   ) {
-    return this.favoritesService.unregister(id, currentUser);
+    return this.favoritesService.unregister(diaryId, currentUser);
   }
 
   // 북마크 API
-  @Post(':id/bookmark')
+  @Post(':diaryId/bookmark')
   @ApiOperation({
     summary: '일기 북마크 등록',
   })
@@ -196,13 +196,13 @@ export class DiariesController {
   @ApiResponse(responseExampleForBookmark.registerBookmark)
   @UseGuards(JwtAuthGuard)
   registerBookmark(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('diaryId', ParseUUIDPipe) diaryId: string,
     @CurrentUser() currentUser: UserDTO,
   ) {
-    return this.bookmarksService.register(id, currentUser);
+    return this.bookmarksService.register(diaryId, currentUser);
   }
 
-  @Delete(':id/bookmark')
+  @Delete(':diaryId/bookmark')
   @ApiOperation({
     summary: '일기 북마크 취소',
   })
@@ -210,10 +210,10 @@ export class DiariesController {
   @ApiResponse(responseExampleForBookmark.unregisterBookmark)
   @UseGuards(JwtAuthGuard)
   unregisterBookmark(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('diaryId', ParseUUIDPipe) diaryId: string,
     @CurrentUser() currentUser: UserDTO,
   ) {
-    return this.bookmarksService.unregister(id, currentUser);
+    return this.bookmarksService.unregister(diaryId, currentUser);
   }
 
   // 댓글 API
