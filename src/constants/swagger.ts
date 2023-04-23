@@ -151,6 +151,13 @@ export const responseExampleForComment = {
     totalCount: 'number',
     totalPage: 'number',
   }),
+  updateComment: responseTemplate({
+    id: 'uuid',
+    createdAt: '2023-04-22T10:24:58.188Z',
+    updatedAt: '2023-04-22T10:24:58.188Z',
+    comment: 'text',
+    commenter: userResponse,
+  }),
   deleteComment: responseTemplate({
     message: '삭제되었습니다.',
   }),

@@ -254,6 +254,11 @@ export class DiariesController {
   }
 
   @Put(':diaryId/comment/:commentId')
+  @ApiOperation({
+    summary: '댓글 수정',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForComment.updateComment)
   @UseGuards(JwtAuthGuard)
   updateComment(
     @Param('diaryId', ParseUUIDPipe) diaryId: string,
