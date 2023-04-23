@@ -237,6 +237,13 @@ export class DiariesController {
   }
 
   @Get(':diaryId/comment')
+  @ApiOperation({
+    summary: '댓글 리스트 조회',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiQuery({ name: 'take', required: false, description: 'default value: 5' })
+  @ApiQuery({ name: 'skip', required: false, description: 'default value: 0' })
+  @ApiResponse(responseExampleForComment.getCommentList)
   @UseGuards(JwtAuthGuard)
   getCommentList(
     @Param('diaryId', ParseUUIDPipe) diaryId: string,
