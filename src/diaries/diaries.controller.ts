@@ -231,4 +231,14 @@ export class DiariesController {
       commentFormDTO,
     );
   }
+
+  @Get(':diaryId/comment')
+  @UseGuards(JwtAuthGuard)
+  getCommentList(
+    @Param('diaryId', ParseUUIDPipe) diaryId: string,
+    @Query('take') take?: number | typeof NaN,
+    @Query('skip') skip?: number | typeof NaN,
+  ) {
+    return this.commentsService.getCommentList(diaryId, take, skip);
+  }
 }

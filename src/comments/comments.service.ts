@@ -39,4 +39,25 @@ export class CommentsService {
 
     return newComment;
   }
+
+  async getCommentList(diaryId: string, take?: number, skip?: number) {
+    const commentsPageTake = take ?? 5;
+    const commentsPageSkip = skip ?? 0;
+
+    const [commentsByDiary, totalCount] = await this.commentRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.commenter', 'commenter')
+      .leftJoin('comment.diary', 'diary')
+      .where('diary.id = :id', { id: diaryId })
+      .orderBy('comment.createdAt', 'DESC')
+      .take(commentsPageTake)
+      .skip(commentsPageSkip)
+      .getManyAndCount();
+
+    return {
+      comments: commentsByDiary,
+      totalCount,
+      totalPage: Math.ceil(totalCount / commentsPageTake),
+    };
+  }
 }
