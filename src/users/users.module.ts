@@ -9,10 +9,16 @@ import { JwtStrategy } from './jwt/jwt.strategy';
 import { FavoriteEntity } from 'src/favorities/favorites.entity';
 import { BookmarkEntity } from 'src/bookmarks/bookmarks.entity';
 import { AwsService } from 'src/aws.service';
+import { UserToBadgeEntity } from './userToBadge.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity, FavoriteEntity, BookmarkEntity]),
+    TypeOrmModule.forFeature([
+      UserEntity,
+      FavoriteEntity,
+      BookmarkEntity,
+      UserToBadgeEntity,
+    ]),
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({
       secret: process.env.SECRET_KEY,
