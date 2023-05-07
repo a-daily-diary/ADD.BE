@@ -32,6 +32,7 @@ import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exception
 import {
   responseExampleForBookmark,
   responseExampleForComment,
+  responseExampleForCommon,
   responseExampleForDiary,
   responseExampleForFavorite,
 } from 'src/constants/swagger';
@@ -61,7 +62,7 @@ export class DiariesController {
   @ApiOperation({
     summary: '일기 이미지 업로드',
   })
-  @ApiResponse(responseExampleForDiary.uploadDiaryImg)
+  @ApiResponse(responseExampleForCommon.uploadImg)
   @UseInterceptors(FileInterceptor('image'))
   uploadUserImg(@UploadedFile() file: Express.Multer.File) {
     console.log(file);

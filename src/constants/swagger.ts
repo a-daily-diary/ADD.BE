@@ -35,9 +35,6 @@ export const responseExampleForCommon = {
 };
 
 export const responseExampleForUser = {
-  uploadUserImg: responseTemplate({
-    imgUrl: 'url image path',
-  }),
   emailCheck: responseTemplate({
     message: '사용가능한 이메일입니다.',
   }),
@@ -73,9 +70,6 @@ export const responseExampleForUser = {
 };
 
 export const responseExampleForDiary = {
-  uploadDiaryImg: responseTemplate({
-    imgUrl: 'url image path',
-  }),
   createDiary: responseTemplate({
     ...diaryResponse,
     author: userResponse,
