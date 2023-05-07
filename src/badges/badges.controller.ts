@@ -18,7 +18,10 @@ import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exception
 import { BadgesService } from './badges.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
-import { responseExampleForCommon } from 'src/constants/swagger';
+import {
+  responseExampleForBadge,
+  responseExampleForCommon,
+} from 'src/constants/swagger';
 import { JwtAuthGuard } from 'src/users/jwt/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UserDTO } from 'src/users/dto/user.dto';
@@ -46,6 +49,10 @@ export class BadgesController {
   }
 
   @Post()
+  @ApiOperation({
+    summary: '뱃지 생성 (관리자용)',
+  })
+  @ApiResponse(responseExampleForBadge.createBadge)
   @UseGuards(JwtAuthGuard)
   createBadge(
     @CurrentUser() currentUser: UserDTO,
