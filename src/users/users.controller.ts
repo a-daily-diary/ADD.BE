@@ -21,7 +21,10 @@ import {
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
-import { responseExampleForUser } from 'src/constants/swagger';
+import {
+  responseExampleForCommon,
+  responseExampleForUser,
+} from 'src/constants/swagger';
 import { UserEmailDTO, UserJoinDTO, UsernameDTO } from './dto/user-join.dto';
 import { UserLoginDTO } from './dto/user-login.dto';
 import { UserDTO } from './dto/user.dto';
@@ -43,7 +46,7 @@ export class UsersController {
   @ApiOperation({
     summary: '유저 img 업로드',
   })
-  @ApiResponse(responseExampleForUser.uploadUserImg)
+  @ApiResponse(responseExampleForCommon.uploadImg)
   @UseInterceptors(FileInterceptor('image'))
   uploadUserImg(@UploadedFile() file: Express.Multer.File) {
     console.log(file);

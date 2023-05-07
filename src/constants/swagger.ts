@@ -28,10 +28,13 @@ const diaryResponse = {
   commentCount: 'number',
 };
 
-export const responseExampleForUser = {
-  uploadUserImg: responseTemplate({
+export const responseExampleForCommon = {
+  uploadImg: responseTemplate({
     imgUrl: 'url image path',
   }),
+};
+
+export const responseExampleForUser = {
   emailCheck: responseTemplate({
     message: '사용가능한 이메일입니다.',
   }),
@@ -67,9 +70,6 @@ export const responseExampleForUser = {
 };
 
 export const responseExampleForDiary = {
-  uploadDiaryImg: responseTemplate({
-    imgUrl: 'url image path',
-  }),
   createDiary: responseTemplate({
     ...diaryResponse,
     author: userResponse,
@@ -160,5 +160,16 @@ export const responseExampleForComment = {
   }),
   deleteComment: responseTemplate({
     message: '삭제되었습니다.',
+  }),
+};
+
+export const responseExampleForBadge = {
+  createBadge: responseTemplate({
+    name: 'badge name',
+    description: 'badge description',
+    imgUrl: 'image url',
+    id: 'uuid',
+    createdAt: '2023-05-07T07:33:47.439Z',
+    updatedAt: '2023-05-07T07:33:47.439Z',
   }),
 };

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
 import { CommonEntity } from 'src/common/entities/common.entity';
 import { UserToBadgeEntity } from 'src/users/userToBadge.entity';
 import { Column, Entity, Index, OneToMany } from 'typeorm';
@@ -22,6 +22,8 @@ export class BadgeEntity extends CommonEntity {
   description: string;
 
   @ApiProperty()
+  @IsNotEmpty({ message: '뱃지에 이미지를 설정해주세요.' })
+  @IsUrl()
   @Column({ type: 'varchar', nullable: false })
   imgUrl: string;
 
