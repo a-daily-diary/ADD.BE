@@ -1,8 +1,10 @@
 import {
+  Body,
   Controller,
   Post,
   UploadedFile,
   UseFilters,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import {
@@ -17,6 +19,10 @@ import { BadgesService } from './badges.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { responseExampleForCommon } from 'src/constants/swagger';
+import { JwtAuthGuard } from 'src/users/jwt/jwt.guard';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { UserDTO } from 'src/users/dto/user.dto';
+import { BadgeFormDTO } from './dto/badge-form.dto';
 
 @ApiTags('Badge')
 @Controller('badges')
@@ -37,5 +43,14 @@ export class BadgesController {
   @UseInterceptors(FileInterceptor('image'))
   updateBadgeImg(@UploadedFile() file: Express.Multer.File) {
     return this.badgesService.uploadImg(file);
+  }
+
+  @Post()
+  @UseGuards(JwtAuthGuard)
+  createBadge(
+    @CurrentUser() currentUser: UserDTO,
+    @Body() badgeFormDTO: BadgeFormDTO,
+  ) {
+    return this.badgesService.createBadge(currentUser, badgeFormDTO);
   }
 }
