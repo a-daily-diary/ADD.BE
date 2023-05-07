@@ -28,6 +28,12 @@ const diaryResponse = {
   commentCount: 'number',
 };
 
+export const responseExampleForCommon = {
+  uploadImg: responseTemplate({
+    imgUrl: 'url image path',
+  }),
+};
+
 export const responseExampleForUser = {
   uploadUserImg: responseTemplate({
     imgUrl: 'url image path',
