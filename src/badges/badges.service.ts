@@ -46,4 +46,8 @@ export class BadgesService {
       totalPage: Math.ceil(totalCount / (take ?? DEFAULT_TAKE)),
     };
   }
+
+  async getBadge(badgeId: string) {
+    return await this.badgeRepository.findOneBy({ id: badgeId });
+  }
 }

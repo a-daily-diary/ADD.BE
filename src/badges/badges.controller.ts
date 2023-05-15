@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  Param,
+  ParseUUIDPipe,
   Post,
   Query,
   UploadedFile,
@@ -79,5 +81,11 @@ export class BadgesController {
     @Query('skip') skip?: number | typeof NaN,
   ) {
     return this.badgesService.getBadgeList(take, skip);
+  }
+
+  @Get(':badgeId')
+  @UseGuards(JwtAuthGuard)
+  getBadge(@Param('badgeId', ParseUUIDPipe) badgeId: string) {
+    return this.badgesService.getBadge(badgeId);
   }
 }
