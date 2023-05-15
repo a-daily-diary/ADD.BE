@@ -84,6 +84,11 @@ export class BadgesController {
   }
 
   @Get(':badgeId')
+  @ApiOperation({
+    summary: '뱃지 단건 조회',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForBadge.getBadge)
   @UseGuards(JwtAuthGuard)
   getBadge(@Param('badgeId', ParseUUIDPipe) badgeId: string) {
     return this.badgesService.getBadge(badgeId);

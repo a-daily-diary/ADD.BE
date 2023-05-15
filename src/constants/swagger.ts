@@ -28,6 +28,15 @@ const diaryResponse = {
   commentCount: 'number',
 };
 
+const badgeResponse = {
+  id: 'uuid',
+  createdAt: '2023-05-07T07:33:03.418Z',
+  updatedAt: '2023-05-07T07:33:03.418Z',
+  name: 'string',
+  description: 'text',
+  imgUrl: 'url image path',
+};
+
 export const responseExampleForCommon = {
   uploadImg: responseTemplate({
     imgUrl: 'url image path',
@@ -173,17 +182,9 @@ export const responseExampleForBadge = {
     updatedAt: '2023-05-07T07:33:47.439Z',
   }),
   getBadgeList: responseTemplate({
-    badges: [
-      {
-        id: 'uuid',
-        createdAt: 'string(date)',
-        updatedAt: 'string(date)',
-        name: 'string',
-        description: 'string',
-        imgUrl: 'image url',
-      },
-    ],
+    badges: [badgeResponse],
     totalCount: 'number',
     totalPage: 'number',
   }),
+  getBadge: responseTemplate(badgeResponse),
 };
