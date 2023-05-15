@@ -10,6 +10,7 @@ import { UserDTO } from 'src/users/dto/user.dto';
 import { Repository } from 'typeorm';
 import { DiaryEntity } from './diaries.entity';
 import { DiaryFormDTO } from './dto/diary-form.dto';
+import { DEFAULT_SKIP, DEFAULT_TAKE } from 'src/constants/page';
 
 @Injectable()
 export class DiariesService {
@@ -79,25 +80,22 @@ export class DiariesService {
     take?: number | typeof NaN,
     skip?: number | typeof NaN,
   ) {
-    const defaultTake = 10;
-    const defaultSkip = 0;
-
     const { selectDiaryInstance, tableAliasInfo } =
       this.generateSelectDiaryInstance();
 
     const [diaries, totalCount] = !diaryAuthorName
       ? await selectDiaryInstance
           .orderBy(`${tableAliasInfo.diary}.createdAt`, 'DESC')
-          .take(take ?? defaultTake)
-          .skip(skip ?? defaultSkip)
+          .take(take ?? DEFAULT_TAKE)
+          .skip(skip ?? DEFAULT_SKIP)
           .getManyAndCount()
       : await selectDiaryInstance
           .where(`${tableAliasInfo.diaryAuthor}.username = :username`, {
             username: diaryAuthorName,
           })
           .orderBy(`${tableAliasInfo.diary}.createdAt`, 'DESC')
-          .take(take ?? defaultTake)
-          .skip(skip ?? defaultSkip)
+          .take(take ?? DEFAULT_TAKE)
+          .skip(skip ?? DEFAULT_SKIP)
           .getManyAndCount();
 
     const resultDiaries = diaries.map((diary) => {
@@ -107,7 +105,7 @@ export class DiariesService {
     return {
       diaries: resultDiaries,
       totalCount,
-      totalPage: Math.ceil(totalCount / (take ?? defaultTake)),
+      totalPage: Math.ceil(totalCount / (take ?? DEFAULT_TAKE)),
     };
   }
 

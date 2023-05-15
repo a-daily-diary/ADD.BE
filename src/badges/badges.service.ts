@@ -5,6 +5,8 @@ import { UserDTO } from 'src/users/dto/user.dto';
 import { BadgeEntity } from './badges.entity';
 import { Repository } from 'typeorm';
 import { BadgeFormDTO } from './dto/badge-form.dto';
+import { DEFAULT_TAKE } from 'src/constants/page';
+import { DEFAULT_SKIP } from 'src/constants/page';
 
 @Injectable()
 export class BadgesService {
@@ -34,14 +36,14 @@ export class BadgesService {
   async getBadgeList(take?: number, skip?: number) {
     const [badgeList, totalCount] = await this.badgeRepository
       .createQueryBuilder('badge')
-      .take(take ?? 10)
-      .skip(skip ?? 0)
+      .take(take ?? DEFAULT_TAKE)
+      .skip(skip ?? DEFAULT_SKIP)
       .getManyAndCount();
 
     return {
       badges: badgeList,
       totalCount,
-      totalPage: Math.ceil(totalCount / (take ?? 10)),
+      totalPage: Math.ceil(totalCount / (take ?? DEFAULT_TAKE)),
     };
   }
 }
