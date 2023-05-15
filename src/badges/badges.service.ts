@@ -30,4 +30,18 @@ export class BadgesService {
 
     return newBadge;
   }
+
+  async getBadgeList(take?: number, skip?: number) {
+    const [badgeList, totalCount] = await this.badgeRepository
+      .createQueryBuilder('badge')
+      .take(take ?? 10)
+      .skip(skip ?? 0)
+      .getManyAndCount();
+
+    return {
+      badges: badgeList,
+      totalCount,
+      totalPage: Math.ceil(totalCount / (take ?? 10)),
+    };
+  }
 }

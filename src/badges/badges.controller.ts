@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
+  Query,
   UploadedFile,
   UseFilters,
   UseGuards,
@@ -59,5 +61,14 @@ export class BadgesController {
     @Body() badgeFormDTO: BadgeFormDTO,
   ) {
     return this.badgesService.createBadge(currentUser, badgeFormDTO);
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  getBadgeList(
+    @Query('take') take?: number | typeof NaN,
+    @Query('skip') skip?: number | typeof NaN,
+  ) {
+    return this.badgesService.getBadgeList(take, skip);
   }
 }
