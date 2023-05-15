@@ -74,9 +74,9 @@ export class DiariesController {
     summary: '일기 리스트 조회',
   })
   @ApiBearerAuth('access-token')
-  @ApiQuery({ name: 'username', required: false })
-  @ApiQuery({ name: 'take', required: false })
-  @ApiQuery({ name: 'skip', required: false })
+  @ApiQuery({ name: 'username', required: false, type: 'string' })
+  @ApiQuery({ name: 'take', required: false, type: 'number' })
+  @ApiQuery({ name: 'skip', required: false, type: 'number' })
   @ApiResponse(responseExampleForDiary.getDiaries)
   @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
   getDiaries(

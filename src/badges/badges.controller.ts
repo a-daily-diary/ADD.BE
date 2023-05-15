@@ -10,9 +10,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -64,6 +66,13 @@ export class BadgesController {
   }
 
   @Get()
+  @ApiOperation({
+    summary: '뱃지 전체 조회',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiQuery({ name: 'take', required: false, type: 'number' })
+  @ApiQuery({ name: 'skip', required: false, type: 'number' })
+  @ApiResponse(responseExampleForBadge.getBadgeList)
   @UseGuards(JwtAuthGuard)
   getBadgeList(
     @Query('take') take?: number | typeof NaN,

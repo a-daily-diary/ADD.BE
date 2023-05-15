@@ -172,4 +172,18 @@ export const responseExampleForBadge = {
     createdAt: '2023-05-07T07:33:47.439Z',
     updatedAt: '2023-05-07T07:33:47.439Z',
   }),
+  getBadgeList: responseTemplate({
+    badges: [
+      {
+        id: 'uuid',
+        createdAt: 'string(date)',
+        updatedAt: 'string(date)',
+        name: 'string',
+        description: 'string',
+        imgUrl: 'image url',
+      },
+    ],
+    totalCount: 'number',
+    totalPage: 'number',
+  }),
 };
