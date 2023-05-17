@@ -16,7 +16,7 @@ class Application {
   private logger = new Logger(Application.name);
   private DEV_MODE: boolean;
   private PORT: string;
-  private corsOriginList: string[];
+  private corsOriginList: string | boolean | RegExp | (string | RegExp)[];
   private ADMIN_USER: string;
   private ADMIN_PASSWORD: string;
 
@@ -28,7 +28,7 @@ class Application {
     this.PORT = process.env.PORT || '5000';
     this.corsOriginList = process.env.CORS_ORIGIN_LIST
       ? process.env.CORS_ORIGIN_LIST.split(',').map((origin) => origin.trim())
-      : ['*'];
+      : '*';
     this.ADMIN_USER = process.env.ADMIN_USER || 'admin';
     this.ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
   }
