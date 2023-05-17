@@ -22,6 +22,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserToBadgeEntity } from './userToBadge.entity';
 
 @Index('email', ['email'], { unique: true })
 @Entity({
@@ -117,4 +118,8 @@ export class UserEntity {
     },
   )
   comments: CommentEntity[];
+
+  @ApiProperty()
+  @OneToMany(() => UserToBadgeEntity, (userToBadge) => userToBadge.user)
+  userToBadges: UserToBadgeEntity[];
 }

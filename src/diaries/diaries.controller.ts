@@ -32,6 +32,7 @@ import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exception
 import {
   responseExampleForBookmark,
   responseExampleForComment,
+  responseExampleForCommon,
   responseExampleForDiary,
   responseExampleForFavorite,
 } from 'src/constants/swagger';
@@ -61,7 +62,7 @@ export class DiariesController {
   @ApiOperation({
     summary: '일기 이미지 업로드',
   })
-  @ApiResponse(responseExampleForDiary.uploadDiaryImg)
+  @ApiResponse(responseExampleForCommon.uploadImg)
   @UseInterceptors(FileInterceptor('image'))
   uploadUserImg(@UploadedFile() file: Express.Multer.File) {
     console.log(file);
@@ -73,9 +74,9 @@ export class DiariesController {
     summary: '일기 리스트 조회',
   })
   @ApiBearerAuth('access-token')
-  @ApiQuery({ name: 'username', required: false })
-  @ApiQuery({ name: 'take', required: false })
-  @ApiQuery({ name: 'skip', required: false })
+  @ApiQuery({ name: 'username', required: false, type: 'string' })
+  @ApiQuery({ name: 'take', required: false, type: 'number' })
+  @ApiQuery({ name: 'skip', required: false, type: 'number' })
   @ApiResponse(responseExampleForDiary.getDiaries)
   @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
   getDiaries(

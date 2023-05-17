@@ -47,7 +47,7 @@ export class AwsService {
   }
 
   public getAwsS3FileUrl(objectKey: string) {
-    return `https://${this.S3_BUCKET_NAME}.s3.amazonaws.com/${objectKey}`;
+    return `http://${this.S3_BUCKET_NAME}.s3.amazonaws.com/${objectKey}`;
   }
 
   public async getDefaultThumbnail() {
