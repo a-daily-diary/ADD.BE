@@ -37,6 +37,10 @@ const badgeResponse = {
   imgUrl: 'url image path',
 };
 
+const deleteResponse = {
+  message: '삭제되었습니다.',
+};
+
 export const responseExampleForCommon = {
   uploadImg: responseTemplate({
     imgUrl: 'url image path',
@@ -115,9 +119,7 @@ export const responseExampleForDiary = {
     isBookmark: 'boolean',
     author: userResponse,
   }),
-  softDeleteDiary: responseTemplate({
-    message: '삭제되었습니다.',
-  }),
+  softDeleteDiary: responseTemplate(deleteResponse),
 };
 
 export const responseExampleForFavorite = {
@@ -167,9 +169,7 @@ export const responseExampleForComment = {
     comment: 'text',
     commenter: userResponse,
   }),
-  deleteComment: responseTemplate({
-    message: '삭제되었습니다.',
-  }),
+  deleteComment: responseTemplate(deleteResponse),
 };
 
 export const responseExampleForBadge = {
@@ -181,4 +181,5 @@ export const responseExampleForBadge = {
   }),
   getBadge: responseTemplate(badgeResponse),
   updateBadge: responseTemplate(badgeResponse),
+  deleteBadge: responseTemplate(deleteResponse),
 };

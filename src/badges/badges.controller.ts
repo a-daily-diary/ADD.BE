@@ -111,6 +111,11 @@ export class BadgesController {
   }
 
   @Delete(':badgeId')
+  @ApiOperation({
+    summary: '뱃지 삭제 (관리자)',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForBadge.deleteBadge)
   @UseGuards(JwtAuthGuard)
   deleteBadge(@Param('badgeId', ParseUUIDPipe) badgeId: string) {
     return this.badgesService.deleteBadge(badgeId);
