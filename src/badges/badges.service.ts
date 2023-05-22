@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AwsService } from 'src/aws.service';
 import { UserDTO } from 'src/users/dto/user.dto';
@@ -7,6 +11,7 @@ import { Repository } from 'typeorm';
 import { BadgeFormDTO } from './dto/badge-form.dto';
 import { DEFAULT_TAKE } from 'src/constants/page';
 import { DEFAULT_SKIP } from 'src/constants/page';
+import { badgeExceptionMessage } from 'src/constants/exceptionMessage';
 
 @Injectable()
 export class BadgesService {
@@ -21,10 +26,20 @@ export class BadgesService {
     return { imgUrl: this.awsService.getAwsS3FileUrl(uploadInfo.key) };
   }
 
+  async findByBadgeName(badgeName: string) {
+    return await this.badgeRepository.findOneBy({ name: badgeName });
+  }
+
   async createBadge(requsetUser: UserDTO, badgeFormDTO: BadgeFormDTO) {
     // TODO: requestUser가 admin인 경우에만 뱃지 생성할 수 있는 로직 추가 예정
     if (requsetUser.isAdmin === true) {
-      throw new BadRequestException('뱃지 생성은 관리자만 가능합니다.');
+      throw new BadRequestException(badgeExceptionMessage.OWNER_ONLY_CREATE);
+    }
+
+    const hasBadgeName = await this.findByBadgeName(badgeFormDTO.name);
+
+    if (hasBadgeName) {
+      throw new BadRequestException(badgeExceptionMessage.EXIST_BADGE_NAME);
     }
 
     const newBadge = await this.badgeRepository.create(badgeFormDTO);
@@ -49,5 +64,24 @@ export class BadgesService {
 
   async getBadge(badgeId: string) {
     return await this.badgeRepository.findOneBy({ id: badgeId });
+  }
+
+  async updateBadge(badgeId: string, badgeFormDTO: BadgeFormDTO) {
+    const targetBadge = await this.getBadge(badgeId);
+
+    if (!targetBadge) {
+      throw new NotFoundException(badgeExceptionMessage.DOES_NOT_EXIST_BADGE);
+    }
+
+    const hasBadgeName = await this.findByBadgeName(badgeFormDTO.name);
+
+    if (hasBadgeName) {
+      throw new BadRequestException(badgeExceptionMessage.EXIST_BADGE_NAME);
+    }
+
+    // FIXME: 접근한 유저가 관리자인기 확인 로직 추가 예정
+    await this.badgeRepository.update(badgeId, badgeFormDTO);
+
+    return await this.getBadge(badgeId);
   }
 }
