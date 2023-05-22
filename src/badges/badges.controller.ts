@@ -96,6 +96,11 @@ export class BadgesController {
   }
 
   @Put(':badgeId')
+  @ApiOperation({
+    summary: '뱃지 수정 (관리자)',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForBadge.updateBadge)
   @UseGuards(JwtAuthGuard)
   updateBadge(
     @Param('badgeId', ParseUUIDPipe) badgeId: string,

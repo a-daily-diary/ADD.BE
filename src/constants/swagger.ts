@@ -173,18 +173,12 @@ export const responseExampleForComment = {
 };
 
 export const responseExampleForBadge = {
-  createBadge: responseTemplate({
-    name: 'badge name',
-    description: 'badge description',
-    imgUrl: 'image url',
-    id: 'uuid',
-    createdAt: '2023-05-07T07:33:47.439Z',
-    updatedAt: '2023-05-07T07:33:47.439Z',
-  }),
+  createBadge: responseTemplate(badgeResponse),
   getBadgeList: responseTemplate({
     badges: [badgeResponse],
     totalCount: 'number',
     totalPage: 'number',
   }),
   getBadge: responseTemplate(badgeResponse),
+  updateBadge: responseTemplate(badgeResponse),
 };
