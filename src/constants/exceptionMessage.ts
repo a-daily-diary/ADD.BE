@@ -30,3 +30,9 @@ export const commentExceptionMessage = {
     '일기 작성자 혹은 댓글 작성자만 해당 댓글을 삭제할 수 있습니다.',
   OWNER_ONLY_EDIT: '댓글 작성자만 해당 댓글을 수정할 수 있습니다.',
 };
+
+export const badgeExceptionMessage = {
+  DOES_NOT_EXIST_BADGE: '해당하는 뱃지는 존재하지 않습니다.',
+  OWNER_ONLY_CREATE: '뱃지 생성은 관리자만 가능합니다.',
+  EXIST_BADGE_NAME: '설정하신 뱃지 이름은 이미 존재합니다.',
+};

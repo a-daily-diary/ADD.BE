@@ -37,6 +37,10 @@ const badgeResponse = {
   imgUrl: 'url image path',
 };
 
+const deleteResponse = {
+  message: '삭제되었습니다.',
+};
+
 export const responseExampleForCommon = {
   uploadImg: responseTemplate({
     imgUrl: 'url image path',
@@ -115,9 +119,7 @@ export const responseExampleForDiary = {
     isBookmark: 'boolean',
     author: userResponse,
   }),
-  softDeleteDiary: responseTemplate({
-    message: '삭제되었습니다.',
-  }),
+  softDeleteDiary: responseTemplate(deleteResponse),
 };
 
 export const responseExampleForFavorite = {
@@ -167,24 +169,17 @@ export const responseExampleForComment = {
     comment: 'text',
     commenter: userResponse,
   }),
-  deleteComment: responseTemplate({
-    message: '삭제되었습니다.',
-  }),
+  deleteComment: responseTemplate(deleteResponse),
 };
 
 export const responseExampleForBadge = {
-  createBadge: responseTemplate({
-    name: 'badge name',
-    description: 'badge description',
-    imgUrl: 'image url',
-    id: 'uuid',
-    createdAt: '2023-05-07T07:33:47.439Z',
-    updatedAt: '2023-05-07T07:33:47.439Z',
-  }),
+  createBadge: responseTemplate(badgeResponse),
   getBadgeList: responseTemplate({
     badges: [badgeResponse],
     totalCount: 'number',
     totalPage: 'number',
   }),
   getBadge: responseTemplate(badgeResponse),
+  updateBadge: responseTemplate(badgeResponse),
+  deleteBadge: responseTemplate(deleteResponse),
 };

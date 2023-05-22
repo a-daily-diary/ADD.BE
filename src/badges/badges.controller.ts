@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
   Post,
+  Put,
   Query,
   UploadedFile,
   UseFilters,
@@ -92,5 +94,30 @@ export class BadgesController {
   @UseGuards(JwtAuthGuard)
   getBadge(@Param('badgeId', ParseUUIDPipe) badgeId: string) {
     return this.badgesService.getBadge(badgeId);
+  }
+
+  @Put(':badgeId')
+  @ApiOperation({
+    summary: '뱃지 수정 (관리자)',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForBadge.updateBadge)
+  @UseGuards(JwtAuthGuard)
+  updateBadge(
+    @Param('badgeId', ParseUUIDPipe) badgeId: string,
+    @Body() badgeFormDTO: BadgeFormDTO,
+  ) {
+    return this.badgesService.updateBadge(badgeId, badgeFormDTO);
+  }
+
+  @Delete(':badgeId')
+  @ApiOperation({
+    summary: '뱃지 삭제 (관리자)',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForBadge.deleteBadge)
+  @UseGuards(JwtAuthGuard)
+  deleteBadge(@Param('badgeId', ParseUUIDPipe) badgeId: string) {
+    return this.badgesService.deleteBadge(badgeId);
   }
 }
