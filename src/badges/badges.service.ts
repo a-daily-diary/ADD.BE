@@ -84,4 +84,18 @@ export class BadgesService {
 
     return await this.getBadge(badgeId);
   }
+
+  async deleteBadge(badgeId: string) {
+    const targetBadge = await this.getBadge(badgeId);
+
+    if (!targetBadge) {
+      throw new NotFoundException(badgeExceptionMessage.DOES_NOT_EXIST_BADGE);
+    }
+
+    // FIXME: 접근한 유저가 관리자인지 확인하는 로직 추가 예정
+
+    await this.badgeRepository.softDelete(badgeId);
+
+    return { message: '삭제되었습니다.' };
+  }
 }

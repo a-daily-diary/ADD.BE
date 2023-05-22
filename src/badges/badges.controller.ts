@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -107,5 +108,11 @@ export class BadgesController {
     @Body() badgeFormDTO: BadgeFormDTO,
   ) {
     return this.badgesService.updateBadge(badgeId, badgeFormDTO);
+  }
+
+  @Delete(':badgeId')
+  @UseGuards(JwtAuthGuard)
+  deleteBadge(@Param('badgeId', ParseUUIDPipe) badgeId: string) {
+    return this.badgesService.deleteBadge(badgeId);
   }
 }
