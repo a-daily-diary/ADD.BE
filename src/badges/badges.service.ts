@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AwsService } from 'src/aws.service';
 import { UserDTO } from 'src/users/dto/user.dto';
@@ -7,6 +11,7 @@ import { Repository } from 'typeorm';
 import { BadgeFormDTO } from './dto/badge-form.dto';
 import { DEFAULT_TAKE } from 'src/constants/page';
 import { DEFAULT_SKIP } from 'src/constants/page';
+import { badgeExceptionMessage } from 'src/constants/exceptionMessage';
 
 @Injectable()
 export class BadgesService {
@@ -49,5 +54,18 @@ export class BadgesService {
 
   async getBadge(badgeId: string) {
     return await this.badgeRepository.findOneBy({ id: badgeId });
+  }
+
+  async updateBadge(badgeId: string, badgeFormDTO: BadgeFormDTO) {
+    const targetBadge = await this.getBadge(badgeId);
+
+    if (!targetBadge) {
+      throw new NotFoundException(badgeExceptionMessage.DOES_NOT_EXIST_BADGE);
+    }
+
+    // FIXME: 접근한 유저가 관리자인기 확인 로직 추가 예정
+    await this.badgeRepository.update(badgeId, badgeFormDTO);
+
+    return await this.getBadge(badgeId);
   }
 }

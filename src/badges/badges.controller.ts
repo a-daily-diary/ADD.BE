@@ -5,6 +5,7 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Put,
   Query,
   UploadedFile,
   UseFilters,
@@ -92,5 +93,14 @@ export class BadgesController {
   @UseGuards(JwtAuthGuard)
   getBadge(@Param('badgeId', ParseUUIDPipe) badgeId: string) {
     return this.badgesService.getBadge(badgeId);
+  }
+
+  @Put(':badgeId')
+  @UseGuards(JwtAuthGuard)
+  updateBadge(
+    @Param('badgeId', ParseUUIDPipe) badgeId: string,
+    @Body() badgeFormDTO: BadgeFormDTO,
+  ) {
+    return this.badgesService.updateBadge(badgeId, badgeFormDTO);
   }
 }
