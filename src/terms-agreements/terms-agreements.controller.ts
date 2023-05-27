@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseFilters } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseFilters } from '@nestjs/common';
 import { TermsAgreementsService } from './terms-agreements.service';
 import { TermsAgreementFormDTO } from './dto/terms-agreemtn-form.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -22,5 +22,10 @@ export class TermsAgreementsController {
     return this.termsAgreementsService.createTermsAgreement(
       termsAgreementFormDTO,
     );
+  }
+
+  @Get()
+  getTermsAgreementList() {
+    return this.termsAgreementsService.getTermsAgreementList();
   }
 }

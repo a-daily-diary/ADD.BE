@@ -18,4 +18,8 @@ export class TermsAgreementsService {
 
     return await this.termsAgreementRepository.save(newTermsAgreement);
   }
+
+  async getTermsAgreementList() {
+    return await this.termsAgreementRepository.find();
+  }
 }
