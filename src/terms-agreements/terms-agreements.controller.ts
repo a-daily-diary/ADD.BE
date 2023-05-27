@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -50,5 +51,12 @@ export class TermsAgreementsController {
     @Param('termsAgreementId', ParseIntPipe) termsAgreementId: number,
   ) {
     return this.termsAgreementsService.getTermsAgreement(termsAgreementId);
+  }
+
+  @Delete(':termsAgreementId')
+  deleteTermsAgreement(
+    @Param('termsAgreementId', ParseIntPipe) termsAgreementId: number,
+  ) {
+    return this.termsAgreementsService.deleteTermsAgreement(termsAgreementId);
   }
 }

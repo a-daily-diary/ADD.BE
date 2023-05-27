@@ -12,6 +12,10 @@ export class TermsAgreementsService {
     private readonly termsAgreementRepository: Repository<TermsAgreementEntity>,
   ) {}
 
+  async findById(id: number) {
+    return await this.termsAgreementRepository.findOneBy({ id });
+  }
+
   async createTermsAgreement(termsAgreementFormDTO: TermsAgreementFormDTO) {
     const newTermsAgreement = this.termsAgreementRepository.create(
       termsAgreementFormDTO,
@@ -25,9 +29,7 @@ export class TermsAgreementsService {
   }
 
   async getTermsAgreement(termsAgreementId: number) {
-    const targetTermsAgreement = await this.termsAgreementRepository.findOneBy({
-      id: termsAgreementId,
-    });
+    const targetTermsAgreement = await this.findById(termsAgreementId);
 
     if (!targetTermsAgreement) {
       throw new NotFoundException(
@@ -36,5 +38,19 @@ export class TermsAgreementsService {
     }
 
     return targetTermsAgreement;
+  }
+
+  async deleteTermsAgreement(termsAgreementId: number) {
+    const targetTermsAgreement = await this.findById(termsAgreementId);
+
+    if (!targetTermsAgreement) {
+      throw new NotFoundException(
+        termsAgreementExceptionMessage.DOES_NOT_EXIST_TERMS_AGREEMENT,
+      );
+    }
+
+    await this.termsAgreementRepository.delete(targetTermsAgreement);
+
+    return { message: '삭제되었습니다.' };
   }
 }
