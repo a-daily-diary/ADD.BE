@@ -23,6 +23,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { UserToBadgeEntity } from './userToBadge.entity';
+import { UserToTermsAgreementEntity } from 'src/user-to-terms-agreements/user-to-terms-agreements.entity';
 
 @Index('email', ['email'], { unique: true })
 @Entity({
@@ -122,4 +123,14 @@ export class UserEntity {
   @ApiProperty()
   @OneToMany(() => UserToBadgeEntity, (userToBadge) => userToBadge.user)
   userToBadges: UserToBadgeEntity[];
+
+  @ApiProperty()
+  @OneToMany(
+    () => UserToTermsAgreementEntity,
+    (userToTermsAgreement) => userToTermsAgreement.user,
+    {
+      cascade: true,
+    },
+  )
+  userToTermsAgreements: UserToBadgeEntity[];
 }

@@ -10,6 +10,7 @@ import { FavoriteEntity } from 'src/favorities/favorites.entity';
 import { BookmarkEntity } from 'src/bookmarks/bookmarks.entity';
 import { AwsService } from 'src/aws.service';
 import { UserToBadgeEntity } from './userToBadge.entity';
+import { UserToTermsAgreementEntity } from 'src/user-to-terms-agreements/user-to-terms-agreements.entity';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UserToBadgeEntity } from './userToBadge.entity';
       FavoriteEntity,
       BookmarkEntity,
       UserToBadgeEntity,
+      UserToTermsAgreementEntity,
     ]),
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({
