@@ -54,6 +54,10 @@ export class TermsAgreementsController {
   }
 
   @Delete(':termsAgreementId')
+  @ApiOperation({
+    summary: '약관 삭제',
+  })
+  @ApiResponse(responseExampleForTermsAgreement.deleteTermsAgreement)
   deleteTermsAgreement(
     @Param('termsAgreementId', ParseIntPipe) termsAgreementId: number,
   ) {

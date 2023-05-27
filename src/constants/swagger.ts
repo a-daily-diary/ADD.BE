@@ -195,4 +195,5 @@ export const responseExampleForTermsAgreement = {
   createTermsAgreement: responseTemplate(termsAgreementResponse),
   getTermsAgreementList: responseTemplate([termsAgreementResponse]),
   getTermsAgreement: responseTemplate(termsAgreementResponse),
+  deleteTermsAgreement: responseTemplate(deleteResponse),
 };
