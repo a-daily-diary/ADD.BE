@@ -1,14 +1,23 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseFilters } from '@nestjs/common';
 import { TermsAgreementsService } from './terms-agreements.service';
 import { TermsAgreementFormDTO } from './dto/terms-agreemtn-form.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { responseExampleForTermsAgreement } from 'src/constants/swagger';
+import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
 
+@ApiTags('Terms-Agreement')
 @Controller('terms-agreements')
+@UseFilters(HttpApiExceptionFilter)
 export class TermsAgreementsController {
   constructor(
     private readonly termsAgreementsService: TermsAgreementsService,
   ) {}
 
   @Post()
+  @ApiOperation({
+    summary: '약관 생성',
+  })
+  @ApiResponse(responseExampleForTermsAgreement.createTermsAgreement)
   createTermsAgreement(@Body() termsAgreementFormDTO: TermsAgreementFormDTO) {
     return this.termsAgreementsService.createTermsAgreement(
       termsAgreementFormDTO,
