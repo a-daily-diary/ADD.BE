@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 @Index('termsAgreementId', ['id'], { unique: true })
@@ -7,8 +7,9 @@ import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
   name: 'TERMS_AGREEMENT',
 })
 export class TermsAgreementEntity {
-  @PrimaryGeneratedColumn('increment')
-  id: number;
+  @IsUUID()
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @ApiProperty()
   @IsString()

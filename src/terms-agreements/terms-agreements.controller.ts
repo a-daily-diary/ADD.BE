@@ -4,7 +4,7 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
+  ParseUUIDPipe,
   Post,
   UseFilters,
 } from '@nestjs/common';
@@ -48,7 +48,7 @@ export class TermsAgreementsController {
   })
   @ApiResponse(responseExampleForTermsAgreement.getTermsAgreement)
   getTermsAgreement(
-    @Param('termsAgreementId', ParseIntPipe) termsAgreementId: number,
+    @Param('termsAgreementId', ParseUUIDPipe) termsAgreementId: string,
   ) {
     return this.termsAgreementsService.getTermsAgreement(termsAgreementId);
   }
@@ -59,7 +59,7 @@ export class TermsAgreementsController {
   })
   @ApiResponse(responseExampleForTermsAgreement.deleteTermsAgreement)
   deleteTermsAgreement(
-    @Param('termsAgreementId', ParseIntPipe) termsAgreementId: number,
+    @Param('termsAgreementId', ParseUUIDPipe) termsAgreementId: string,
   ) {
     return this.termsAgreementsService.deleteTermsAgreement(termsAgreementId);
   }

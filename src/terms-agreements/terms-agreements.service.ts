@@ -12,7 +12,7 @@ export class TermsAgreementsService {
     private readonly termsAgreementRepository: Repository<TermsAgreementEntity>,
   ) {}
 
-  async findById(id: number) {
+  async findById(id: string) {
     return await this.termsAgreementRepository.findOneBy({ id });
   }
 
@@ -28,7 +28,7 @@ export class TermsAgreementsService {
     return await this.termsAgreementRepository.find();
   }
 
-  async getTermsAgreement(termsAgreementId: number) {
+  async getTermsAgreement(termsAgreementId: string) {
     const targetTermsAgreement = await this.findById(termsAgreementId);
 
     if (!targetTermsAgreement) {
@@ -40,7 +40,7 @@ export class TermsAgreementsService {
     return targetTermsAgreement;
   }
 
-  async deleteTermsAgreement(termsAgreementId: number) {
+  async deleteTermsAgreement(termsAgreementId: string) {
     const targetTermsAgreement = await this.findById(termsAgreementId);
 
     if (!targetTermsAgreement) {
