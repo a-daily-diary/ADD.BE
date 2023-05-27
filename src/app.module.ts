@@ -14,6 +14,7 @@ import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { AwsService } from './aws.service';
 import { CommentsModule } from './comments/comments.module';
 import { BadgesModule } from './badges/badges.module';
+import { TermsAgreementsModule } from './terms-agreements/terms-agreements.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (): Promise<TypeOrmModuleOptions> => {
@@ -44,6 +45,7 @@ const typeOrmModuleOptions = {
     BookmarksModule,
     CommentsModule,
     BadgesModule,
+    TermsAgreementsModule,
   ],
   controllers: [AppController],
   providers: [AppService, AwsService],
