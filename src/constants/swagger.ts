@@ -193,4 +193,5 @@ export const responseExampleForBadge = {
 
 export const responseExampleForTermsAgreement = {
   createTermsAgreement: responseTemplate(termsAgreementResponse),
+  getTermsAgreementList: responseTemplate([termsAgreementResponse]),
 };

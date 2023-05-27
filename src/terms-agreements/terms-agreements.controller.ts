@@ -25,6 +25,10 @@ export class TermsAgreementsController {
   }
 
   @Get()
+  @ApiOperation({
+    summary: '약관 리스트 조회',
+  })
+  @ApiResponse(responseExampleForTermsAgreement.getTermsAgreementList)
   getTermsAgreementList() {
     return this.termsAgreementsService.getTermsAgreementList();
   }
