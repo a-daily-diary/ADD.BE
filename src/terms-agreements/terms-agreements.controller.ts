@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, UseFilters } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  UseFilters,
+} from '@nestjs/common';
 import { TermsAgreementsService } from './terms-agreements.service';
 import { TermsAgreementFormDTO } from './dto/terms-agreemtn-form.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -31,5 +39,12 @@ export class TermsAgreementsController {
   @ApiResponse(responseExampleForTermsAgreement.getTermsAgreementList)
   getTermsAgreementList() {
     return this.termsAgreementsService.getTermsAgreementList();
+  }
+
+  @Get(':termsAgreementId')
+  getTermsAgreement(
+    @Param('termsAgreementId', ParseIntPipe) termsAgreementId: number,
+  ) {
+    return this.termsAgreementsService.getTermsAgreement(termsAgreementId);
   }
 }
