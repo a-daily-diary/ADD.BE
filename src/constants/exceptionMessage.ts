@@ -36,3 +36,7 @@ export const badgeExceptionMessage = {
   OWNER_ONLY_CREATE: '뱃지 생성은 관리자만 가능합니다.',
   EXIST_BADGE_NAME: '설정하신 뱃지 이름은 이미 존재합니다.',
 };
+
+export const termsAgreementExceptionMessage = {
+  DOES_NOT_EXIST_TERMS_AGREEMENT: '해당하는 약관동의는 존재하지 않습니다.',
+};

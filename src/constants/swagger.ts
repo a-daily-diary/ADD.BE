@@ -37,6 +37,13 @@ const badgeResponse = {
   imgUrl: 'url image path',
 };
 
+const termsAgreementResponse = {
+  id: 'number',
+  title: 'string',
+  content: 'string',
+  isRequired: 'boolean',
+};
+
 const deleteResponse = {
   message: '삭제되었습니다.',
 };
@@ -182,4 +189,11 @@ export const responseExampleForBadge = {
   getBadge: responseTemplate(badgeResponse),
   updateBadge: responseTemplate(badgeResponse),
   deleteBadge: responseTemplate(deleteResponse),
+};
+
+export const responseExampleForTermsAgreement = {
+  createTermsAgreement: responseTemplate(termsAgreementResponse),
+  getTermsAgreementList: responseTemplate([termsAgreementResponse]),
+  getTermsAgreement: responseTemplate(termsAgreementResponse),
+  deleteTermsAgreement: responseTemplate(deleteResponse),
 };
