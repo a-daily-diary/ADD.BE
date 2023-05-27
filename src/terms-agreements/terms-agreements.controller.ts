@@ -42,6 +42,10 @@ export class TermsAgreementsController {
   }
 
   @Get(':termsAgreementId')
+  @ApiOperation({
+    summary: '약관 디테일 조회',
+  })
+  @ApiResponse(responseExampleForTermsAgreement.getTermsAgreement)
   getTermsAgreement(
     @Param('termsAgreementId', ParseIntPipe) termsAgreementId: number,
   ) {
