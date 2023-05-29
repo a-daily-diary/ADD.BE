@@ -14,6 +14,7 @@ import { UserLoginDTO } from './dto/user-login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { userExceptionMessage } from 'src/constants/exceptionMessage';
 import { AwsService } from 'src/aws.service';
+import { UserToTermsAgreementsService } from 'src/user-to-terms-agreements/user-to-terms-agreements.service';
 
 @Injectable()
 export class UsersService {
@@ -22,14 +23,16 @@ export class UsersService {
     private readonly usersRepository: Repository<UserEntity>,
     private readonly jwtService: JwtService,
     private readonly awsService: AwsService,
+    private readonly userToTermsAgreementsService: UserToTermsAgreementsService,
   ) {}
   async uploadImg(file: Express.Multer.File) {
     const uploadInfo = await this.awsService.uploadFileToS3('users', file);
     return { imgUrl: this.awsService.getAwsS3FileUrl(uploadInfo.key) };
   }
 
-  async join(userJoinDto: UserJoinDTO) {
-    const { email, username, password } = userJoinDto;
+  async join(userJoinDTO: UserJoinDTO) {
+    const { email, username, password, imgUrl, termsAgreementIdList } =
+      userJoinDTO;
 
     const userByEmail = await this.usersRepository.findOneBy({ email });
     if (userByEmail) {
@@ -43,10 +46,19 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hashSync(password, 10);
 
-    await this.usersRepository.save({
-      ...userJoinDto,
+    const newUser = this.usersRepository.create({
+      email,
+      username,
       password: hashedPassword,
+      imgUrl,
     });
+
+    await this.usersRepository.save(newUser);
+
+    await this.userToTermsAgreementsService.saveUserToTermsAgreement(
+      newUser,
+      termsAgreementIdList,
+    );
 
     return { message: '회원가입에 성공하였습니다.' };
   }
