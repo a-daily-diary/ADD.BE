@@ -11,6 +11,7 @@ import { BookmarkEntity } from 'src/bookmarks/bookmarks.entity';
 import { AwsService } from 'src/aws.service';
 import { UserToBadgeEntity } from './userToBadge.entity';
 import { UserToTermsAgreementEntity } from 'src/user-to-terms-agreements/user-to-terms-agreements.entity';
+import { UserToTermsAgreementsModule } from 'src/user-to-terms-agreements/user-to-terms-agreements.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UserToTermsAgreementEntity } from 'src/user-to-terms-agreements/user-to
       secretOrPrivateKey: process.env.SECRET_KEY,
       signOptions: { expiresIn: '1d' },
     }),
+    UserToTermsAgreementsModule,
   ],
   controllers: [UsersController],
   providers: [UsersService, JwtStrategy, AwsService],
