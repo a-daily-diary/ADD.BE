@@ -59,12 +59,6 @@ export class UserEntity {
 
   @ApiProperty()
   @IsBoolean()
-  @Exclude()
-  @Column({ type: 'boolean', nullable: false })
-  isAgree: boolean;
-
-  @ApiProperty()
-  @IsBoolean()
   @Column({ type: 'boolean', default: false })
   isAdmin: boolean;
 

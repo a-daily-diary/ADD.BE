@@ -44,7 +44,6 @@ export class DiaryEntity extends CommonEntity {
   @Column({ type: 'int', default: 0 })
   commentCount: number;
 
-  // TODO: bookmark, comment table relationship 필요
   @ApiProperty()
   @ManyToOne(() => UserEntity, (author: UserEntity) => author.diaries, {
     onDelete: 'CASCADE',
