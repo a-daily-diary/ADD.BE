@@ -39,4 +39,5 @@ export const badgeExceptionMessage = {
 
 export const termsAgreementExceptionMessage = {
   DOES_NOT_EXIST_TERMS_AGREEMENT: '해당하는 약관동의는 존재하지 않습니다.',
+  INVALIDATE_TERMS_AGREEMENTS: '필수 약관동의를 체크해주세요',
 };
