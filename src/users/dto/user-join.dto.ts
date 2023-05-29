@@ -1,6 +1,6 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { UserEntity } from '../users.entity';
-import { IsString, IsNotEmpty, IsBoolean } from 'class-validator';
+import { IsString, IsNotEmpty, IsArray } from 'class-validator';
 import { Column } from 'typeorm';
 
 export class UserJoinDTO extends PickType(UserEntity, [
@@ -14,9 +14,9 @@ export class UserJoinDTO extends PickType(UserEntity, [
   password: string;
 
   @ApiProperty()
-  @IsBoolean()
-  @Column({ type: 'boolean', nullable: false })
-  isAgree: boolean;
+  @IsArray()
+  @Column({ type: 'array', nullable: false })
+  termsAgreementIdList: string[];
 }
 
 export class UserEmailDTO extends PickType(UserEntity, ['email'] as const) {}

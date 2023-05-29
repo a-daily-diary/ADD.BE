@@ -8,5 +8,6 @@ import { TermsAgreementEntity } from './terms-agreements.entity';
   imports: [TypeOrmModule.forFeature([TermsAgreementEntity])],
   providers: [TermsAgreementsService],
   controllers: [TermsAgreementsController],
+  exports: [TermsAgreementsService],
 })
 export class TermsAgreementsModule {}

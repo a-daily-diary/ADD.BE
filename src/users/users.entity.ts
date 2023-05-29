@@ -23,6 +23,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { UserToBadgeEntity } from './userToBadge.entity';
+import { UserToTermsAgreementEntity } from 'src/user-to-terms-agreements/user-to-terms-agreements.entity';
 
 @Index('email', ['email'], { unique: true })
 @Entity({
@@ -55,12 +56,6 @@ export class UserEntity {
   @IsNotEmpty({ message: '프로필 사진을 설정해주세요. ' })
   @Column({ type: 'varchar', nullable: false })
   imgUrl: string;
-
-  @ApiProperty()
-  @IsBoolean()
-  @Exclude()
-  @Column({ type: 'boolean', nullable: false })
-  isAgree: boolean;
 
   @ApiProperty()
   @IsBoolean()
@@ -122,4 +117,14 @@ export class UserEntity {
   @ApiProperty()
   @OneToMany(() => UserToBadgeEntity, (userToBadge) => userToBadge.user)
   userToBadges: UserToBadgeEntity[];
+
+  @ApiProperty()
+  @OneToMany(
+    () => UserToTermsAgreementEntity,
+    (userToTermsAgreement) => userToTermsAgreement.user,
+    {
+      cascade: true,
+    },
+  )
+  userToTermsAgreements: UserToBadgeEntity[];
 }
