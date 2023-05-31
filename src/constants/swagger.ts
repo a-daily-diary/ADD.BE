@@ -19,13 +19,14 @@ const userResponse = {
 
 const diaryResponse = {
   id: 'uuid',
-  createdAt: '2023-04-10T13:22:32.362Z',
-  updatedAt: '2023-04-10T13:27:16.887Z',
   title: 'string',
   content: 'text',
   imgUrl: 'null | string',
+  isPublic: 'boolean',
   favoriteCount: 'number',
   commentCount: 'number',
+  createdAt: '2023-04-10T13:22:32.362Z',
+  updatedAt: '2023-04-10T13:27:16.887Z',
 };
 
 const badgeResponse = {

@@ -141,12 +141,9 @@ export class DiariesService {
   }
 
   async create(diaryFormDto: DiaryFormDTO, author: UserDTO) {
-    const { title, content, imgUrl } = diaryFormDto;
     const newDiary = await this.diaryRepository.create({
-      title,
-      content,
-      imgUrl,
       author,
+      ...diaryFormDto,
     });
 
     return await this.diaryRepository.save(newDiary);

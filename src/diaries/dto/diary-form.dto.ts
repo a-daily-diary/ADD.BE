@@ -5,4 +5,5 @@ export class DiaryFormDTO extends PickType(DiaryEntity, [
   'title',
   'content',
   'imgUrl',
+  'isPublic',
 ] as const) {}
