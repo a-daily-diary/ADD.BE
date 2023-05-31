@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AwsService } from 'src/aws.service';
 import { diaryExceptionMessage } from 'src/constants/exceptionMessage';
 import { UserDTO } from 'src/users/dto/user.dto';
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { DiaryEntity } from './diaries.entity';
 import { DiaryFormDTO } from './dto/diary-form.dto';
 import { DEFAULT_SKIP, DEFAULT_TAKE } from 'src/constants/page';
@@ -35,7 +35,14 @@ export class DiariesService {
   }
 
   generateCustomFieldForDiary(diary: DiaryEntity, accessUserId: string) {
-    const { author, favorites, bookmarks, deleteAt: _, ...otherInfo } = diary; // FIXME: nest의 classSerializerInterceptor로 처리할 수 있는 방법 고안하기
+    const {
+      author,
+      favorites,
+      bookmarks,
+      deleteAt: _,
+      isPublic: __,
+      ...otherInfo
+    } = diary; // FIXME: nest의 classSerializerInterceptor로 처리할 수 있는 방법 고안하기
 
     const isFavorite = favorites
       .map((favorite) => favorite.user.id)
@@ -83,20 +90,33 @@ export class DiariesService {
     const { selectDiaryInstance, tableAliasInfo } =
       this.generateSelectDiaryInstance();
 
-    const [diaries, totalCount] = !diaryAuthorName
-      ? await selectDiaryInstance
-          .orderBy(`${tableAliasInfo.diary}.createdAt`, 'DESC')
-          .take(take ?? DEFAULT_TAKE)
-          .skip(skip ?? DEFAULT_SKIP)
-          .getManyAndCount()
-      : await selectDiaryInstance
-          .where(`${tableAliasInfo.diaryAuthor}.username = :username`, {
-            username: diaryAuthorName,
-          })
-          .orderBy(`${tableAliasInfo.diary}.createdAt`, 'DESC')
-          .take(take ?? DEFAULT_TAKE)
-          .skip(skip ?? DEFAULT_SKIP)
-          .getManyAndCount();
+    const filteredDiaryInstance =
+      diaryAuthorName === undefined
+        ? selectDiaryInstance
+            .where(`${tableAliasInfo.diary}.isPublic = true`)
+            .orWhere(`${tableAliasInfo.diaryAuthor}.id = :accessUserId`, {
+              accessUserId: accessUser.id,
+            })
+        : selectDiaryInstance
+            .where(`${tableAliasInfo.diaryAuthor}.username = :username`, {
+              username: diaryAuthorName,
+            })
+            .andWhere(
+              new Brackets((qb) => {
+                qb.where(`${tableAliasInfo.diary}.isPublic = true`).orWhere(
+                  `${tableAliasInfo.diaryAuthor}.id = :accessUserId`,
+                  {
+                    accessUserId: accessUser.id,
+                  },
+                );
+              }),
+            );
+
+    const [diaries, totalCount] = await filteredDiaryInstance
+      .orderBy(`${tableAliasInfo.diary}.createdAt`, 'DESC')
+      .take(take ?? DEFAULT_TAKE)
+      .skip(skip ?? DEFAULT_SKIP)
+      .getManyAndCount();
 
     const resultDiaries = diaries.map((diary) => {
       return this.generateCustomFieldForDiary(diary, accessUser.id);
