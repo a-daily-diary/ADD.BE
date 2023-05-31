@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-import { UserEmailDTO, UserJoinDTO } from './dto/user-join.dto';
+import { UserEmailDTO, UserRegisterDTO } from './dto/user-register.dto';
 import { UserEntity } from './users.entity';
 import { UserLoginDTO } from './dto/user-login.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -30,9 +30,9 @@ export class UsersService {
     return { imgUrl: this.awsService.getAwsS3FileUrl(uploadInfo.key) };
   }
 
-  async join(userJoinDTO: UserJoinDTO) {
+  async register(userRegisterDTO: UserRegisterDTO) {
     const { email, username, password, imgUrl, termsAgreementIdList } =
-      userJoinDTO;
+      userRegisterDTO;
 
     const userByEmail = await this.usersRepository.findOneBy({ email });
     if (userByEmail) {
@@ -63,7 +63,7 @@ export class UsersService {
     return { message: '회원가입에 성공하였습니다.' };
   }
 
-  async emailCheck(userEmail: UserEmailDTO) {
+  async emailExists(userEmail: UserEmailDTO) {
     const { email } = userEmail;
 
     const user = await this.usersRepository.findOneBy({ email });
@@ -74,7 +74,7 @@ export class UsersService {
     return { message: '사용가능한 이메일입니다.' };
   }
 
-  async usernameCheck(username: string) {
+  async usernameExists(username: string) {
     const user = await this.usersRepository.findOneBy({
       username,
     });
@@ -86,8 +86,8 @@ export class UsersService {
     return { message: '사용가능한 유저이름입니다.' };
   }
 
-  async login(userloginDto: UserLoginDTO) {
-    const { email, password } = userloginDto;
+  async login(userLoginDto: UserLoginDTO) {
+    const { email, password } = userLoginDto;
     const user = await this.usersRepository.findOneBy({ email });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {

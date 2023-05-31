@@ -55,13 +55,13 @@ export const responseExampleForCommon = {
 };
 
 export const responseExampleForUser = {
-  emailCheck: responseTemplate({
+  emailExists: responseTemplate({
     message: '사용가능한 이메일입니다.',
   }),
-  usernameCheck: responseTemplate({
+  usernameExists: responseTemplate({
     message: '사용가능한 유저이름입니다.',
   }),
-  join: responseTemplate({
+  register: responseTemplate({
     message: '회원가입에 성공하였습니다.',
   }),
   login: responseTemplate({
