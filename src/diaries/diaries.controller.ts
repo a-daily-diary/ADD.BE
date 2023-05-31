@@ -36,7 +36,7 @@ import {
   responseExampleForDiary,
   responseExampleForFavorite,
 } from 'src/constants/swagger';
-import { FavoritesService } from 'src/favorities/favorites.service';
+import { FavoritesService } from 'src/favorites/favorites.service';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { JwtAuthGuard } from 'src/users/jwt/jwt.guard';
 import { DiariesService } from './diaries.service';
