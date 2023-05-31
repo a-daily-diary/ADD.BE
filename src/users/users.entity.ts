@@ -11,7 +11,7 @@ import {
 import { BookmarkEntity } from 'src/bookmarks/bookmarks.entity';
 import { CommentEntity } from 'src/comments/comments.entity';
 import { DiaryEntity } from 'src/diaries/diaries.entity';
-import { FavoriteEntity } from 'src/favorities/favorites.entity';
+import { FavoriteEntity } from 'src/favorites/favorites.entity';
 import {
   Column,
   CreateDateColumn,

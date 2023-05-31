@@ -6,7 +6,7 @@ import { UsersController } from './users.controller';
 import { UserEntity } from './users.entity';
 import { UsersService } from './users.service';
 import { JwtStrategy } from './jwt/jwt.strategy';
-import { FavoriteEntity } from 'src/favorities/favorites.entity';
+import { FavoriteEntity } from 'src/favorites/favorites.entity';
 import { BookmarkEntity } from 'src/bookmarks/bookmarks.entity';
 import { AwsService } from 'src/aws.service';
 import { UserToBadgeEntity } from './userToBadge.entity';

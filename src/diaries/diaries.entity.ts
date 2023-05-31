@@ -10,7 +10,7 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { FavoriteEntity } from 'src/favorities/favorites.entity';
+import { FavoriteEntity } from 'src/favorites/favorites.entity';
 import { BookmarkEntity } from 'src/bookmarks/bookmarks.entity';
 import { CommentEntity } from 'src/comments/comments.entity';
 
@@ -27,12 +27,18 @@ export class DiaryEntity extends CommonEntity {
 
   @ApiProperty()
   @IsString()
+  @IsNotEmpty({ message: '내용을 작성해주세요. ' })
   @Column({ type: 'text', nullable: false })
   content: string;
 
   @ApiProperty()
   @Column({ type: 'varchar', nullable: true })
   imgUrl: string;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: '공개 여부를 설정해주세요.' })
+  @Column({ type: 'boolean', nullable: false })
+  isPublic: boolean;
 
   @ApiProperty()
   @IsNumber()

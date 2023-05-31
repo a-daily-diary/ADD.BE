@@ -9,7 +9,7 @@ import { UsersModule } from './users/users.module';
 import { UserEntity } from './users/users.entity';
 import { DiariesModule } from './diaries/diaries.module';
 import { DiaryEntity } from './diaries/diaries.entity';
-import { FavoritesModule } from './favorities/favorites.module';
+import { FavoritesModule } from './favorites/favorites.module';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { AwsService } from './aws.service';
 import { CommentsModule } from './comments/comments.module';
