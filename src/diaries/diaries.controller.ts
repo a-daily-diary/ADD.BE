@@ -53,7 +53,7 @@ export class DiariesController {
     private readonly commentsService: CommentsService,
   ) {}
 
-  @Post('upload')
+  @Post('upload-image')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'formdata instance에 append 시 key값을 image로 설정해주세요.',

@@ -3,7 +3,7 @@ import { UserEntity } from '../users.entity';
 import { IsString, IsNotEmpty, IsArray } from 'class-validator';
 import { Column } from 'typeorm';
 
-export class UserJoinDTO extends PickType(UserEntity, [
+export class UserRegisterDTO extends PickType(UserEntity, [
   'email',
   'username',
   'imgUrl',

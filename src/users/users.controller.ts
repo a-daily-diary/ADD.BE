@@ -6,29 +6,28 @@ import {
   Post,
   UploadedFile,
   UseFilters,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
-  ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
 import {
   responseExampleForCommon,
   responseExampleForUser,
 } from 'src/constants/swagger';
-import { UserEmailDTO, UserJoinDTO, UsernameDTO } from './dto/user-join.dto';
+import {
+  UserEmailDTO,
+  UserRegisterDTO,
+  UsernameDTO,
+} from './dto/user-register.dto';
 import { UserLoginDTO } from './dto/user-login.dto';
-import { UserDTO } from './dto/user.dto';
-import { JwtAuthGuard } from './jwt/jwt.guard';
 import { UsersService } from './users.service';
 
 @ApiTags('USER')
@@ -37,7 +36,7 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post('upload')
+  @Post('upload-image')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'formdata instance에 append 시 key값을 image로 설정해주세요.',
@@ -53,20 +52,9 @@ export class UsersController {
     return this.usersService.uploadImg(file);
   }
 
-  @Get()
+  @Get('')
   @ApiOperation({
-    summary: '내 정보 조회 (토큰 필요)',
-  })
-  @ApiBearerAuth('access-token')
-  @ApiResponse(responseExampleForUser.getCurrentUser)
-  @UseGuards(JwtAuthGuard)
-  getCurrentUser(@CurrentUser() currentUser: UserDTO) {
-    return currentUser;
-  }
-
-  @Get('all')
-  @ApiOperation({
-    summary: '전체 유저 조회',
+    summary: '전체 유저 조회 (개발용)',
   })
   @ApiResponse(responseExampleForUser.getAllUsers)
   getAllUser() {
@@ -91,31 +79,31 @@ export class UsersController {
     return this.usersService.findUserByUsername(username);
   }
 
-  @Post()
-  @ApiOperation({
-    summary: '회원가입',
-  })
-  @ApiResponse(responseExampleForUser.join)
-  join(@Body() userJoinDto: UserJoinDTO) {
-    return this.usersService.join(userJoinDto);
-  }
-
-  @Post('email-check')
+  @Post('email-exists')
   @ApiOperation({
     summary: '이메일 중복 체크',
   })
-  @ApiResponse(responseExampleForUser.emailCheck)
-  emailCheck(@Body() userEmail: UserEmailDTO) {
-    return this.usersService.emailCheck(userEmail);
+  @ApiResponse(responseExampleForUser.emailExists)
+  emailExists(@Body() userEmail: UserEmailDTO) {
+    return this.usersService.emailExists(userEmail);
   }
 
-  @Post('username-check')
+  @Post('username-exists')
   @ApiOperation({
     summary: '유저 이름 중복 체크',
   })
-  @ApiResponse(responseExampleForUser.usernameCheck)
-  usernameCheck(@Body() { username }: UsernameDTO) {
-    return this.usersService.usernameCheck(username);
+  @ApiResponse(responseExampleForUser.usernameExists)
+  usernameExists(@Body() { username }: UsernameDTO) {
+    return this.usersService.usernameExists(username);
+  }
+
+  @Post('register')
+  @ApiOperation({
+    summary: '회원가입',
+  })
+  @ApiResponse(responseExampleForUser.register)
+  register(@Body() UserRegisterDTO: UserRegisterDTO) {
+    return this.usersService.register(UserRegisterDTO);
   }
 
   @Post('login')
