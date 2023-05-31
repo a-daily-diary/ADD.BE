@@ -24,7 +24,7 @@ export class TermsAgreementsController {
 
   @Post()
   @ApiOperation({
-    summary: '약관 생성',
+    summary: '약관 생성 (관리자)',
   })
   @ApiResponse(responseExampleForTermsAgreement.createTermsAgreement)
   createTermsAgreement(@Body() termsAgreementFormDTO: TermsAgreementFormDTO) {
@@ -55,7 +55,7 @@ export class TermsAgreementsController {
 
   @Delete(':termsAgreementId')
   @ApiOperation({
-    summary: '약관 삭제',
+    summary: '약관 삭제 (관리자)',
   })
   @ApiResponse(responseExampleForTermsAgreement.deleteTermsAgreement)
   deleteTermsAgreement(
