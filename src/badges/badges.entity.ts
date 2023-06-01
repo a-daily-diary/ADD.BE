@@ -1,8 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
 import { CommonEntity } from 'src/common/entities/common.entity';
-import { UserToBadgeEntity } from 'src/users/userToBadge.entity';
-import { Column, Entity, Index, OneToMany } from 'typeorm';
+import { Column, Entity, Index } from 'typeorm';
 
 @Index('badgeId', ['id'], { unique: true })
 @Entity({
@@ -26,8 +25,4 @@ export class BadgeEntity extends CommonEntity {
   @IsUrl()
   @Column({ type: 'varchar', nullable: false })
   imgUrl: string;
-
-  @ApiProperty()
-  @OneToMany(() => UserToBadgeEntity, (userToBadge) => userToBadge.badge)
-  userToBadges: UserToBadgeEntity[];
 }
