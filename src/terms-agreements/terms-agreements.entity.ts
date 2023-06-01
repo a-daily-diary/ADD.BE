@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 import { UserToTermsAgreementEntity } from 'src/user-to-terms-agreements/user-to-terms-agreements.entity';
-import { UserToBadgeEntity } from 'src/users/userToBadge.entity';
 import {
   Column,
   Entity,
@@ -44,5 +43,5 @@ export class TermsAgreementEntity {
       cascade: true,
     },
   )
-  userToTermsAgreements: UserToBadgeEntity[];
+  userToTermsAgreements: UserToTermsAgreementEntity[];
 }

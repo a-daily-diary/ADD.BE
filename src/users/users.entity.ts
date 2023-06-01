@@ -126,5 +126,5 @@ export class UserEntity {
       cascade: true,
     },
   )
-  userToTermsAgreements: UserToBadgeEntity[];
+  userToTermsAgreements: UserToTermsAgreementEntity[];
 }
