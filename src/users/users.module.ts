@@ -11,6 +11,7 @@ import { BookmarkEntity } from 'src/bookmarks/bookmarks.entity';
 import { AwsService } from 'src/aws.service';
 import { UserToTermsAgreementEntity } from 'src/user-to-terms-agreements/user-to-terms-agreements.entity';
 import { UserToTermsAgreementsModule } from 'src/user-to-terms-agreements/user-to-terms-agreements.module';
+import { UserToBadgeEntity } from 'src/user-to-badges/user-to-badges.entity';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UserToTermsAgreementsModule } from 'src/user-to-terms-agreements/user-t
       FavoriteEntity,
       BookmarkEntity,
       UserToTermsAgreementEntity,
+      UserToBadgeEntity,
     ]),
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({
