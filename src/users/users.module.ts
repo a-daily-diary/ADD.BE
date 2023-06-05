@@ -32,5 +32,6 @@ import { UserToBadgeEntity } from 'src/user-to-badges/user-to-badges.entity';
   ],
   controllers: [UsersController],
   providers: [UsersService, JwtStrategy, AwsService],
+  exports: [UsersService],
 })
 export class UsersModule {}

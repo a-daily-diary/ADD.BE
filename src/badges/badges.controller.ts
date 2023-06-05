@@ -96,6 +96,15 @@ export class BadgesController {
     return this.badgesService.findById(badgeId);
   }
 
+  @Get('users/:username')
+  @ApiOperation({
+    summary: '유저별 획득 뱃지 조회',
+  })
+  @UseGuards(JwtAuthGuard)
+  getBadgeListByUsername(@Param('username') username: string) {
+    return this.badgesService.getBadgeListByUsername(username);
+  }
+
   @Put(':badgeId')
   @ApiOperation({
     summary: '뱃지 수정 (관리자)',

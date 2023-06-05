@@ -11,8 +11,12 @@ import { Repository } from 'typeorm';
 import { BadgeFormDTO } from './dto/badge-form.dto';
 import { DEFAULT_TAKE } from 'src/constants/page';
 import { DEFAULT_SKIP } from 'src/constants/page';
-import { badgeExceptionMessage } from 'src/constants/exceptionMessage';
+import {
+  badgeExceptionMessage,
+  userExceptionMessage,
+} from 'src/constants/exceptionMessage';
 import { BadgeCode } from 'src/types';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class BadgesService {
@@ -20,6 +24,7 @@ export class BadgesService {
     @InjectRepository(BadgeEntity)
     private readonly badgeRepository: Repository<BadgeEntity>,
     private readonly awsService: AwsService,
+    private readonly usersService: UsersService,
   ) {}
 
   async uploadImg(file: Express.Multer.File) {
@@ -70,6 +75,21 @@ export class BadgesService {
       throw new NotFoundException(badgeExceptionMessage.DOES_NOT_EXIST_BADGE);
 
     return badge;
+  }
+
+  async getBadgeListByUsername(username: string) {
+    const user = await this.usersService.findUserByUsername(username);
+
+    if (!user)
+      throw new NotFoundException(userExceptionMessage.DOES_NOT_EXIST_USER);
+
+    const badgeListByUser = await this.badgeRepository
+      .createQueryBuilder('badge')
+      .leftJoinAndSelect('badge.userToBadges', 'userToBadges')
+      .where('userToBadges.user.id = :userId', { userId: user.id })
+      .getMany();
+
+    return badgeListByUser;
   }
 
   async updateBadge(badgeId: BadgeCode, badgeFormDTO: BadgeFormDTO) {
