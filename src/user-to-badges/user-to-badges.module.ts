@@ -6,5 +6,6 @@ import { UserToBadgeEntity } from './user-to-badges.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([UserToBadgeEntity])],
   providers: [UserToBadgesService],
+  exports: [UserToBadgesService],
 })
 export class UserToBadgesModule {}

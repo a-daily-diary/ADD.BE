@@ -11,6 +11,10 @@ import { Brackets, Repository } from 'typeorm';
 import { DiaryEntity } from './diaries.entity';
 import { DiaryFormDTO } from './dto/diary-form.dto';
 import { DEFAULT_SKIP, DEFAULT_TAKE } from 'src/constants/page';
+import { UserToBadgesService } from 'src/user-to-badges/user-to-badges.service';
+import { BadgesService } from 'src/badges/badges.service';
+import { BadgeCode } from 'src/types';
+import { BadgeEntity } from 'src/badges/badges.entity';
 
 @Injectable()
 export class DiariesService {
@@ -18,6 +22,8 @@ export class DiariesService {
     @InjectRepository(DiaryEntity)
     private readonly diaryRepository: Repository<DiaryEntity>,
     private readonly awsService: AwsService,
+    private readonly userToBadgesService: UserToBadgesService,
+    private readonly badgesService: BadgesService,
   ) {}
   async uploadImg(file: Express.Multer.File) {
     const uploadInfo = await this.awsService.uploadFileToS3('diaries', file);
@@ -159,7 +165,34 @@ export class DiariesService {
       ...diaryFormDto,
     });
 
-    return await this.diaryRepository.save(newDiary);
+    await this.diaryRepository.save(newDiary);
+
+    const writeCount = await this.diaryRepository
+      .createQueryBuilder('diary')
+      .leftJoin('diary.author', 'author')
+      .where('author.id = :authorId', { authorId: author.id })
+      .getCount();
+
+    let badgeToGet: BadgeEntity;
+
+    switch (writeCount) {
+      case 1:
+        badgeToGet = await this.badgesService.findByCode(BadgeCode.writer_0);
+
+        break;
+      case 10:
+        badgeToGet = await this.badgesService.findByCode(BadgeCode.writer_1);
+        break;
+    }
+
+    if (badgeToGet) {
+      this.userToBadgesService.saveUserToBadge(author, badgeToGet);
+    }
+
+    return {
+      diary: newDiary,
+      badge: badgeToGet || null,
+    };
   }
 
   async update(id: string, diaryFormDto: DiaryFormDTO, accessUser: UserDTO) {

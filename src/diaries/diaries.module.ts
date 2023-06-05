@@ -7,6 +7,8 @@ import { DiariesController } from './diaries.controller';
 import { DiaryEntity } from './diaries.entity';
 import { DiariesService } from './diaries.service';
 import { CommentsModule } from 'src/comments/comments.module';
+import { UserToBadgesModule } from 'src/user-to-badges/user-to-badges.module';
+import { BadgesModule } from 'src/badges/badges.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { CommentsModule } from 'src/comments/comments.module';
     FavoritesModule,
     BookmarksModule,
     CommentsModule,
+    UserToBadgesModule,
+    BadgesModule,
   ],
   controllers: [DiariesController],
   providers: [DiariesService, AwsService],
