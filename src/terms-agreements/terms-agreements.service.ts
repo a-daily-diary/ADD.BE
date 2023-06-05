@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { TermsAgreementEntity } from './terms-agreements.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TermsAgreementFormDTO } from './dto/terms-agreemtn-form.dto';
+import { TermsAgreementFormDTO } from './dto/terms-agreement-form.dto';
 import { termsAgreementExceptionMessage } from 'src/constants/exceptionMessage';
+import { TermsAgreementEnum } from 'src/types/terms-agreements.type';
 
 @Injectable()
 export class TermsAgreementsService {
@@ -12,7 +17,7 @@ export class TermsAgreementsService {
     private readonly termsAgreementRepository: Repository<TermsAgreementEntity>,
   ) {}
 
-  async findById(id: string) {
+  async findById(id: TermsAgreementEnum) {
     return await this.termsAgreementRepository.findOneBy({ id });
   }
 
@@ -40,6 +45,12 @@ export class TermsAgreementsService {
   }
 
   async createTermsAgreement(termsAgreementFormDTO: TermsAgreementFormDTO) {
+    const termsAgreement = await this.findById(termsAgreementFormDTO.id);
+
+    if (termsAgreement) {
+      throw new BadRequestException('중복된 약관동의 아이디입니다.');
+    }
+
     const newTermsAgreement = this.termsAgreementRepository.create(
       termsAgreementFormDTO,
     );
@@ -51,7 +62,7 @@ export class TermsAgreementsService {
     return await this.termsAgreementRepository.find();
   }
 
-  async getTermsAgreement(termsAgreementId: string) {
+  async getTermsAgreement(termsAgreementId: TermsAgreementEnum) {
     const targetTermsAgreement = await this.findById(termsAgreementId);
 
     if (!targetTermsAgreement) {
@@ -63,7 +74,7 @@ export class TermsAgreementsService {
     return targetTermsAgreement;
   }
 
-  async deleteTermsAgreement(termsAgreementId: string) {
+  async deleteTermsAgreement(termsAgreementId: TermsAgreementEnum) {
     const targetTermsAgreement = await this.findById(termsAgreementId);
 
     if (!targetTermsAgreement) {

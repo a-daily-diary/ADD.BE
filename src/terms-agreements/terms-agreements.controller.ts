@@ -4,15 +4,15 @@ import {
   Delete,
   Get,
   Param,
-  ParseUUIDPipe,
   Post,
   UseFilters,
 } from '@nestjs/common';
 import { TermsAgreementsService } from './terms-agreements.service';
-import { TermsAgreementFormDTO } from './dto/terms-agreemtn-form.dto';
+import { TermsAgreementFormDTO } from './dto/terms-agreement-form.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { responseExampleForTermsAgreement } from 'src/constants/swagger';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
+import { TermsAgreementEnum } from 'src/types/terms-agreements.type';
 
 @ApiTags('Terms-Agreement')
 @Controller('terms-agreements')
@@ -48,7 +48,7 @@ export class TermsAgreementsController {
   })
   @ApiResponse(responseExampleForTermsAgreement.getTermsAgreement)
   getTermsAgreement(
-    @Param('termsAgreementId', ParseUUIDPipe) termsAgreementId: string,
+    @Param('termsAgreementId') termsAgreementId: TermsAgreementEnum,
   ) {
     return this.termsAgreementsService.getTermsAgreement(termsAgreementId);
   }
@@ -59,7 +59,7 @@ export class TermsAgreementsController {
   })
   @ApiResponse(responseExampleForTermsAgreement.deleteTermsAgreement)
   deleteTermsAgreement(
-    @Param('termsAgreementId', ParseUUIDPipe) termsAgreementId: string,
+    @Param('termsAgreementId') termsAgreementId: TermsAgreementEnum,
   ) {
     return this.termsAgreementsService.deleteTermsAgreement(termsAgreementId);
   }
