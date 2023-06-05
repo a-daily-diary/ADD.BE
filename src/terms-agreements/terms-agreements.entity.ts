@@ -1,22 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsBoolean, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { TermsAgreementEnum } from 'src/types/terms-agreements.type';
 import { UserToTermsAgreementEntity } from 'src/user-to-terms-agreements/user-to-terms-agreements.entity';
-import {
-  Column,
-  Entity,
-  Index,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, Index, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Index('termsAgreementId', ['id'], { unique: true })
 @Entity({
   name: 'TERMS_AGREEMENT',
 })
 export class TermsAgreementEntity {
-  @IsUUID()
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @ApiProperty()
+  @IsEnum(TermsAgreementEnum)
+  @PrimaryColumn({ enum: TermsAgreementEnum })
+  id: TermsAgreementEnum;
 
   @ApiProperty()
   @IsString()

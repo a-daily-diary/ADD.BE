@@ -39,7 +39,7 @@ const badgeResponse = {
 };
 
 const termsAgreementResponse = {
-  id: 'number',
+  id: 'service | privacy | marketing',
   title: 'string',
   content: 'string',
   isRequired: 'boolean',
