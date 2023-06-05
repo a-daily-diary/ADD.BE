@@ -6,7 +6,6 @@ import {
   Param,
   Post,
   Put,
-  Query,
   UploadedFile,
   UseFilters,
   UseGuards,
@@ -17,7 +16,6 @@ import {
   ApiBody,
   ApiConsumes,
   ApiOperation,
-  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -73,17 +71,14 @@ export class BadgesController {
   @Get()
   @ApiOperation({
     summary: '뱃지 전체 조회 (개발용)',
+    description: `
+    뱃지에 대한 정보와 해당 뱃지를 획득한 유저들을 확인하기 위한 개발용 API입니다.`,
   })
   @ApiBearerAuth('access-token')
-  @ApiQuery({ name: 'take', required: false, type: 'number' })
-  @ApiQuery({ name: 'skip', required: false, type: 'number' })
   @ApiResponse(responseExampleForBadge.getBadgeList)
   @UseGuards(JwtAuthGuard)
-  getBadgeList(
-    @Query('take') take?: number | typeof NaN,
-    @Query('skip') skip?: number | typeof NaN,
-  ) {
-    return this.badgesService.getBadgeList(take, skip);
+  getBadgeList() {
+    return this.badgesService.getBadgeList();
   }
 
   @Get(':badgeId')

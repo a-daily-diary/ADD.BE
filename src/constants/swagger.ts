@@ -191,11 +191,17 @@ export const responseExampleForComment = {
 
 export const responseExampleForBadge = {
   createBadge: responseTemplate(badgeResponse),
-  getBadgeList: responseTemplate({
-    badges: [badgeResponse],
-    totalCount: 'number',
-    totalPage: 'number',
-  }),
+  getBadgeList: responseTemplate([
+    {
+      ...badgeResponse,
+      userToBadges: [
+        {
+          ...userToBadgeResponse,
+          user: userResponse,
+        },
+      ],
+    },
+  ]),
   getBadge: responseTemplate(badgeResponse),
   getBadgeListByUsername: responseTemplate({
     ...badgeResponse,
