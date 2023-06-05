@@ -30,13 +30,12 @@ const diaryResponse = {
 };
 
 const badgeResponse = {
-  id: 'uuid',
-  createdAt: '2023-05-07T07:33:03.418Z',
-  updatedAt: '2023-05-07T07:33:03.418Z',
+  id: 'writer_0 | writer_1 | writer_2 | writer_3 | new_bie | bookmark | heart | comment | funny | greatEnglish | manner | tooMuchTalker',
   name: 'string',
-  code: 'writer_0 | writer_1 | writer_2 | writer_3 | new_bie | bookmark | heart | comment | funny | greatEnglish | manner | tooMuchTalker',
   description: 'text',
   imgUrl: 'url image path',
+  createdAt: '2023-05-07T07:33:03.418Z',
+  updatedAt: '2023-05-07T07:33:03.418Z',
 };
 
 const termsAgreementResponse = {

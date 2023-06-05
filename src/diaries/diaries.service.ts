@@ -177,11 +177,11 @@ export class DiariesService {
 
     switch (writeCount) {
       case 1:
-        badgeToGet = await this.badgesService.findByCode(BadgeCode.writer_0);
+        badgeToGet = await this.badgesService.findById(BadgeCode.writer_0);
 
         break;
       case 10:
-        badgeToGet = await this.badgesService.findByCode(BadgeCode.writer_1);
+        badgeToGet = await this.badgesService.findById(BadgeCode.writer_1);
         break;
     }
 

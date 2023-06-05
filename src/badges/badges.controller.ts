@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseUUIDPipe,
   Post,
   Put,
   Query,
@@ -34,6 +33,7 @@ import { JwtAuthGuard } from 'src/users/jwt/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { BadgeFormDTO } from './dto/badge-form.dto';
+import { BadgeCode } from 'src/types';
 
 @ApiTags('Badge')
 @Controller('badges')
@@ -92,8 +92,8 @@ export class BadgesController {
   @ApiBearerAuth('access-token')
   @ApiResponse(responseExampleForBadge.getBadge)
   @UseGuards(JwtAuthGuard)
-  getBadge(@Param('badgeId', ParseUUIDPipe) badgeId: string) {
-    return this.badgesService.getBadge(badgeId);
+  getBadge(@Param('badgeId') badgeId: BadgeCode) {
+    return this.badgesService.findById(badgeId);
   }
 
   @Put(':badgeId')
@@ -104,7 +104,7 @@ export class BadgesController {
   @ApiResponse(responseExampleForBadge.updateBadge)
   @UseGuards(JwtAuthGuard)
   updateBadge(
-    @Param('badgeId', ParseUUIDPipe) badgeId: string,
+    @Param('badgeId') badgeId: BadgeCode,
     @Body() badgeFormDTO: BadgeFormDTO,
   ) {
     return this.badgesService.updateBadge(badgeId, badgeFormDTO);
@@ -117,7 +117,7 @@ export class BadgesController {
   @ApiBearerAuth('access-token')
   @ApiResponse(responseExampleForBadge.deleteBadge)
   @UseGuards(JwtAuthGuard)
-  deleteBadge(@Param('badgeId', ParseUUIDPipe) badgeId: string) {
+  deleteBadge(@Param('badgeId') badgeId: BadgeCode) {
     return this.badgesService.deleteBadge(badgeId);
   }
 }

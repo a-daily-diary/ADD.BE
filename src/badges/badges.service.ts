@@ -63,19 +63,17 @@ export class BadgesService {
     };
   }
 
-  async getBadge(badgeId: string) {
-    return await this.badgeRepository.findOneBy({ id: badgeId });
-  }
+  async findById(badgeId: BadgeCode) {
+    const badge = await this.badgeRepository.findOneBy({ id: badgeId });
 
-  async findByCode(badgeCode: BadgeCode) {
-    const badge = await this.badgeRepository.findOneBy({ code: badgeCode });
     if (!badge)
-      throw new NotFoundException('해당 코드의 뱃지를 찾을 수 없습니다.');
+      throw new NotFoundException(badgeExceptionMessage.DOES_NOT_EXIST_BADGE);
+
     return badge;
   }
 
-  async updateBadge(badgeId: string, badgeFormDTO: BadgeFormDTO) {
-    const targetBadge = await this.getBadge(badgeId);
+  async updateBadge(badgeId: BadgeCode, badgeFormDTO: BadgeFormDTO) {
+    const targetBadge = await this.findById(badgeId);
 
     if (!targetBadge) {
       throw new NotFoundException(badgeExceptionMessage.DOES_NOT_EXIST_BADGE);
@@ -90,11 +88,11 @@ export class BadgesService {
     // FIXME: 접근한 유저가 관리자인기 확인 로직 추가 예정
     await this.badgeRepository.update(badgeId, badgeFormDTO);
 
-    return await this.getBadge(badgeId);
+    return await this.findById(badgeId);
   }
 
-  async deleteBadge(badgeId: string) {
-    const targetBadge = await this.getBadge(badgeId);
+  async deleteBadge(badgeId: BadgeCode) {
+    const targetBadge = await this.findById(badgeId);
 
     if (!targetBadge) {
       throw new NotFoundException(badgeExceptionMessage.DOES_NOT_EXIST_BADGE);
