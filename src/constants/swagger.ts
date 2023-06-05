@@ -34,6 +34,7 @@ const badgeResponse = {
   createdAt: '2023-05-07T07:33:03.418Z',
   updatedAt: '2023-05-07T07:33:03.418Z',
   name: 'string',
+  code: 'writer_0 | writer_1 | writer_2 | writer_3 | new_bie | bookmark | heart | comment | funny | greatEnglish | manner | tooMuchTalker',
   description: 'text',
   imgUrl: 'url image path',
 };
@@ -92,8 +93,11 @@ export const responseExampleForUser = {
 
 export const responseExampleForDiary = {
   createDiary: responseTemplate({
-    ...diaryResponse,
-    author: userResponse,
+    diary: {
+      ...diaryResponse,
+      author: userResponse,
+    },
+    badge: badgeResponse || null,
   }),
   getDiaries: responseTemplate({
     diaries: [
