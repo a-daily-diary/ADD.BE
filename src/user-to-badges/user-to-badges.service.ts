@@ -15,7 +15,7 @@ export class UserToBadgesService {
   async saveUserToBadge(user: UserDTO, badge: BadgeEntity) {
     const pinnedCount = await this.userToBadgeRepository
       .createQueryBuilder('userToBadge')
-      .where('userToBadge.user = :user', { user })
+      .where('userToBadge.user.id = :userId', { userId: user.id })
       .andWhere('userToBadge.isPinned = true')
       .getCount();
 
@@ -27,7 +27,7 @@ export class UserToBadgesService {
     try {
       await this.userToBadgeRepository.save(newUserToBadge);
     } catch {
-      return false;
+      throw new Error('뱃지 이력 생성 도중 에러');
     }
 
     return true;
