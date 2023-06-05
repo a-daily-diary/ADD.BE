@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, IsUrl } from 'class-validator';
 import { CommonEntity } from 'src/common/entities/common.entity';
+import { BadgeCode } from 'src/types';
 import { UserToBadgeEntity } from 'src/user-to-badges/user-to-badges.entity';
 import { Column, Entity, Index, OneToMany } from 'typeorm';
 
@@ -32,4 +33,10 @@ export class BadgeEntity extends CommonEntity {
     cascade: true,
   })
   userToBadges: UserToBadgeEntity[];
+
+  @ApiProperty()
+  @IsEnum(BadgeCode)
+  @IsNotEmpty({ message: '유니크한 뱃지 코드를 설정해주세요.' })
+  @Column({ type: 'enum', unique: true, nullable: false, enum: BadgeCode })
+  code: BadgeCode;
 }

@@ -5,4 +5,5 @@ export class BadgeFormDTO extends PickType(BadgeEntity, [
   'name',
   'description',
   'imgUrl',
+  'code',
 ] as const) {}
