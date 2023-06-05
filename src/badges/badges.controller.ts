@@ -60,6 +60,7 @@ export class BadgesController {
   @ApiOperation({
     summary: '뱃지 생성 (관리자용)',
   })
+  @ApiBearerAuth('access-token')
   @ApiResponse(responseExampleForBadge.createBadge)
   @UseGuards(JwtAuthGuard)
   createBadge(
@@ -71,7 +72,7 @@ export class BadgesController {
 
   @Get()
   @ApiOperation({
-    summary: '뱃지 전체 조회',
+    summary: '뱃지 전체 조회 (개발용)',
   })
   @ApiBearerAuth('access-token')
   @ApiQuery({ name: 'take', required: false, type: 'number' })
@@ -98,8 +99,14 @@ export class BadgesController {
 
   @Get('users/:username')
   @ApiOperation({
-    summary: '유저별 획득 뱃지 조회',
+    summary: '유저별 뱃지 전체 조회',
+    description: `
+      해당 유저의 뱃지 획득 유무, isPinned 여부 확인 가능
+      - hasOwn: 뱃지 획득 유무
+      - userToBadge: 획득 이력 정보(이력 id, isPinned 여부, 취득일) | null`,
   })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForBadge.getBadgeListByUsername)
   @UseGuards(JwtAuthGuard)
   getBadgeListByUsername(@Param('username') username: string) {
     return this.badgesService.getBadgeListByUsername(username);

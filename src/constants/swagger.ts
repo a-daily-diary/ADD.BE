@@ -25,8 +25,8 @@ const diaryResponse = {
   isPublic: 'boolean',
   favoriteCount: 'number',
   commentCount: 'number',
-  createdAt: '2023-04-10T13:22:32.362Z',
-  updatedAt: '2023-04-10T13:27:16.887Z',
+  createdAt: 'Date(string)',
+  updatedAt: 'Date(string)',
 };
 
 const badgeResponse = {
@@ -34,8 +34,14 @@ const badgeResponse = {
   name: 'string',
   description: 'text',
   imgUrl: 'url image path',
-  createdAt: '2023-05-07T07:33:03.418Z',
-  updatedAt: '2023-05-07T07:33:03.418Z',
+  createdAt: 'Date(string)',
+  updatedAt: 'Date(string)',
+};
+
+const userToBadgeResponse = {
+  id: 'uuid',
+  isPinned: 'boolean',
+  createdAt: 'Date(string)',
 };
 
 const termsAgreementResponse = {
@@ -154,8 +160,8 @@ export const responseExampleForBookmark = {
 export const responseExampleForComment = {
   createComment: responseTemplate({
     id: 'uuid',
-    createdAt: '2023-04-22T10:24:58.188Z',
-    updatedAt: '2023-04-22T10:24:58.188Z',
+    createdAt: 'Date(string)',
+    updatedAt: 'Date(string)',
     comment: 'text',
     commenter: userResponse,
     diary: diaryResponse,
@@ -164,8 +170,8 @@ export const responseExampleForComment = {
     comments: [
       {
         id: 'uuid',
-        createdAt: '2023-04-23T03:29:33.979Z',
-        updatedAt: '2023-04-23T03:29:33.979Z',
+        createdAt: 'Date(string)',
+        updatedAt: 'Date(string)',
         comment: 'text',
         commenter: userResponse,
       },
@@ -175,8 +181,8 @@ export const responseExampleForComment = {
   }),
   updateComment: responseTemplate({
     id: 'uuid',
-    createdAt: '2023-04-22T10:24:58.188Z',
-    updatedAt: '2023-04-22T10:24:58.188Z',
+    createdAt: 'Date(string)',
+    updatedAt: 'Date(string)',
     comment: 'text',
     commenter: userResponse,
   }),
@@ -191,6 +197,15 @@ export const responseExampleForBadge = {
     totalPage: 'number',
   }),
   getBadge: responseTemplate(badgeResponse),
+  getBadgeListByUsername: responseTemplate({
+    ...badgeResponse,
+    hasOwn: 'boolean',
+    userToBadge: {
+      id: 'uuid',
+      isPinned: 'boolean',
+      createdAt: 'Date(string)',
+    },
+  }),
   updateBadge: responseTemplate(badgeResponse),
   deleteBadge: responseTemplate(deleteResponse),
 };
