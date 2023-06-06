@@ -5,9 +5,8 @@ import { favoriteExceptionMessage } from 'src/constants/exceptionMessage';
 import { DiaryEntity } from 'src/diaries/diaries.entity';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { FavoriteEntity } from './favorites.entity';
-import { BadgeEntity } from 'src/badges/badges.entity';
 import { BadgeCode } from 'src/types/badges.type';
-import { BadgesService } from 'src/badges/badges.service';
+import { UserToBadgesService } from 'src/user-to-badges/user-to-badges.service';
 
 @Injectable()
 export class FavoritesService {
@@ -16,7 +15,7 @@ export class FavoritesService {
     private readonly favoriteRepository: Repository<FavoriteEntity>,
     @InjectRepository(DiaryEntity)
     private readonly diaryRepository: Repository<DiaryEntity>,
-    private readonly badgesService: BadgesService,
+    private readonly userToBadgesService: UserToBadgesService,
   ) {}
 
   async register(diaryId: string, user: UserDTO) {
@@ -56,15 +55,23 @@ export class FavoritesService {
       .where('user.id = :userId', { userId: user.id })
       .getCount();
 
-    let badgeToGet: BadgeEntity;
+    const badgeToGet = await this.achievedBadge(user, registerFavoriteCount);
 
-    // FIXME: 이미 획득한 경우 예외 처리
-    // FIXME: 획득 조건 상수 혹은 함수로 분리
-    if (registerFavoriteCount === 10) {
-      badgeToGet = await this.badgesService.findById(BadgeCode.heart);
+    return { message: '좋아요가 등록되었습니다.', badge: badgeToGet };
+  }
+
+  // FIXME: 이미 획득한 경우 예외 처리
+  // FIXME: 획득 조건 상수 혹은 함수로 분리
+  private async achievedBadge(user: UserDTO, conditionCount: number) {
+    switch (conditionCount) {
+      case 10:
+        return await this.userToBadgesService.saveUserToBadge(
+          user,
+          BadgeCode.heart,
+        );
+      default:
+        return null;
     }
-
-    return { message: '좋아요가 등록되었습니다.', badge: badgeToGet || null };
   }
 
   async unregister(diaryId: string, user: UserDTO) {
