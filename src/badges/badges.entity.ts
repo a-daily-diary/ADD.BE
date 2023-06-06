@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { IsEnum, IsNotEmpty, IsString, IsUrl } from 'class-validator';
-import { BadgeCode } from 'src/types';
+import { BadgeCode } from 'src/types/badges.type';
 import { UserToBadgeEntity } from 'src/user-to-badges/user-to-badges.entity';
 import {
   Column,

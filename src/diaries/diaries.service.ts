@@ -13,7 +13,7 @@ import { DiaryFormDTO } from './dto/diary-form.dto';
 import { DEFAULT_SKIP, DEFAULT_TAKE } from 'src/constants/page';
 import { UserToBadgesService } from 'src/user-to-badges/user-to-badges.service';
 import { BadgesService } from 'src/badges/badges.service';
-import { BadgeCode } from 'src/types';
+import { BadgeCode } from 'src/types/badges.type';
 import { BadgeEntity } from 'src/badges/badges.entity';
 
 @Injectable()

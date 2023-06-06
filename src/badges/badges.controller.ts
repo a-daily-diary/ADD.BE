@@ -31,7 +31,7 @@ import { JwtAuthGuard } from 'src/users/jwt/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { BadgeFormDTO } from './dto/badge-form.dto';
-import { BadgeCode } from 'src/types';
+import { BadgeCode } from 'src/types/badges.type';
 
 @ApiTags('Badge')
 @Controller('badges')
