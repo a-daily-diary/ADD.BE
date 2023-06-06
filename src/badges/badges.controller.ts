@@ -4,8 +4,10 @@ import {
   Delete,
   Get,
   Param,
+  ParseBoolPipe,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseFilters,
   UseGuards,
@@ -32,12 +34,16 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { BadgeFormDTO } from './dto/badge-form.dto';
 import { BadgeCode } from 'src/types/badges.type';
+import { UserToBadgesService } from 'src/user-to-badges/user-to-badges.service';
 
 @ApiTags('Badge')
 @Controller('badges')
 @UseFilters(HttpApiExceptionFilter)
 export class BadgesController {
-  constructor(private readonly badgesService: BadgesService) {}
+  constructor(
+    private readonly badgesService: BadgesService,
+    private readonly userToBadgesService: UserToBadgesService,
+  ) {}
 
   @Post('upload-image')
   @ApiConsumes('multipart/form-data')
@@ -103,8 +109,11 @@ export class BadgesController {
   @ApiBearerAuth('access-token')
   @ApiResponse(responseExampleForBadge.getBadgeListByUsername)
   @UseGuards(JwtAuthGuard)
-  getBadgeListByUsername(@Param('username') username: string) {
-    return this.badgesService.getBadgeListByUsername(username);
+  getBadgeListByUsername(
+    @Param('username') username: string,
+    @Query('onlyPinned', ParseBoolPipe) onlyPinned?: boolean,
+  ) {
+    return this.badgesService.getBadgeListByUsername(username, onlyPinned);
   }
 
   @Put(':badgeId')
@@ -128,7 +137,10 @@ export class BadgesController {
   @ApiBearerAuth('access-token')
   @ApiResponse(responseExampleForBadge.deleteBadge)
   @UseGuards(JwtAuthGuard)
-  deleteBadge(@Param('badgeId') badgeId: BadgeCode) {
+  deleteBadge(
+    @Param('badgeId')
+    badgeId: BadgeCode,
+  ) {
     return this.badgesService.deleteBadge(badgeId);
   }
 }
