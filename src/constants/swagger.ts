@@ -150,6 +150,7 @@ export const responseExampleForDiary = {
 export const responseExampleForFavorite = {
   registerFavorite: responseTemplate({
     message: '좋아요가 등록되었습니다.',
+    badge: badgeResponse,
   }),
   unregisterFavorite: responseTemplate({
     message: '좋아요 등록이 취소되었습니다.',
