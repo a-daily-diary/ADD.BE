@@ -40,6 +40,7 @@ export const badgeExceptionMessage = {
 export const userToBadgesExceptionMessage = {
   DOES_NOT_EXIST_USER_TO_BADGE: '해당 뱃지를 획득하지 못했습니다.',
   ONLY_SET_8: '뱃지의 최대 pinned 개수는 8개입니다.',
+  OWNER_ONLY_PINNED: '뱃지 소유자만 pinned 할 수 있습니다.',
 };
 
 export const termsAgreementExceptionMessage = {
