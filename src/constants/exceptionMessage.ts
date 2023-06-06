@@ -37,6 +37,11 @@ export const badgeExceptionMessage = {
   EXIST_BADGE_NAME: '설정하신 뱃지 이름은 이미 존재합니다.',
 };
 
+export const userToBadgesExceptionMessage = {
+  DOES_NOT_EXIST_USER_TO_BADGE: '해당 뱃지를 획득하지 못했습니다.',
+  ONLY_SET_8: '뱃지의 최대 pinned 개수는 8개입니다.',
+};
+
 export const termsAgreementExceptionMessage = {
   DOES_NOT_EXIST_TERMS_AGREEMENT: '해당하는 약관동의는 존재하지 않습니다.',
   INVALIDATE_TERMS_AGREEMENTS: '필수 약관동의를 체크해주세요',

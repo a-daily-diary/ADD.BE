@@ -5,6 +5,8 @@ import {
   Get,
   Param,
   ParseBoolPipe,
+  ParseEnumPipe,
+  Patch,
   Post,
   Put,
   Query,
@@ -116,6 +118,15 @@ export class BadgesController {
     return this.badgesService.getBadgeListByUsername(username, onlyPinned);
   }
 
+  @Patch(':badgeId')
+  @UseGuards(JwtAuthGuard)
+  pinnedBadge(
+    @CurrentUser() currentUser: UserDTO,
+    @Param('badgeId', new ParseEnumPipe(BadgeCode)) badgeId: BadgeCode,
+  ) {
+    return this.userToBadgesService.pinnedBadge(currentUser, badgeId);
+  }
+
   @Put(':badgeId')
   @ApiOperation({
     summary: '뱃지 수정 (관리자)',
@@ -124,7 +135,7 @@ export class BadgesController {
   @ApiResponse(responseExampleForBadge.updateBadge)
   @UseGuards(JwtAuthGuard)
   updateBadge(
-    @Param('badgeId') badgeId: BadgeCode,
+    @Param('badgeId', new ParseEnumPipe(BadgeCode)) badgeId: BadgeCode,
     @Body() badgeFormDTO: BadgeFormDTO,
   ) {
     return this.badgesService.updateBadge(badgeId, badgeFormDTO);
@@ -138,7 +149,7 @@ export class BadgesController {
   @ApiResponse(responseExampleForBadge.deleteBadge)
   @UseGuards(JwtAuthGuard)
   deleteBadge(
-    @Param('badgeId')
+    @Param('badgeId', new ParseEnumPipe(BadgeCode))
     badgeId: BadgeCode,
   ) {
     return this.badgesService.deleteBadge(badgeId);
