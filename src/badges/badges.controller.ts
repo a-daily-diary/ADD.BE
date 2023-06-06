@@ -119,6 +119,14 @@ export class BadgesController {
   }
 
   @Patch(':badgeId')
+  @ApiOperation({
+    summary: '뱃지 Pinned API',
+    description: `
+    API호출 직전의 isPinned 값의 반대 값으로 변경
+    ex) false였던 뱃지에서 해당 API 호출 시 true로 변경`,
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForBadge.pinnedBadge)
   @UseGuards(JwtAuthGuard)
   pinnedBadge(
     @CurrentUser() currentUser: UserDTO,
