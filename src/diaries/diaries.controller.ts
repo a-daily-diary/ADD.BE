@@ -221,6 +221,9 @@ export class DiariesController {
   @Post(':diaryId/comment')
   @ApiOperation({
     summary: '댓글 생성',
+    description: `
+    뱃지 획득 응답을 위해 badge 속성을 같이 보내고 있습니다.
+    획득 조건에 맞는 경우 badge 속성에 값이 있으며, 획득 조건이 아닌 경우는 null로 반환됩니다.`,
   })
   @ApiBearerAuth('access-token')
   @ApiResponse(responseExampleForComment.createComment)

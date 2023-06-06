@@ -29,6 +29,14 @@ const diaryResponse = {
   updatedAt: 'Date(string)',
 };
 
+const commentResponse = {
+  id: 'uuid',
+  createdAt: 'Date(string)',
+  updatedAt: 'Date(string)',
+  comment: 'text',
+  commenter: userResponse,
+};
+
 const badgeResponse = {
   id: 'writer_0 | writer_1 | writer_2 | writer_3 | new_bie | bookmark | heart | comment | funny | greatEnglish | manner | tooMuchTalker',
   name: 'string',
@@ -159,33 +167,18 @@ export const responseExampleForBookmark = {
 
 export const responseExampleForComment = {
   createComment: responseTemplate({
-    id: 'uuid',
-    createdAt: 'Date(string)',
-    updatedAt: 'Date(string)',
-    comment: 'text',
-    commenter: userResponse,
-    diary: diaryResponse,
+    comment: {
+      ...commentResponse,
+      diary: diaryResponse,
+    },
+    badge: badgeResponse,
   }),
   getCommentList: responseTemplate({
-    comments: [
-      {
-        id: 'uuid',
-        createdAt: 'Date(string)',
-        updatedAt: 'Date(string)',
-        comment: 'text',
-        commenter: userResponse,
-      },
-    ],
+    comments: [commentResponse],
     totalCount: 'number',
     totalPage: 'number',
   }),
-  updateComment: responseTemplate({
-    id: 'uuid',
-    createdAt: 'Date(string)',
-    updatedAt: 'Date(string)',
-    comment: 'text',
-    commenter: userResponse,
-  }),
+  updateComment: responseTemplate(commentResponse),
   deleteComment: responseTemplate(deleteResponse),
 };
 
