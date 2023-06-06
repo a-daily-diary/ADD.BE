@@ -13,6 +13,9 @@ import { UserDTO } from 'src/users/dto/user.dto';
 import { Repository } from 'typeorm';
 import { CommentEntity } from './comments.entity';
 import { CommentFormDTO } from './dto/comment-form.dto';
+import { BadgeEntity } from 'src/badges/badges.entity';
+import { BadgesService } from 'src/badges/badges.service';
+import { BadgeCode } from 'src/types/badges.type';
 
 @Injectable()
 export class CommentsService {
@@ -21,6 +24,7 @@ export class CommentsService {
     private readonly commentRepository: Repository<CommentEntity>,
     @InjectRepository(DiaryEntity)
     private readonly diaryRepository: Repository<DiaryEntity>,
+    private readonly badgesService: BadgesService,
   ) {}
 
   async createComment(
@@ -44,7 +48,24 @@ export class CommentsService {
     await this.diaryRepository.save(targetDiary);
     await this.commentRepository.save(newComment);
 
-    return newComment;
+    const commentWriteCount = await this.commentRepository
+      .createQueryBuilder('comment')
+      .leftJoin('comment.commenter', 'commenter')
+      .where('commenter.id = :userId', { userId: accessedUser.id })
+      .getCount();
+
+    let badgeToGet: BadgeEntity;
+
+    // FIXME: 이미 획득한 경우 예외 처리
+    // FIXME: 획득 조건 상수 혹은 함수로 분리
+    if (commentWriteCount === 10) {
+      badgeToGet = await this.badgesService.findById(BadgeCode.comment);
+    }
+
+    return {
+      comment: newComment,
+      badge: badgeToGet || null,
+    };
   }
 
   async getCommentList(diaryId: string, take?: number, skip?: number) {

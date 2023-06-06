@@ -16,6 +16,7 @@ import { CommentsModule } from './comments/comments.module';
 import { BadgesModule } from './badges/badges.module';
 import { TermsAgreementsModule } from './terms-agreements/terms-agreements.module';
 import { UserToTermsAgreementsModule } from './user-to-terms-agreements/user-to-terms-agreements.module';
+import { UserToBadgesModule } from './user-to-badges/user-to-badges.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (): Promise<TypeOrmModuleOptions> => {
@@ -48,6 +49,7 @@ const typeOrmModuleOptions = {
     BadgesModule,
     TermsAgreementsModule,
     UserToTermsAgreementsModule,
+    UserToBadgesModule,
   ],
   controllers: [AppController],
   providers: [AppService, AwsService],

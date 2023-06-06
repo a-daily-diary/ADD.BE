@@ -4,10 +4,8 @@ import {
   Delete,
   Get,
   Param,
-  ParseUUIDPipe,
   Post,
   Put,
-  Query,
   UploadedFile,
   UseFilters,
   UseGuards,
@@ -18,7 +16,6 @@ import {
   ApiBody,
   ApiConsumes,
   ApiOperation,
-  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -34,6 +31,7 @@ import { JwtAuthGuard } from 'src/users/jwt/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { BadgeFormDTO } from './dto/badge-form.dto';
+import { BadgeCode } from 'src/types/badges.type';
 
 @ApiTags('Badge')
 @Controller('badges')
@@ -60,6 +58,7 @@ export class BadgesController {
   @ApiOperation({
     summary: '뱃지 생성 (관리자용)',
   })
+  @ApiBearerAuth('access-token')
   @ApiResponse(responseExampleForBadge.createBadge)
   @UseGuards(JwtAuthGuard)
   createBadge(
@@ -71,18 +70,15 @@ export class BadgesController {
 
   @Get()
   @ApiOperation({
-    summary: '뱃지 전체 조회',
+    summary: '뱃지 전체 조회 (개발용)',
+    description: `
+    뱃지에 대한 정보와 해당 뱃지를 획득한 유저들을 확인하기 위한 개발용 API입니다.`,
   })
   @ApiBearerAuth('access-token')
-  @ApiQuery({ name: 'take', required: false, type: 'number' })
-  @ApiQuery({ name: 'skip', required: false, type: 'number' })
   @ApiResponse(responseExampleForBadge.getBadgeList)
   @UseGuards(JwtAuthGuard)
-  getBadgeList(
-    @Query('take') take?: number | typeof NaN,
-    @Query('skip') skip?: number | typeof NaN,
-  ) {
-    return this.badgesService.getBadgeList(take, skip);
+  getBadgeList() {
+    return this.badgesService.getBadgeList();
   }
 
   @Get(':badgeId')
@@ -92,8 +88,23 @@ export class BadgesController {
   @ApiBearerAuth('access-token')
   @ApiResponse(responseExampleForBadge.getBadge)
   @UseGuards(JwtAuthGuard)
-  getBadge(@Param('badgeId', ParseUUIDPipe) badgeId: string) {
-    return this.badgesService.getBadge(badgeId);
+  getBadge(@Param('badgeId') badgeId: BadgeCode) {
+    return this.badgesService.findById(badgeId);
+  }
+
+  @Get('users/:username')
+  @ApiOperation({
+    summary: '유저별 뱃지 전체 조회',
+    description: `
+      해당 유저의 뱃지 획득 유무, isPinned 여부 확인 가능
+      - hasOwn: 뱃지 획득 유무
+      - userToBadge: 획득 이력 정보(이력 id, isPinned 여부, 취득일) | null`,
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForBadge.getBadgeListByUsername)
+  @UseGuards(JwtAuthGuard)
+  getBadgeListByUsername(@Param('username') username: string) {
+    return this.badgesService.getBadgeListByUsername(username);
   }
 
   @Put(':badgeId')
@@ -104,7 +115,7 @@ export class BadgesController {
   @ApiResponse(responseExampleForBadge.updateBadge)
   @UseGuards(JwtAuthGuard)
   updateBadge(
-    @Param('badgeId', ParseUUIDPipe) badgeId: string,
+    @Param('badgeId') badgeId: BadgeCode,
     @Body() badgeFormDTO: BadgeFormDTO,
   ) {
     return this.badgesService.updateBadge(badgeId, badgeFormDTO);
@@ -117,7 +128,7 @@ export class BadgesController {
   @ApiBearerAuth('access-token')
   @ApiResponse(responseExampleForBadge.deleteBadge)
   @UseGuards(JwtAuthGuard)
-  deleteBadge(@Param('badgeId', ParseUUIDPipe) badgeId: string) {
+  deleteBadge(@Param('badgeId') badgeId: BadgeCode) {
     return this.badgesService.deleteBadge(badgeId);
   }
 }

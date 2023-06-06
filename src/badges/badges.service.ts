@@ -9,9 +9,12 @@ import { UserDTO } from 'src/users/dto/user.dto';
 import { BadgeEntity } from './badges.entity';
 import { Repository } from 'typeorm';
 import { BadgeFormDTO } from './dto/badge-form.dto';
-import { DEFAULT_TAKE } from 'src/constants/page';
-import { DEFAULT_SKIP } from 'src/constants/page';
-import { badgeExceptionMessage } from 'src/constants/exceptionMessage';
+import {
+  badgeExceptionMessage,
+  userExceptionMessage,
+} from 'src/constants/exceptionMessage';
+import { BadgeCode, BadgeListByUserResponse } from 'src/types/badges.type';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class BadgesService {
@@ -19,6 +22,7 @@ export class BadgesService {
     @InjectRepository(BadgeEntity)
     private readonly badgeRepository: Repository<BadgeEntity>,
     private readonly awsService: AwsService,
+    private readonly usersService: UsersService,
   ) {}
 
   async uploadImg(file: Express.Multer.File) {
@@ -30,9 +34,9 @@ export class BadgesService {
     return await this.badgeRepository.findOneBy({ name: badgeName });
   }
 
-  async createBadge(requsetUser: UserDTO, badgeFormDTO: BadgeFormDTO) {
+  async createBadge(request: UserDTO, badgeFormDTO: BadgeFormDTO) {
     // TODO: requestUser가 admin인 경우에만 뱃지 생성할 수 있는 로직 추가 예정
-    if (requsetUser.isAdmin === true) {
+    if (request.isAdmin === true) {
       throw new BadRequestException(badgeExceptionMessage.OWNER_ONLY_CREATE);
     }
 
@@ -48,26 +52,66 @@ export class BadgesService {
     return newBadge;
   }
 
-  async getBadgeList(take?: number, skip?: number) {
-    const [badgeList, totalCount] = await this.badgeRepository
+  async getBadgeList() {
+    const badgeList = await this.badgeRepository
       .createQueryBuilder('badge')
-      .take(take ?? DEFAULT_TAKE)
-      .skip(skip ?? DEFAULT_SKIP)
-      .getManyAndCount();
+      .leftJoinAndSelect('badge.userToBadges', 'userToBadges')
+      .leftJoinAndSelect('userToBadges.user', 'badgeUser')
+      .getMany();
 
-    return {
-      badges: badgeList,
-      totalCount,
-      totalPage: Math.ceil(totalCount / (take ?? DEFAULT_TAKE)),
-    };
+    return badgeList;
   }
 
-  async getBadge(badgeId: string) {
-    return await this.badgeRepository.findOneBy({ id: badgeId });
+  async findById(badgeId: BadgeCode) {
+    const badge = await this.badgeRepository.findOneBy({ id: badgeId });
+
+    if (!badge)
+      throw new NotFoundException(badgeExceptionMessage.DOES_NOT_EXIST_BADGE);
+
+    return badge;
   }
 
-  async updateBadge(badgeId: string, badgeFormDTO: BadgeFormDTO) {
-    const targetBadge = await this.getBadge(badgeId);
+  async getBadgeListByUsername(username: string) {
+    const user = await this.usersService.findUserByUsername(username);
+
+    if (!user)
+      throw new NotFoundException(userExceptionMessage.DOES_NOT_EXIST_USER);
+
+    const badgeList = await this.badgeRepository
+      .createQueryBuilder('badge')
+      .leftJoinAndSelect('badge.userToBadges', 'userToBadges')
+      .leftJoinAndSelect('userToBadges.user', 'badgeUser')
+      .getMany();
+
+    const newBadgeList: BadgeListByUserResponse[] = badgeList.map(
+      (badgeInfo) => {
+        const { userToBadges, deleteAt: _, ...otherBadgeInfo } = badgeInfo;
+
+        const userToBadgeInfo = userToBadges.find(
+          (userToBadge) => userToBadge.user.id === user.id,
+        );
+
+        const userToBadge = userToBadgeInfo
+          ? {
+              id: userToBadgeInfo.id,
+              isPinned: userToBadgeInfo.isPinned,
+              createdAt: userToBadgeInfo.createdAt,
+            }
+          : null;
+
+        return {
+          ...otherBadgeInfo,
+          hasOwn: !!userToBadge,
+          userToBadge,
+        };
+      },
+    );
+
+    return newBadgeList;
+  }
+
+  async updateBadge(badgeId: BadgeCode, badgeFormDTO: BadgeFormDTO) {
+    const targetBadge = await this.findById(badgeId);
 
     if (!targetBadge) {
       throw new NotFoundException(badgeExceptionMessage.DOES_NOT_EXIST_BADGE);
@@ -82,11 +126,11 @@ export class BadgesService {
     // FIXME: 접근한 유저가 관리자인기 확인 로직 추가 예정
     await this.badgeRepository.update(badgeId, badgeFormDTO);
 
-    return await this.getBadge(badgeId);
+    return await this.findById(badgeId);
   }
 
-  async deleteBadge(badgeId: string) {
-    const targetBadge = await this.getBadge(badgeId);
+  async deleteBadge(badgeId: BadgeCode) {
+    const targetBadge = await this.findById(badgeId);
 
     if (!targetBadge) {
       throw new NotFoundException(badgeExceptionMessage.DOES_NOT_EXIST_BADGE);

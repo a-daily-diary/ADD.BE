@@ -1,14 +1,29 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
-import { CommonEntity } from 'src/common/entities/common.entity';
-import { UserToBadgeEntity } from 'src/users/userToBadge.entity';
-import { Column, Entity, Index, OneToMany } from 'typeorm';
+import { Exclude } from 'class-transformer';
+import { IsEnum, IsNotEmpty, IsString, IsUrl } from 'class-validator';
+import { BadgeCode } from 'src/types/badges.type';
+import { UserToBadgeEntity } from 'src/user-to-badges/user-to-badges.entity';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Index('badgeId', ['id'], { unique: true })
 @Entity({
   name: 'BADGE',
 })
-export class BadgeEntity extends CommonEntity {
+export class BadgeEntity {
+  @ApiProperty()
+  @IsEnum(BadgeCode)
+  @PrimaryColumn({ enum: BadgeCode })
+  id: BadgeCode;
+
   @ApiProperty()
   @IsString()
   @IsNotEmpty({ message: '뱃지의 이름을 설정해주세요.' })
@@ -28,6 +43,22 @@ export class BadgeEntity extends CommonEntity {
   imgUrl: string;
 
   @ApiProperty()
-  @OneToMany(() => UserToBadgeEntity, (userToBadge) => userToBadge.badge)
+  @OneToMany(() => UserToBadgeEntity, (userToBadge) => userToBadge.badge, {
+    cascade: true,
+  })
   userToBadges: UserToBadgeEntity[];
+
+  @CreateDateColumn({
+    type: 'timestamptz',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamptz',
+  })
+  updatedAt: Date;
+
+  @Exclude()
+  @DeleteDateColumn({ type: 'timestamptz' })
+  deleteAt?: Date | null;
 }

@@ -25,17 +25,31 @@ const diaryResponse = {
   isPublic: 'boolean',
   favoriteCount: 'number',
   commentCount: 'number',
-  createdAt: '2023-04-10T13:22:32.362Z',
-  updatedAt: '2023-04-10T13:27:16.887Z',
+  createdAt: 'Date(string)',
+  updatedAt: 'Date(string)',
+};
+
+const commentResponse = {
+  id: 'uuid',
+  createdAt: 'Date(string)',
+  updatedAt: 'Date(string)',
+  comment: 'text',
+  commenter: userResponse,
 };
 
 const badgeResponse = {
-  id: 'uuid',
-  createdAt: '2023-05-07T07:33:03.418Z',
-  updatedAt: '2023-05-07T07:33:03.418Z',
+  id: 'writer_0 | writer_1 | writer_2 | writer_3 | new_bie | bookmark | heart | comment | funny | greatEnglish | manner | tooMuchTalker',
   name: 'string',
   description: 'text',
   imgUrl: 'url image path',
+  createdAt: 'Date(string)',
+  updatedAt: 'Date(string)',
+};
+
+const userToBadgeResponse = {
+  id: 'uuid',
+  isPinned: 'boolean',
+  createdAt: 'Date(string)',
 };
 
 const termsAgreementResponse = {
@@ -92,8 +106,11 @@ export const responseExampleForUser = {
 
 export const responseExampleForDiary = {
   createDiary: responseTemplate({
-    ...diaryResponse,
-    author: userResponse,
+    diary: {
+      ...diaryResponse,
+      author: userResponse,
+    },
+    badge: badgeResponse || null,
   }),
   getDiaries: responseTemplate({
     diaries: [
@@ -133,6 +150,7 @@ export const responseExampleForDiary = {
 export const responseExampleForFavorite = {
   registerFavorite: responseTemplate({
     message: '좋아요가 등록되었습니다.',
+    badge: badgeResponse,
   }),
   unregisterFavorite: responseTemplate({
     message: '좋아요 등록이 취소되었습니다.',
@@ -142,6 +160,7 @@ export const responseExampleForFavorite = {
 export const responseExampleForBookmark = {
   registerBookmark: responseTemplate({
     message: '북마크가 등록되었습니다.',
+    badge: badgeResponse,
   }),
   unregisterBookmark: responseTemplate({
     message: '북마크 등록이 취소되었습니다.',
@@ -150,44 +169,44 @@ export const responseExampleForBookmark = {
 
 export const responseExampleForComment = {
   createComment: responseTemplate({
-    id: 'uuid',
-    createdAt: '2023-04-22T10:24:58.188Z',
-    updatedAt: '2023-04-22T10:24:58.188Z',
-    comment: 'text',
-    commenter: userResponse,
-    diary: diaryResponse,
+    comment: {
+      ...commentResponse,
+      diary: diaryResponse,
+    },
+    badge: badgeResponse,
   }),
   getCommentList: responseTemplate({
-    comments: [
-      {
-        id: 'uuid',
-        createdAt: '2023-04-23T03:29:33.979Z',
-        updatedAt: '2023-04-23T03:29:33.979Z',
-        comment: 'text',
-        commenter: userResponse,
-      },
-    ],
+    comments: [commentResponse],
     totalCount: 'number',
     totalPage: 'number',
   }),
-  updateComment: responseTemplate({
-    id: 'uuid',
-    createdAt: '2023-04-22T10:24:58.188Z',
-    updatedAt: '2023-04-22T10:24:58.188Z',
-    comment: 'text',
-    commenter: userResponse,
-  }),
+  updateComment: responseTemplate(commentResponse),
   deleteComment: responseTemplate(deleteResponse),
 };
 
 export const responseExampleForBadge = {
   createBadge: responseTemplate(badgeResponse),
-  getBadgeList: responseTemplate({
-    badges: [badgeResponse],
-    totalCount: 'number',
-    totalPage: 'number',
-  }),
+  getBadgeList: responseTemplate([
+    {
+      ...badgeResponse,
+      userToBadges: [
+        {
+          ...userToBadgeResponse,
+          user: userResponse,
+        },
+      ],
+    },
+  ]),
   getBadge: responseTemplate(badgeResponse),
+  getBadgeListByUsername: responseTemplate({
+    ...badgeResponse,
+    hasOwn: 'boolean',
+    userToBadge: {
+      id: 'uuid',
+      isPinned: 'boolean',
+      createdAt: 'Date(string)',
+    },
+  }),
   updateBadge: responseTemplate(badgeResponse),
   deleteBadge: responseTemplate(deleteResponse),
 };
