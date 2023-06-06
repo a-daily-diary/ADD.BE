@@ -12,9 +12,7 @@ import { DiaryEntity } from './diaries.entity';
 import { DiaryFormDTO } from './dto/diary-form.dto';
 import { DEFAULT_SKIP, DEFAULT_TAKE } from 'src/constants/page';
 import { UserToBadgesService } from 'src/user-to-badges/user-to-badges.service';
-import { BadgesService } from 'src/badges/badges.service';
-import { BadgeCode } from 'src/types/badges.type';
-import { BadgeEntity } from 'src/badges/badges.entity';
+import { BadgeAcquisitionConditionForDiary } from 'src/constants/badgeAcquisitionCondition';
 
 @Injectable()
 export class DiariesService {
@@ -23,7 +21,6 @@ export class DiariesService {
     private readonly diaryRepository: Repository<DiaryEntity>,
     private readonly awsService: AwsService,
     private readonly userToBadgesService: UserToBadgesService,
-    private readonly badgesService: BadgesService,
   ) {}
   async uploadImg(file: Express.Multer.File) {
     const uploadInfo = await this.awsService.uploadFileToS3('diaries', file);
@@ -173,25 +170,16 @@ export class DiariesService {
       .where('author.id = :authorId', { authorId: author.id })
       .getCount();
 
-    let badgeToGet: BadgeEntity;
-
-    switch (writeCount) {
-      case 1:
-        badgeToGet = await this.badgesService.findById(BadgeCode.writer_0);
-
-        break;
-      case 10:
-        badgeToGet = await this.badgesService.findById(BadgeCode.writer_1);
-        break;
-    }
-
-    if (badgeToGet) {
-      this.userToBadgesService.saveUserToBadge(author, badgeToGet);
-    }
+    // 뱃지 획득 조건을 추가하고 싶은 경우 /src/constants/badgeAcquisitionCondition.ts에 추가
+    const badgeToGet = await this.userToBadgesService.achievedBadge(
+      author,
+      writeCount,
+      BadgeAcquisitionConditionForDiary,
+    );
 
     return {
       diary: newDiary,
-      badge: badgeToGet || null,
+      badge: badgeToGet,
     };
   }
 

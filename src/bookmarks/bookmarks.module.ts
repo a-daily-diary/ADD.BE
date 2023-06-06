@@ -4,13 +4,13 @@ import { DiaryEntity } from 'src/diaries/diaries.entity';
 import { DiariesModule } from 'src/diaries/diaries.module';
 import { BookmarkEntity } from './bookmarks.entity';
 import { BookmarksService } from './bookmarks.service';
-import { BadgesModule } from 'src/badges/badges.module';
+import { UserToBadgesModule } from 'src/user-to-badges/user-to-badges.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([BookmarkEntity, DiaryEntity]),
     forwardRef(() => DiariesModule),
-    BadgesModule,
+    UserToBadgesModule,
   ],
   providers: [BookmarksService],
   exports: [BookmarksService],
