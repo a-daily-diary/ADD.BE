@@ -9,13 +9,11 @@ import { UserDTO } from 'src/users/dto/user.dto';
 import { BadgeEntity } from './badges.entity';
 import { Repository } from 'typeorm';
 import { BadgeFormDTO } from './dto/badge-form.dto';
-import { DEFAULT_TAKE } from 'src/constants/page';
-import { DEFAULT_SKIP } from 'src/constants/page';
 import {
   badgeExceptionMessage,
   userExceptionMessage,
 } from 'src/constants/exceptionMessage';
-import { BadgeCode } from 'src/types';
+import { BadgeCode, BadgeListByUserResponse } from 'src/types/badges.type';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -54,18 +52,14 @@ export class BadgesService {
     return newBadge;
   }
 
-  async getBadgeList(take?: number, skip?: number) {
-    const [badgeList, totalCount] = await this.badgeRepository
+  async getBadgeList() {
+    const badgeList = await this.badgeRepository
       .createQueryBuilder('badge')
-      .take(take ?? DEFAULT_TAKE)
-      .skip(skip ?? DEFAULT_SKIP)
-      .getManyAndCount();
+      .leftJoinAndSelect('badge.userToBadges', 'userToBadges')
+      .leftJoinAndSelect('userToBadges.user', 'badgeUser')
+      .getMany();
 
-    return {
-      badges: badgeList,
-      totalCount,
-      totalPage: Math.ceil(totalCount / (take ?? DEFAULT_TAKE)),
-    };
+    return badgeList;
   }
 
   async findById(badgeId: BadgeCode) {
@@ -83,13 +77,37 @@ export class BadgesService {
     if (!user)
       throw new NotFoundException(userExceptionMessage.DOES_NOT_EXIST_USER);
 
-    const badgeListByUser = await this.badgeRepository
+    const badgeList = await this.badgeRepository
       .createQueryBuilder('badge')
       .leftJoinAndSelect('badge.userToBadges', 'userToBadges')
-      .where('userToBadges.user.id = :userId', { userId: user.id })
+      .leftJoinAndSelect('userToBadges.user', 'badgeUser')
       .getMany();
 
-    return badgeListByUser;
+    const newBadgeList: BadgeListByUserResponse[] = badgeList.map(
+      (badgeInfo) => {
+        const { userToBadges, deleteAt: _, ...otherBadgeInfo } = badgeInfo;
+
+        const userToBadgeInfo = userToBadges.find(
+          (userToBadge) => userToBadge.user.id === user.id,
+        );
+
+        const userToBadge = userToBadgeInfo
+          ? {
+              id: userToBadgeInfo.id,
+              isPinned: userToBadgeInfo.isPinned,
+              createdAt: userToBadgeInfo.createdAt,
+            }
+          : null;
+
+        return {
+          ...otherBadgeInfo,
+          hasOwn: !!userToBadge,
+          userToBadge,
+        };
+      },
+    );
+
+    return newBadgeList;
   }
 
   async updateBadge(badgeId: BadgeCode, badgeFormDTO: BadgeFormDTO) {

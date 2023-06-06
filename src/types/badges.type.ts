@@ -12,3 +12,18 @@ export enum BadgeCode {
   manner = 'manner',
   tooMuchTalker = 'tooMuchTalker',
 }
+
+export interface BadgeListByUserResponse {
+  id: BadgeCode;
+  name: string;
+  description: string;
+  imgUrl: string;
+  createdAt: Date;
+  updatedAt: Date;
+  hasOwn: boolean;
+  userToBadge: {
+    id: string;
+    isPinned: boolean;
+    createdAt: Date;
+  } | null;
+}
