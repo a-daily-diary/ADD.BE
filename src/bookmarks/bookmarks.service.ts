@@ -6,9 +6,8 @@ import { DiariesService } from 'src/diaries/diaries.service';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { Repository } from 'typeorm';
 import { BookmarkEntity } from './bookmarks.entity';
-import { BadgeEntity } from 'src/badges/badges.entity';
-import { BadgesService } from 'src/badges/badges.service';
-import { BadgeCode } from 'src/types/badges.type';
+import { UserToBadgesService } from 'src/user-to-badges/user-to-badges.service';
+import { BadgeAcquisitionConditionForBookmark } from 'src/constants/badgeAcquisitionCondition';
 
 @Injectable()
 export class BookmarksService {
@@ -16,7 +15,7 @@ export class BookmarksService {
     @InjectRepository(BookmarkEntity)
     private readonly bookmarkRepository: Repository<BookmarkEntity>,
     private readonly diariesSerivce: DiariesService,
-    private readonly badgesService: BadgesService,
+    private readonly userToBadgesService: UserToBadgesService,
   ) {}
 
   async findBookmarkByUserAndDiary(user: UserDTO, diary: DiaryEntity) {
@@ -52,14 +51,12 @@ export class BookmarksService {
       .where('user.id = :userId', { userId: user.id })
       .getCount();
 
-    let badgeToGet: BadgeEntity;
-
-    // FIXME: 이미 획득한 경우 예외 처리
-    // FIXME: 획득 조건 상수 혹은 함수로 분리
-    if (registerBookmarkCount === 10) {
-      badgeToGet = await this.badgesService.findById(BadgeCode.bookmark);
-    }
-
+    // 뱃지 획득 조건을 추가하고 싶은 경우 /src/constants/badgeAcquisitionCondition.ts에 추가
+    const badgeToGet = await this.userToBadgesService.achievedBadge(
+      user,
+      registerBookmarkCount,
+      BadgeAcquisitionConditionForBookmark,
+    );
     return { message: '북마크가 등록되었습니다.', badge: badgeToGet || null };
   }
 

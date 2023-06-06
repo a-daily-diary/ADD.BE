@@ -12,7 +12,7 @@ import { DiaryEntity } from './diaries.entity';
 import { DiaryFormDTO } from './dto/diary-form.dto';
 import { DEFAULT_SKIP, DEFAULT_TAKE } from 'src/constants/page';
 import { UserToBadgesService } from 'src/user-to-badges/user-to-badges.service';
-import { BadgeCode } from 'src/types/badges.type';
+import { BadgeAcquisitionConditionForDiary } from 'src/constants/badgeAcquisitionCondition';
 
 @Injectable()
 export class DiariesService {
@@ -170,29 +170,17 @@ export class DiariesService {
       .where('author.id = :authorId', { authorId: author.id })
       .getCount();
 
-    const badgeToGet = await this.achievedBadge(author, writeCount);
+    // 뱃지 획득 조건을 추가하고 싶은 경우 /src/constants/badgeAcquisitionCondition.ts에 추가
+    const badgeToGet = await this.userToBadgesService.achievedBadge(
+      author,
+      writeCount,
+      BadgeAcquisitionConditionForDiary,
+    );
 
     return {
       diary: newDiary,
       badge: badgeToGet,
     };
-  }
-
-  private async achievedBadge(user: UserDTO, conditionCount: number) {
-    switch (conditionCount) {
-      case 1:
-        return await this.userToBadgesService.saveUserToBadge(
-          user,
-          BadgeCode.writer_0,
-        );
-      case 10:
-        return await this.userToBadgesService.saveUserToBadge(
-          user,
-          BadgeCode.writer_1,
-        );
-      default:
-        return null;
-    }
   }
 
   async update(id: string, diaryFormDto: DiaryFormDTO, accessUser: UserDTO) {

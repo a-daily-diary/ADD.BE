@@ -13,8 +13,8 @@ import { UserDTO } from 'src/users/dto/user.dto';
 import { Repository } from 'typeorm';
 import { CommentEntity } from './comments.entity';
 import { CommentFormDTO } from './dto/comment-form.dto';
-import { BadgeCode } from 'src/types/badges.type';
 import { UserToBadgesService } from 'src/user-to-badges/user-to-badges.service';
+import { BadgeAcquisitionConditionForComment } from 'src/constants/badgeAcquisitionCondition';
 
 @Injectable()
 export class CommentsService {
@@ -53,29 +53,17 @@ export class CommentsService {
       .where('commenter.id = :userId', { userId: accessedUser.id })
       .getCount();
 
-    const badgeToGet = await this.achievedBadge(
+    // 뱃지 획득 조건을 추가하고 싶은 경우 /src/constants/badgeAcquisitionCondition.ts에 추가
+    const badgeToGet = await this.userToBadgesService.achievedBadge(
       accessedUser,
       totalCommentCount,
+      BadgeAcquisitionConditionForComment,
     );
 
     return {
       comment: newComment,
       badge: badgeToGet,
     };
-  }
-
-  // FIXME: 이미 획득한 경우 예외 처리
-  // FIXME: 획득 조건 상수 혹은 함수로 분리
-  private async achievedBadge(user: UserDTO, conditionCount: number) {
-    switch (conditionCount) {
-      case 10:
-        return await this.userToBadgesService.saveUserToBadge(
-          user,
-          BadgeCode.comment,
-        );
-      default:
-        return null;
-    }
   }
 
   async getCommentList(diaryId: string, take?: number, skip?: number) {
