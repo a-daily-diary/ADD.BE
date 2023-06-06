@@ -160,6 +160,7 @@ export const responseExampleForFavorite = {
 export const responseExampleForBookmark = {
   registerBookmark: responseTemplate({
     message: '북마크가 등록되었습니다.',
+    badge: badgeResponse,
   }),
   unregisterBookmark: responseTemplate({
     message: '북마크 등록이 취소되었습니다.',
