@@ -27,3 +27,8 @@ export interface BadgeListByUserResponse {
     createdAt: Date;
   } | null;
 }
+
+export interface BadgeAcquisitionCondition {
+  conditionCount: number;
+  badgeCode: BadgeCode;
+}

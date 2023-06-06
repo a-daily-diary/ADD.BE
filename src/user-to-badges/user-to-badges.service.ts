@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserToBadgeEntity } from './user-to-badges.entity';
 import { Repository } from 'typeorm';
 import { UserDTO } from 'src/users/dto/user.dto';
-import { BadgeCode } from 'src/types/badges.type';
+import { BadgeCode, BadgeAcquisitionCondition } from 'src/types/badges.type';
 import { BadgesService } from 'src/badges/badges.service';
 
 @Injectable()
@@ -35,5 +35,25 @@ export class UserToBadgesService {
     }
 
     return badge;
+  }
+
+  async achievedBadge(
+    user: UserDTO,
+    currentConditionCount: number,
+    badgeAcquisitionConditionList: BadgeAcquisitionCondition[],
+  ) {
+    const targetAcquisitionCondition = badgeAcquisitionConditionList.find(
+      (badgeAcquisitionCondition) =>
+        badgeAcquisitionCondition.conditionCount === currentConditionCount,
+    );
+
+    if (!targetAcquisitionCondition) {
+      return null;
+    }
+
+    return await this.saveUserToBadge(
+      user,
+      targetAcquisitionCondition.badgeCode,
+    );
   }
 }
