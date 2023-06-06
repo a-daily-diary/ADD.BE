@@ -3,12 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DiaryEntity } from 'src/diaries/diaries.entity';
 import { CommentEntity } from './comments.entity';
 import { CommentsService } from './comments.service';
-import { BadgesModule } from 'src/badges/badges.module';
+import { UserToBadgesModule } from 'src/user-to-badges/user-to-badges.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([CommentEntity, DiaryEntity]),
-    BadgesModule,
+    UserToBadgesModule,
   ],
   providers: [CommentsService],
   exports: [CommentsService],
