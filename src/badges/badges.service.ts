@@ -71,17 +71,23 @@ export class BadgesService {
     return badge;
   }
 
-  async getBadgeListByUsername(username: string) {
+  async getBadgeListByUsername(username: string, onlyPinned?: boolean) {
     const user = await this.usersService.findUserByUsername(username);
 
     if (!user)
       throw new NotFoundException(userExceptionMessage.DOES_NOT_EXIST_USER);
 
-    const badgeList = await this.badgeRepository
+    const badgeSelectInstance = this.badgeRepository
       .createQueryBuilder('badge')
       .leftJoinAndSelect('badge.userToBadges', 'userToBadges')
-      .leftJoinAndSelect('userToBadges.user', 'badgeUser')
-      .getMany();
+      .leftJoinAndSelect('userToBadges.user', 'badgeUser');
+
+    const badgeList = onlyPinned
+      ? await badgeSelectInstance
+          .where('badgeUser.id = :userId', { userId: user.id })
+          .andWhere('userToBadges.isPinned = true')
+          .getMany()
+      : await badgeSelectInstance.getMany();
 
     const newBadgeList: BadgeListByUserResponse[] = badgeList.map(
       (badgeInfo) => {

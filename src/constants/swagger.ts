@@ -209,6 +209,7 @@ export const responseExampleForBadge = {
   }),
   updateBadge: responseTemplate(badgeResponse),
   deleteBadge: responseTemplate(deleteResponse),
+  pinnedBadge: responseTemplate(userToBadgeResponse),
 };
 
 export const responseExampleForTermsAgreement = {

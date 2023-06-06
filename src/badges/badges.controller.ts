@@ -4,8 +4,12 @@ import {
   Delete,
   Get,
   Param,
+  ParseBoolPipe,
+  ParseEnumPipe,
+  Patch,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseFilters,
   UseGuards,
@@ -32,12 +36,16 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { BadgeFormDTO } from './dto/badge-form.dto';
 import { BadgeCode } from 'src/types/badges.type';
+import { UserToBadgesService } from 'src/user-to-badges/user-to-badges.service';
 
 @ApiTags('Badge')
 @Controller('badges')
 @UseFilters(HttpApiExceptionFilter)
 export class BadgesController {
-  constructor(private readonly badgesService: BadgesService) {}
+  constructor(
+    private readonly badgesService: BadgesService,
+    private readonly userToBadgesService: UserToBadgesService,
+  ) {}
 
   @Post('upload-image')
   @ApiConsumes('multipart/form-data')
@@ -103,8 +111,28 @@ export class BadgesController {
   @ApiBearerAuth('access-token')
   @ApiResponse(responseExampleForBadge.getBadgeListByUsername)
   @UseGuards(JwtAuthGuard)
-  getBadgeListByUsername(@Param('username') username: string) {
-    return this.badgesService.getBadgeListByUsername(username);
+  getBadgeListByUsername(
+    @Param('username') username: string,
+    @Query('onlyPinned', ParseBoolPipe) onlyPinned?: boolean,
+  ) {
+    return this.badgesService.getBadgeListByUsername(username, onlyPinned);
+  }
+
+  @Patch(':badgeId')
+  @ApiOperation({
+    summary: '뱃지 Pinned API',
+    description: `
+    API호출 직전의 isPinned 값의 반대 값으로 변경
+    ex) false였던 뱃지에서 해당 API 호출 시 true로 변경`,
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForBadge.pinnedBadge)
+  @UseGuards(JwtAuthGuard)
+  pinnedBadge(
+    @CurrentUser() currentUser: UserDTO,
+    @Param('badgeId', new ParseEnumPipe(BadgeCode)) badgeId: BadgeCode,
+  ) {
+    return this.userToBadgesService.pinnedBadge(currentUser, badgeId);
   }
 
   @Put(':badgeId')
@@ -115,7 +143,7 @@ export class BadgesController {
   @ApiResponse(responseExampleForBadge.updateBadge)
   @UseGuards(JwtAuthGuard)
   updateBadge(
-    @Param('badgeId') badgeId: BadgeCode,
+    @Param('badgeId', new ParseEnumPipe(BadgeCode)) badgeId: BadgeCode,
     @Body() badgeFormDTO: BadgeFormDTO,
   ) {
     return this.badgesService.updateBadge(badgeId, badgeFormDTO);
@@ -128,7 +156,10 @@ export class BadgesController {
   @ApiBearerAuth('access-token')
   @ApiResponse(responseExampleForBadge.deleteBadge)
   @UseGuards(JwtAuthGuard)
-  deleteBadge(@Param('badgeId') badgeId: BadgeCode) {
+  deleteBadge(
+    @Param('badgeId', new ParseEnumPipe(BadgeCode))
+    badgeId: BadgeCode,
+  ) {
     return this.badgesService.deleteBadge(badgeId);
   }
 }
