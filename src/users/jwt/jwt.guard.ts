@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
+import { userExceptionMessage } from 'src/constants/exceptionMessage';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -16,7 +17,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
   handleRequest<TUser = any>(err: any, user: any): TUser {
     if (err || !user) {
-      throw new UnauthorizedException('인증에 문제가 생겼습니다.');
+      throw new UnauthorizedException(userExceptionMessage.UNAUTHORIZED);
     }
     return user;
   }
