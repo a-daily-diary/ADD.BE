@@ -16,6 +16,7 @@ export const userExceptionMessage = {
   EXIST_USERNAME: '해당하는 유저이름이 이미 존재합니다.',
   INCORRECT_LOGIN: '로그인 정보를 확인해주세요.',
   DOES_NOT_EXIST_USER: '해당하는 유저가 존재하지 않습니다.',
+  UNAUTHORIZED: '로그인이 필요합니다.',
 };
 
 export const bookmarkExceptionMessage = {
