@@ -3,11 +3,11 @@ import { BadgeAcquisitionCondition, BadgeCode } from 'src/types/badges.type';
 export const BadgeAcquisitionConditionForDiary: BadgeAcquisitionCondition[] = [
   {
     conditionCount: 1,
-    badgeCode: BadgeCode.writer_0,
+    badgeCode: BadgeCode.steady_0,
   },
   {
     conditionCount: 10,
-    badgeCode: BadgeCode.writer_1,
+    badgeCode: BadgeCode.steady_1,
   },
 ];
 
