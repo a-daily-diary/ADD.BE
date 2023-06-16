@@ -9,7 +9,10 @@ import { Repository } from 'typeorm';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { BadgeCode, BadgeAcquisitionCondition } from 'src/types/badges.type';
 import { BadgesService } from 'src/badges/badges.service';
-import { userToBadgesExceptionMessage } from 'src/constants/exceptionMessage';
+import {
+  badgeExceptionMessage,
+  userToBadgesExceptionMessage,
+} from 'src/constants/exceptionMessage';
 
 @Injectable()
 export class UserToBadgesService {
@@ -19,7 +22,7 @@ export class UserToBadgesService {
     private readonly badgesService: BadgesService,
   ) {}
 
-  async saveUserToBadge(user: UserDTO, badgeCode: BadgeCode) {
+  private async saveUserToBadge(user: UserDTO, badgeCode: BadgeCode) {
     const pinnedCount = await this.userToBadgeRepository
       .createQueryBuilder('userToBadge')
       .where('userToBadge.user.id = :userId', { userId: user.id })
@@ -60,6 +63,52 @@ export class UserToBadgesService {
       user,
       targetAcquisitionCondition.badgeCode,
     );
+  }
+
+  private async deleteUserToBadge(user: UserDTO, badgeCode: BadgeCode) {
+    const targetBadge = await this.badgesService.findById(badgeCode);
+
+    if (!targetBadge)
+      throw new NotFoundException(badgeExceptionMessage.DOES_NOT_EXIST_BADGE);
+
+    const targetUserToBadge = await this.userToBadgeRepository
+      .createQueryBuilder('userToBadge')
+      .leftJoin('userToBadge.user', 'user')
+      .leftJoin('userToBadge.badge', 'badge')
+      .where('user.id = :userId', { userId: user.id })
+      .andWhere('badge.id = :badgeId', { badgeId: targetBadge.id })
+      .getOne();
+
+    if (!targetUserToBadge)
+      throw new NotFoundException(
+        userToBadgesExceptionMessage.DOES_NOT_EXIST_USER_TO_BADGE,
+      );
+
+    try {
+      await this.userToBadgeRepository.softDelete(targetUserToBadge.id);
+    } catch (err) {
+      console.log(err);
+      throw new Error('뱃지 이력 삭제 도중 에러');
+    }
+
+    return true;
+  }
+
+  async cancelBadge(
+    user: UserDTO,
+    currentConditionCount: number,
+    badgeAcquisitionConditionList: BadgeAcquisitionCondition[],
+  ) {
+    const targetAcquisitionCondition = badgeAcquisitionConditionList.find(
+      (badgeAcquisitionCondition) =>
+        badgeAcquisitionCondition.conditionCount === currentConditionCount,
+    );
+
+    if (!targetAcquisitionCondition) {
+      return false;
+    }
+
+    return this.deleteUserToBadge(user, targetAcquisitionCondition.badgeCode);
   }
 
   async pinnedBadge(accessedUser: UserDTO, badgeId: BadgeCode) {

@@ -207,7 +207,19 @@ export class DiariesService {
       throw new UnauthorizedException(diaryExceptionMessage.OWNER_ONLY_DELETE);
     }
 
+    const writeCount = await this.diaryRepository
+      .createQueryBuilder('diary')
+      .leftJoin('diary.author', 'author')
+      .where('author.id = :authorId', { authorId: writer.id })
+      .getCount();
+
     await this.diaryRepository.softDelete(id);
+
+    const isCancelBadge = await this.userToBadgesService.cancelBadge(
+      accessUser,
+      writeCount,
+      BadgeAcquisitionConditionForDiary,
+    );
 
     return { message: '삭제되었습니다.' };
   }

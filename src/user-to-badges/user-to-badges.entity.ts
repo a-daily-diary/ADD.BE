@@ -1,10 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { IsBoolean, IsUUID } from 'class-validator';
 import { BadgeEntity } from 'src/badges/badges.entity';
 import { UserEntity } from 'src/users/users.entity';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   Index,
   JoinColumn,
@@ -50,4 +52,9 @@ export class UserToBadgeEntity {
     type: 'timestamptz',
   })
   createdAt: Date;
+
+  // Soft Delete : 기존에는 null, 삭제 시 timestamp를 찍는다.
+  @Exclude()
+  @DeleteDateColumn({ type: 'timestamptz' })
+  deleteAt?: Date | null;
 }
