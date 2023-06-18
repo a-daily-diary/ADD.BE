@@ -1,5 +1,8 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
+import { JwtAuthGuard } from './users/jwt/jwt.guard';
+import { CurrentUser } from './common/decorators/current-user.decorator';
+import { UserDTO } from './users/dto/user.dto';
 
 @Controller()
 export class AppController {
@@ -11,7 +14,8 @@ export class AppController {
   }
 
   @Post()
-  setInitDataSet() {
-    return this.appService.setInitDataSet();
+  @UseGuards(JwtAuthGuard)
+  setInitDataSet(@CurrentUser() requestUser: UserDTO) {
+    return this.appService.setInitDataSet(requestUser);
   }
 }

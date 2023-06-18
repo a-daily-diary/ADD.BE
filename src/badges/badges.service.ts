@@ -15,6 +15,16 @@ import {
 } from 'src/constants/exceptionMessage';
 import { BadgeCode, BadgeListByUserResponse } from 'src/types/badges.type';
 import { UsersService } from 'src/users/users.service';
+import {
+  bookmarkBadge,
+  commentBadge,
+  heartBadge,
+  newBieBadge,
+  steady0Badge,
+  steady1Badge,
+  steady2Badge,
+  steady3Badge,
+} from 'src/data/badges';
 
 @Injectable()
 export class BadgesService {
@@ -147,5 +157,21 @@ export class BadgesService {
     await this.badgeRepository.softDelete(badgeId);
 
     return { message: '삭제되었습니다.' };
+  }
+
+  async setInitDataSetForBadges(requestUser: UserDTO) {
+    try {
+      await this.createBadge(requestUser, steady0Badge);
+      await this.createBadge(requestUser, steady1Badge);
+      await this.createBadge(requestUser, steady2Badge);
+      await this.createBadge(requestUser, steady3Badge);
+      await this.createBadge(requestUser, newBieBadge);
+      await this.createBadge(requestUser, bookmarkBadge);
+      await this.createBadge(requestUser, heartBadge);
+      await this.createBadge(requestUser, commentBadge);
+      return true;
+    } catch {
+      return false;
+    }
   }
 }
