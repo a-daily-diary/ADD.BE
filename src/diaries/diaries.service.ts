@@ -80,38 +80,51 @@ export class DiariesService {
   async getDiaries(
     accessUser: UserDTO,
     diaryAuthorName?: string,
-    take?: number | typeof NaN,
-    skip?: number | typeof NaN,
+    searchKeyword?: string | undefined,
+    take = DEFAULT_TAKE,
+    skip = DEFAULT_SKIP,
   ) {
     const { selectDiaryInstance, tableAliasInfo } =
       this.generateSelectDiaryInstance();
 
-    const filteredDiaryInstance =
-      diaryAuthorName === undefined
-        ? selectDiaryInstance
-            .where(`${tableAliasInfo.diary}.isPublic = true`)
-            .orWhere(`${tableAliasInfo.diaryAuthor}.id = :accessUserId`, {
-              accessUserId: accessUser.id,
-            })
-        : selectDiaryInstance
-            .where(`${tableAliasInfo.diaryAuthor}.username = :username`, {
-              username: diaryAuthorName,
-            })
-            .andWhere(
-              new Brackets((qb) => {
-                qb.where(`${tableAliasInfo.diary}.isPublic = true`).orWhere(
-                  `${tableAliasInfo.diaryAuthor}.id = :accessUserId`,
-                  {
-                    accessUserId: accessUser.id,
-                  },
-                );
-              }),
-            );
+    diaryAuthorName === undefined
+      ? selectDiaryInstance
+          .where(`${tableAliasInfo.diary}.isPublic = true`)
+          .orWhere(`${tableAliasInfo.diaryAuthor}.id = :accessUserId`, {
+            accessUserId: accessUser.id,
+          })
+      : selectDiaryInstance
+          .where(`${tableAliasInfo.diaryAuthor}.username = :username`, {
+            username: diaryAuthorName,
+          })
+          .andWhere(
+            new Brackets((qb) => {
+              qb.where(`${tableAliasInfo.diary}.isPublic = true`).orWhere(
+                `${tableAliasInfo.diaryAuthor}.id = :accessUserId`,
+                {
+                  accessUserId: accessUser.id,
+                },
+              );
+            }),
+          );
 
-    const [diaries, totalCount] = await filteredDiaryInstance
+    if (searchKeyword) {
+      selectDiaryInstance
+        .where(`${tableAliasInfo.diaryAuthor}.username ILIKE :searchKeyword`, {
+          searchKeyword: `%${searchKeyword}%`,
+        })
+        .orWhere(`${tableAliasInfo.diary}.title ILIKE :searchKeyword`, {
+          searchKeyword: `%${searchKeyword}%`,
+        })
+        .orWhere(`${tableAliasInfo.diary}.content ILIKE :searchKeyword`, {
+          searchKeyword: `%${searchKeyword}%`,
+        });
+    }
+
+    const [diaries, totalCount] = await selectDiaryInstance
       .orderBy(`${tableAliasInfo.diary}.createdAt`, 'DESC')
-      .take(take ?? DEFAULT_TAKE)
-      .skip(skip ?? DEFAULT_SKIP)
+      .take(take)
+      .skip(skip)
       .getManyAndCount();
 
     const resultDiaries = diaries.map((diary) => {
@@ -121,7 +134,7 @@ export class DiariesService {
     return {
       diaries: resultDiaries,
       totalCount,
-      totalPage: Math.ceil(totalCount / (take ?? DEFAULT_TAKE)),
+      totalPage: Math.ceil(totalCount / take),
     };
   }
 

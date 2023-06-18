@@ -84,8 +84,15 @@ export class DiariesController {
     @Query('username') username?: string,
     @Query('take') take?: number | typeof NaN,
     @Query('skip') skip?: number | typeof NaN,
+    @Query('searchKeyword') searchKeyword?: string,
   ) {
-    return this.diariesService.getDiaries(currentUser, username, take, skip);
+    return this.diariesService.getDiaries(
+      currentUser,
+      username,
+      searchKeyword,
+      take,
+      skip,
+    );
   }
 
   @Get('bookmark/:username')
