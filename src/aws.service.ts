@@ -51,7 +51,7 @@ export class AwsService {
   }
 
   public async getDefaultThumbnail() {
-    const defaultThumbnailUrlList = [];
+    const defaultThumbnailUrlList: { fileName: string; path: string }[] = [];
 
     const params = {
       Bucket: this.S3_BUCKET_NAME,
