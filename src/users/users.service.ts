@@ -138,4 +138,24 @@ export class UsersService {
       thumbnailList,
     };
   }
+
+  async generateAdminAccount() {
+    const email = process.env.ADMIN_EMAIL;
+    const username = process.env.ADMIN_USER;
+    const password = process.env.ADMIN_PASSWORD;
+    const imgUrl = (await this.awsService.getDefaultThumbnail())[0].path;
+    const hashedPassword = await bcrypt.hashSync(password, 10);
+
+    const adminUser = this.usersRepository.create({
+      email,
+      username,
+      password: hashedPassword,
+      imgUrl,
+      isAdmin: true,
+    });
+
+    await this.usersRepository.save(adminUser);
+
+    return adminUser;
+  }
 }
