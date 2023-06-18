@@ -51,4 +51,5 @@ export const termsAgreementExceptionMessage = {
 
 export const exceptionMessage = {
   ONLY_ADMIN: '해당 API는 관리자 계정만 요청 가능합니다.',
+  INCORRECT_KEY: 'incorrect key value',
 };

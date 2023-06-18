@@ -2,7 +2,14 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { TermsAgreementEnum } from 'src/types/terms-agreements.type';
 import { UserToTermsAgreementEntity } from 'src/user-to-terms-agreements/user-to-terms-agreements.entity';
-import { Column, Entity, Index, OneToMany, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryColumn,
+} from 'typeorm';
 
 @Index('termsAgreementId', ['id'], { unique: true })
 @Entity({
@@ -40,4 +47,9 @@ export class TermsAgreementEntity {
     },
   )
   userToTermsAgreements: UserToTermsAgreementEntity[];
+
+  @CreateDateColumn({
+    type: 'timestamptz' /* timestamp with time zone */,
+  })
+  createdAt: Date;
 }

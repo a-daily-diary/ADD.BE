@@ -1,9 +1,6 @@
-import { Controller, Get, Post, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseFilters } from '@nestjs/common';
+import { ApiOperation } from '@nestjs/swagger';
 import { AppService } from './app.service';
-import { JwtAuthGuard } from './users/jwt/jwt.guard';
-import { CurrentUser } from './common/decorators/current-user.decorator';
-import { UserDTO } from './users/dto/user.dto';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { HttpApiExceptionFilter } from './common/exceptions/http-api-exceptions.filter';
 
 @Controller()
@@ -20,9 +17,7 @@ export class AppController {
   @ApiOperation({
     summary: '약관동의, 뱃지 데이터 설정 API',
   })
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard)
-  setInitDataSet(@CurrentUser() requestUser: UserDTO) {
-    return this.appService.setInitDataSet(requestUser);
+  setInitDataSet(@Body() adminKey: { adminKey: string }) {
+    return this.appService.setInitDataSet(adminKey);
   }
 }

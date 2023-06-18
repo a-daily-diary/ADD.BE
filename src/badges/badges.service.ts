@@ -45,8 +45,7 @@ export class BadgesService {
   }
 
   async createBadge(request: UserDTO, badgeFormDTO: BadgeFormDTO) {
-    // TODO: requestUser가 admin인 경우에만 뱃지 생성할 수 있는 로직 추가 예정
-    if (request.isAdmin === true) {
+    if (request.isAdmin === false) {
       throw new BadRequestException(badgeExceptionMessage.OWNER_ONLY_CREATE);
     }
 
