@@ -170,7 +170,8 @@ export class BadgesService {
       await this.createBadge(requestUser, heartBadge);
       await this.createBadge(requestUser, commentBadge);
       return true;
-    } catch {
+    } catch (error) {
+      console.log(error);
       return false;
     }
   }

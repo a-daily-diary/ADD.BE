@@ -9,7 +9,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TermsAgreementFormDTO } from './dto/terms-agreement-form.dto';
 import { termsAgreementExceptionMessage } from 'src/constants/exceptionMessage';
 import { TermsAgreementEnum } from 'src/types/terms-agreements.type';
-import { serviceTermsAgreementDataSet } from 'src/data/termsAgreements';
+import {
+  marketingTermsAgreementDataSet,
+  privacyTermsAgreementDataSet,
+  serviceTermsAgreementDataSet,
+} from 'src/data/termsAgreements';
 
 @Injectable()
 export class TermsAgreementsService {
@@ -92,10 +96,11 @@ export class TermsAgreementsService {
   async setInitDataSetForTermsAgreements() {
     try {
       await this.createTermsAgreement(serviceTermsAgreementDataSet);
-      await this.createTermsAgreement(serviceTermsAgreementDataSet);
-      await this.createTermsAgreement(serviceTermsAgreementDataSet);
+      await this.createTermsAgreement(privacyTermsAgreementDataSet);
+      await this.createTermsAgreement(marketingTermsAgreementDataSet);
       return true;
-    } catch {
+    } catch (error) {
+      console.log(error);
       return false;
     }
   }
