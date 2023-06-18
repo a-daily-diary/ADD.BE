@@ -66,6 +66,7 @@ export class BadgesService {
       .createQueryBuilder('badge')
       .leftJoinAndSelect('badge.userToBadges', 'userToBadges')
       .leftJoinAndSelect('userToBadges.user', 'badgeUser')
+      .orderBy('badge.createdAt', 'ASC')
       .getMany();
 
     return badgeList;
@@ -95,8 +96,9 @@ export class BadgesService {
       ? await badgeSelectInstance
           .where('badgeUser.id = :userId', { userId: user.id })
           .andWhere('userToBadges.isPinned = true')
+          .orderBy('badge.createdAt', 'ASC')
           .getMany()
-      : await badgeSelectInstance.getMany();
+      : await badgeSelectInstance.orderBy('badge.createdAt', 'ASC').getMany();
 
     const newBadgeList: BadgeListByUserResponse[] = badgeList.map(
       (badgeInfo) => {
