@@ -1,8 +1,8 @@
 export enum BadgeCode {
-  writer_0 = 'writer_0',
-  writer_1 = 'writer_1',
-  writer_2 = 'writer_2',
-  writer_3 = 'writer_3',
+  steady_0 = 'steady_0',
+  steady_1 = 'steady_1',
+  steady_2 = 'steady_2',
+  steady_3 = 'steady_3',
   new_bie = 'new_bie',
   bookmark = 'bookmark',
   heart = 'heart',
