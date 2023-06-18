@@ -64,7 +64,9 @@ export class TermsAgreementsService {
   }
 
   async getTermsAgreementList() {
-    return await this.termsAgreementRepository.find();
+    return await this.termsAgreementRepository.find({
+      order: { createdAt: 'ASC' },
+    });
   }
 
   async getTermsAgreement(termsAgreementId: TermsAgreementEnum) {
