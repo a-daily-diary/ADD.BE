@@ -77,6 +77,7 @@ export class DiariesController {
   @ApiQuery({ name: 'username', required: false, type: 'string' })
   @ApiQuery({ name: 'take', required: false, type: 'number' })
   @ApiQuery({ name: 'skip', required: false, type: 'number' })
+  @ApiQuery({ name: 'searchKeyword', required: false, type: 'string' })
   @ApiResponse(responseExampleForDiary.getDiaries)
   @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
   getDiaries(
