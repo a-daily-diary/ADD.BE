@@ -48,3 +48,7 @@ export const termsAgreementExceptionMessage = {
   DOES_NOT_EXIST_TERMS_AGREEMENT: '해당하는 약관동의는 존재하지 않습니다.',
   INVALIDATE_TERMS_AGREEMENTS: '필수 약관동의를 체크해주세요',
 };
+
+export const exceptionMessage = {
+  ONLY_ADMIN: '해당 API는 관리자 계정만 요청 가능합니다.',
+};

@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { TermsAgreementsService } from './terms-agreements/terms-agreements.service';
 import { BadgesService } from './badges/badges.service';
 import { UserDTO } from './users/dto/user.dto';
+import { exceptionMessage } from './constants/exceptionMessage';
 
 @Injectable()
 export class AppService {
@@ -15,6 +16,11 @@ export class AppService {
   }
 
   async setInitDataSet(requestUser: UserDTO) {
+    // FIXME: 접근한 유저가 관리자인 경우에만 해당 API 사용할 수 있도록 처리하는 로직 추가
+    // 차후 false로 변경
+    if (requestUser.isAdmin === true)
+      throw new BadRequestException(exceptionMessage.ONLY_ADMIN);
+
     const resultSettingToTermsAgreements =
       await this.termsAgreementsService.setInitDataSetForTermsAgreements();
 
