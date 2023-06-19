@@ -9,6 +9,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TermsAgreementFormDTO } from './dto/terms-agreement-form.dto';
 import { termsAgreementExceptionMessage } from 'src/constants/exceptionMessage';
 import { TermsAgreementEnum } from 'src/types/terms-agreements.type';
+import {
+  marketingTermsAgreementDataSet,
+  privacyTermsAgreementDataSet,
+  serviceTermsAgreementDataSet,
+} from 'src/data/termsAgreements';
 
 @Injectable()
 export class TermsAgreementsService {
@@ -59,7 +64,9 @@ export class TermsAgreementsService {
   }
 
   async getTermsAgreementList() {
-    return await this.termsAgreementRepository.find();
+    return await this.termsAgreementRepository.find({
+      order: { createdAt: 'ASC' },
+    });
   }
 
   async getTermsAgreement(termsAgreementId: TermsAgreementEnum) {
@@ -86,5 +93,17 @@ export class TermsAgreementsService {
     await this.termsAgreementRepository.delete(targetTermsAgreement);
 
     return { message: '삭제되었습니다.' };
+  }
+
+  async setInitDataSetForTermsAgreements() {
+    try {
+      await this.createTermsAgreement(serviceTermsAgreementDataSet);
+      await this.createTermsAgreement(privacyTermsAgreementDataSet);
+      await this.createTermsAgreement(marketingTermsAgreementDataSet);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 }

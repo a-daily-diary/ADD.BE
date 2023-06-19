@@ -15,6 +15,16 @@ import {
 } from 'src/constants/exceptionMessage';
 import { BadgeCode, BadgeListByUserResponse } from 'src/types/badges.type';
 import { UsersService } from 'src/users/users.service';
+import {
+  bookmarkBadge,
+  commentBadge,
+  heartBadge,
+  newBieBadge,
+  steady0Badge,
+  steady1Badge,
+  steady2Badge,
+  steady3Badge,
+} from 'src/data/badges';
 
 @Injectable()
 export class BadgesService {
@@ -35,8 +45,7 @@ export class BadgesService {
   }
 
   async createBadge(request: UserDTO, badgeFormDTO: BadgeFormDTO) {
-    // TODO: requestUser가 admin인 경우에만 뱃지 생성할 수 있는 로직 추가 예정
-    if (request.isAdmin === true) {
+    if (request.isAdmin === false) {
       throw new BadRequestException(badgeExceptionMessage.OWNER_ONLY_CREATE);
     }
 
@@ -57,6 +66,7 @@ export class BadgesService {
       .createQueryBuilder('badge')
       .leftJoinAndSelect('badge.userToBadges', 'userToBadges')
       .leftJoinAndSelect('userToBadges.user', 'badgeUser')
+      .orderBy('badge.createdAt', 'ASC')
       .getMany();
 
     return badgeList;
@@ -86,8 +96,9 @@ export class BadgesService {
       ? await badgeSelectInstance
           .where('badgeUser.id = :userId', { userId: user.id })
           .andWhere('userToBadges.isPinned = true')
+          .orderBy('badge.createdAt', 'ASC')
           .getMany()
-      : await badgeSelectInstance.getMany();
+      : await badgeSelectInstance.orderBy('badge.createdAt', 'ASC').getMany();
 
     const newBadgeList: BadgeListByUserResponse[] = badgeList.map(
       (badgeInfo) => {
@@ -147,5 +158,22 @@ export class BadgesService {
     await this.badgeRepository.softDelete(badgeId);
 
     return { message: '삭제되었습니다.' };
+  }
+
+  async setInitDataSetForBadges(requestUser: UserDTO) {
+    try {
+      await this.createBadge(requestUser, steady0Badge);
+      await this.createBadge(requestUser, steady1Badge);
+      await this.createBadge(requestUser, steady2Badge);
+      await this.createBadge(requestUser, steady3Badge);
+      await this.createBadge(requestUser, newBieBadge);
+      await this.createBadge(requestUser, bookmarkBadge);
+      await this.createBadge(requestUser, heartBadge);
+      await this.createBadge(requestUser, commentBadge);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 }
