@@ -1,7 +1,8 @@
-import { Controller, Get, UseFilters } from '@nestjs/common';
+import { Controller, Get, Param, UseFilters, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
 import { HeatmapService } from './heatmap.service';
+import { JwtAuthGuard } from 'src/users/jwt/jwt.guard';
 
 @ApiTags('Heatmap')
 @Controller('heatmap')
@@ -9,9 +10,10 @@ import { HeatmapService } from './heatmap.service';
 export class HeatmapController {
   constructor(private readonly heatmapService: HeatmapService) {}
 
-  @Get('')
-  getHeatmapGraph() {
-    return this.heatmapService.heatmapTestAPI();
+  @Get(':username')
+  @UseGuards(JwtAuthGuard)
+  getHeatmapGraph(@Param('username') username: string) {
+    return this.heatmapService.getHeatmapGraphData(username);
   }
 
   @Get('/:date')
