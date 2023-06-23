@@ -27,8 +27,6 @@ export class HeatmapService {
       .groupBy("DATE_TRUNC('day', diary.createdAt)")
       .getRawMany();
 
-    console.log(diaryCountGroupByDate);
-
     const commentCountGroupByDate = await this.commentsRepository
       .createQueryBuilder('comment')
       .leftJoin('comment.commenter', 'commenter')
