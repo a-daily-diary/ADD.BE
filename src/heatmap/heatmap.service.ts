@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentEntity } from 'src/comments/comments.entity';
 import { DiaryEntity } from 'src/diaries/diaries.entity';
+import { UserDTO } from 'src/users/dto/user.dto';
 import {
   convertDateToString,
   generateLastOneYearDateList,
@@ -58,5 +59,43 @@ export class HeatmapService {
     });
 
     return responseData;
+  }
+
+  async getUserActivityHistory(
+    accessedUser: UserDTO,
+    username: string,
+    date: Date,
+  ) {
+    const [diaries, diaryCount] = await this.diariesRepository
+      .createQueryBuilder('diary')
+      .leftJoin('diary.author', 'author')
+      .where('author.username = :username', { username })
+      .andWhere("to_char(diary.createdAt, 'YYYY-MM-DD') = :date", {
+        date: convertDateToString(date),
+      })
+      .getManyAndCount();
+
+    const commentCount = await this.commentsRepository
+      .createQueryBuilder('comment')
+      .leftJoin('comment.commenter', 'commenter')
+      .where('commenter.username = :username', { username })
+      .andWhere("to_char(comment.createdAt, 'YYYY-MM-DD') = :date", {
+        date: convertDateToString(date),
+      })
+      .getCount();
+
+    return {
+      date,
+      activityCount: diaryCount + commentCount,
+      activities: {
+        diaries: diaries.filter(
+          (diary) =>
+            diary.isPublic === true || username === accessedUser.username,
+        ),
+        diaryCount,
+        commentCount,
+        randomMatchingCount: 0,
+      },
+    };
   }
 }

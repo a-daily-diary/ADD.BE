@@ -1,4 +1,11 @@
-import { Controller, Get, Param, UseFilters, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Param,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -9,6 +16,9 @@ import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exception
 import { HeatmapService } from './heatmap.service';
 import { JwtAuthGuard } from 'src/users/jwt/jwt.guard';
 import { responseExampleForHeatmap } from 'src/constants/swagger';
+import { heatmapExceptionMessage } from 'src/constants/exceptionMessage';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { UserDTO } from 'src/users/dto/user.dto';
 
 @ApiTags('Heatmap')
 @Controller('heatmap')
@@ -16,7 +26,7 @@ import { responseExampleForHeatmap } from 'src/constants/swagger';
 export class HeatmapController {
   constructor(private readonly heatmapService: HeatmapService) {}
 
-  @Get(':username')
+  @Get('/graph/:username')
   @ApiOperation({
     summary: '잔디 그래프 데이터용 API',
   })
@@ -27,8 +37,20 @@ export class HeatmapController {
     return this.heatmapService.getHeatmapGraphData(username);
   }
 
-  @Get('/:date')
-  getDetailHeatmap() {
-    return { message: '일자 별 활동 내역 상세 보기 API' };
+  @Get('/graph/:username/:dateString')
+  @UseGuards(JwtAuthGuard)
+  getDetailHeatmap(
+    @CurrentUser() accessedUser: UserDTO,
+    @Param('username') username: string,
+    @Param('dateString') dateString: string,
+  ) {
+    if (isNaN(Date.parse(dateString)))
+      throw new BadRequestException(heatmapExceptionMessage.ONLY_DATE_TYPE);
+
+    return this.heatmapService.getUserActivityHistory(
+      accessedUser,
+      username,
+      new Date(dateString),
+    );
   }
 }
