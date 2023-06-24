@@ -9,6 +9,7 @@ import {
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -39,6 +40,18 @@ export class HeatmapController {
 
   @Get('/graph/:username/:dateString')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: '날짜 별 유저 활동 내역 조회 API',
+    description:
+      '일기의 경우 공개 여부에 따라 응답(response) 구조 중 diaries에는 공개한 일기만 담겨져있습니다. diaryCount는 공개 여부와 상관없이 해당 날짜에 작성한 일기의 개수가 반환됩니다.',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForHeatmap.getUserActivityHistory)
+  @ApiParam({
+    name: 'dateString',
+    description:
+      '2023-06-25와 같은 형식도 가능합니다. 다만 **2023-06-25**와 **2023-6-25**는 다르게 쿼리가 되므로 2자리 수를 지켜주세요',
+  })
   getDetailHeatmap(
     @CurrentUser() accessedUser: UserDTO,
     @Param('username') username: string,
