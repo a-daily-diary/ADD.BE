@@ -218,3 +218,17 @@ export const responseExampleForTermsAgreement = {
   getTermsAgreement: responseTemplate(termsAgreementResponse),
   deleteTermsAgreement: responseTemplate(deleteResponse),
 };
+
+export const responseExampleForHeatmap = {
+  graphData: responseTemplate([{ date: 'Date', activityCount: 'number' }]),
+  getUserActivityHistory: responseTemplate({
+    date: 'date',
+    activityCount: 'number',
+    activities: {
+      diaries: [diaryResponse],
+    },
+    diaryCount: 'number',
+    commentCount: 'number',
+    randomMatchingCount: 'number',
+  }),
+};
