@@ -4,8 +4,10 @@ import {
   Get,
   Param,
   Post,
+  Put,
   UploadedFile,
   UseFilters,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -29,6 +31,9 @@ import {
 } from './dto/user-register.dto';
 import { UserLoginDTO } from './dto/user-login.dto';
 import { UsersService } from './users.service';
+import { UserDTO, UserUpdateDTO } from './dto/user.dto';
+import { JwtAuthGuard } from './jwt/jwt.guard';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 
 @ApiTags('USER')
 @Controller('users')
@@ -113,5 +118,20 @@ export class UsersController {
   @ApiResponse(responseExampleForUser.login)
   login(@Body() userLoginDto: UserLoginDTO) {
     return this.usersService.login(userLoginDto);
+  }
+
+  @Put()
+  @ApiOperation({
+    summary: '유저 정보 수정 API',
+    description:
+      'username, imgUrl field만 수정 가능, username의 경우 backend에서도 중복 여부 체크, 둘 중에 한 개의 값만 수정하고 싶은 경우에도 두 개의 값을 보내주어야함(바뀌지 않는 값은 기존에 있던 값으로 요청)',
+  })
+  @ApiResponse(responseExampleForUser.getUserInfo)
+  @UseGuards(JwtAuthGuard)
+  updateUserInfo(
+    @CurrentUser() accessedUser: UserDTO,
+    @Body() userUpdateDto: UserUpdateDTO,
+  ) {
+    return this.usersService.updateUserInfo(accessedUser, userUpdateDto);
   }
 }
