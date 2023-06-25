@@ -15,6 +15,7 @@ import { JwtService } from '@nestjs/jwt';
 import { userExceptionMessage } from 'src/constants/exceptionMessage';
 import { AwsService } from 'src/aws.service';
 import { UserToTermsAgreementsService } from 'src/user-to-terms-agreements/user-to-terms-agreements.service';
+import { UserDTO, UserUpdateDTO } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -157,5 +158,11 @@ export class UsersService {
     await this.usersRepository.save(adminUser);
 
     return adminUser;
+  }
+
+  async updateUserInfo(accessedUser: UserDTO, userUpdateDto: UserUpdateDTO) {
+    await this.usernameExists(userUpdateDto.username);
+    await this.usersRepository.update(accessedUser.id, userUpdateDto);
+    return await this.findUserById(accessedUser.id);
   }
 }

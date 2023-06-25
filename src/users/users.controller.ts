@@ -4,8 +4,10 @@ import {
   Get,
   Param,
   Post,
+  Put,
   UploadedFile,
   UseFilters,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -29,6 +31,9 @@ import {
 } from './dto/user-register.dto';
 import { UserLoginDTO } from './dto/user-login.dto';
 import { UsersService } from './users.service';
+import { UserDTO, UserUpdateDTO } from './dto/user.dto';
+import { JwtAuthGuard } from './jwt/jwt.guard';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 
 @ApiTags('USER')
 @Controller('users')
@@ -113,5 +118,14 @@ export class UsersController {
   @ApiResponse(responseExampleForUser.login)
   login(@Body() userLoginDto: UserLoginDTO) {
     return this.usersService.login(userLoginDto);
+  }
+
+  @Put()
+  @UseGuards(JwtAuthGuard)
+  updateUserInfo(
+    @CurrentUser() accessedUser: UserDTO,
+    @Body() userUpdateDto: UserUpdateDTO,
+  ) {
+    return this.usersService.updateUserInfo(accessedUser, userUpdateDto);
   }
 }
