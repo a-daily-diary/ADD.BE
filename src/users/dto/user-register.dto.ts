@@ -2,6 +2,7 @@ import { ApiProperty, PickType } from '@nestjs/swagger';
 import { UserEntity } from '../users.entity';
 import { IsString, IsNotEmpty, IsArray } from 'class-validator';
 import { Column } from 'typeorm';
+import { TermsAgreementEnum } from 'src/types/terms-agreements.type';
 
 export class UserRegisterDTO extends PickType(UserEntity, [
   'email',
@@ -16,7 +17,7 @@ export class UserRegisterDTO extends PickType(UserEntity, [
   @ApiProperty()
   @IsArray()
   @Column({ type: 'array', nullable: false })
-  termsAgreementIdList: string[];
+  termsAgreementIdList: TermsAgreementEnum[];
 }
 
 export class UserEmailDTO extends PickType(UserEntity, ['email'] as const) {}

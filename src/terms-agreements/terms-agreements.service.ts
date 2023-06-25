@@ -44,6 +44,12 @@ export class TermsAgreementsService {
       (el) => el.id,
     );
 
+    console.log(
+      requiredTermsAgreementIdList.every((requiredId) =>
+        checkTermsAgreementIdList.includes(requiredId),
+      ),
+    );
+
     return requiredTermsAgreementIdList.every((requiredId) =>
       checkTermsAgreementIdList.includes(requiredId),
     );

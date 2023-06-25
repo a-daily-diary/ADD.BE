@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { TermsAgreementsService } from 'src/terms-agreements/terms-agreements.service';
 import { termsAgreementExceptionMessage } from 'src/constants/exceptionMessage';
+import { TermsAgreementEnum } from 'src/types/terms-agreements.type';
 
 @Injectable()
 export class UserToTermsAgreementsService {
@@ -16,7 +17,7 @@ export class UserToTermsAgreementsService {
 
   async saveUserToTermsAgreement(
     user: UserDTO,
-    userCheckedTermsAgreementIdList: string[],
+    userCheckedTermsAgreementIdList: TermsAgreementEnum[],
   ) {
     const isValidateTermsAgreement =
       await this.termsAgreementsService.validatorRequiredTermsAgreements(
