@@ -19,6 +19,7 @@ import { UserToTermsAgreementsService } from 'src/user-to-terms-agreements/user-
 import { UserDTO, UserUpdateDTO } from './dto/user.dto';
 import { PasswordResetLinkDTO } from './dto/password-reset-link.dto';
 import { MailService } from 'src/email.service';
+import { PasswordResetDTO } from './dto/password-reset.dto';
 
 @Injectable()
 export class UsersService {
@@ -136,6 +137,23 @@ ${redirectUrl}?email=${email}&token=${user.tempToken}`,
     }, 1000 * 60 * 5); // 5 minutes
 
     return { message: '비밀번호 재설정 메일이 발송되었습니다.' };
+  }
+
+  async passwordReset(passwordResetDTO: PasswordResetDTO) {
+    const { email, password, tempToken } = passwordResetDTO;
+
+    const user = await this.findUserByEmail(email);
+
+    if (user.tempToken !== tempToken)
+      throw new BadRequestException(userExceptionMessage.INVALID_TOKEN);
+
+    const hashedPassword = await bcrypt.hashSync(password, 10);
+    user.password = hashedPassword;
+    user.tempToken = null;
+
+    await this.usersRepository.update(user.id, user);
+
+    return { message: '비밀번호가 재설정되었습니다.' };
   }
 
   async findUserByEmail(email: string) {

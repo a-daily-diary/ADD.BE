@@ -35,6 +35,7 @@ import { UserDTO, UserUpdateDTO } from './dto/user.dto';
 import { JwtAuthGuard } from './jwt/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { PasswordResetLinkDTO } from './dto/password-reset-link.dto';
+import { PasswordResetDTO } from './dto/password-reset.dto';
 
 @ApiTags('USER')
 @Controller('users')
@@ -138,6 +139,11 @@ export class UsersController {
     @Body() sendPasswordResetLinkDTO: PasswordResetLinkDTO,
   ) {
     return this.usersService.sendPasswordResetLink(sendPasswordResetLinkDTO);
+  }
+
+  @Put('password')
+  passwordReset(@Body() passwordResetDTO: PasswordResetDTO) {
+    return this.usersService.passwordReset(passwordResetDTO);
   }
 
   @Put()
