@@ -13,11 +13,6 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('/send-mail')
-  setMail() {
-    return this.appService.sendEmail();
-  }
-
   @Post()
   @ApiOperation({
     summary: '약관동의, 뱃지 데이터 설정 API',

@@ -3,15 +3,12 @@ import { TermsAgreementsService } from './terms-agreements/terms-agreements.serv
 import { BadgesService } from './badges/badges.service';
 import { exceptionMessage } from './constants/exceptionMessage';
 import { UsersService } from './users/users.service';
-import { MailerService } from '@nestjs-modules/mailer';
-
 @Injectable()
 export class AppService {
   constructor(
     private readonly termsAgreementsService: TermsAgreementsService,
     private readonly badgesService: BadgesService,
     private readonly usersService: UsersService,
-    private readonly mailerService: MailerService,
   ) {}
 
   getHello(): string {
@@ -43,15 +40,5 @@ export class AppService {
       throw new Error('뱃지 데이터 설정하는 부분에서 에러가 발생하였습니다.');
 
     return { message: '데이터 초기 셋팅이 완료되었습니다.' };
-  }
-
-  async sendEmail() {
-    await this.mailerService.sendMail({
-      to: 'yws1502@naver.com',
-      subject: 'test email',
-      text: 'hello world',
-    });
-
-    return 'send a email from woosang0430@gmail.com';
   }
 }

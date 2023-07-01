@@ -19,6 +19,7 @@ import { UserToTermsAgreementsModule } from './user-to-terms-agreements/user-to-
 import { UserToBadgesModule } from './user-to-badges/user-to-badges.module';
 import { HeatmapModule } from './heatmap/heatmap.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { MailService } from './email.service';
 
 const typeOrmModuleOptions = {
   useFactory: async (): Promise<TypeOrmModuleOptions> => {
@@ -66,7 +67,7 @@ const typeOrmModuleOptions = {
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, AwsService],
-  exports: [AwsService],
+  providers: [AppService, AwsService, MailService],
+  exports: [AwsService, MailService],
 })
 export class AppModule {}
