@@ -62,6 +62,7 @@ export class UserEntity {
   @Column({ type: 'boolean', default: false })
   isAdmin: boolean;
 
+  @ApiProperty()
   @Exclude()
   @IsUUID()
   @Column({ type: 'uuid', nullable: true, default: null })

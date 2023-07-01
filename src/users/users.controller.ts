@@ -142,6 +142,10 @@ export class UsersController {
   }
 
   @Put('password')
+  @ApiOperation({
+    summary: '비밀번호 재설정 API',
+  })
+  @ApiResponse(responseExampleForUser.passwordReset)
   passwordReset(@Body() passwordResetDTO: PasswordResetDTO) {
     return this.usersService.passwordReset(passwordResetDTO);
   }
