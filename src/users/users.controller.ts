@@ -107,8 +107,8 @@ export class UsersController {
     summary: '회원가입',
   })
   @ApiResponse(responseExampleForUser.register)
-  register(@Body() UserRegisterDTO: UserRegisterDTO) {
-    return this.usersService.register(UserRegisterDTO);
+  register(@Body() userRegisterDTO: UserRegisterDTO) {
+    return this.usersService.register(userRegisterDTO);
   }
 
   @Post('login')
