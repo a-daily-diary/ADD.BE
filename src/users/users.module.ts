@@ -12,6 +12,7 @@ import { AwsService } from 'src/aws.service';
 import { UserToTermsAgreementEntity } from 'src/user-to-terms-agreements/user-to-terms-agreements.entity';
 import { UserToTermsAgreementsModule } from 'src/user-to-terms-agreements/user-to-terms-agreements.module';
 import { UserToBadgeEntity } from 'src/user-to-badges/user-to-badges.entity';
+import { MailService } from 'src/email.service';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import { UserToBadgeEntity } from 'src/user-to-badges/user-to-badges.entity';
     UserToTermsAgreementsModule,
   ],
   controllers: [UsersController],
-  providers: [UsersService, JwtStrategy, AwsService],
+  providers: [UsersService, JwtStrategy, AwsService, MailService],
   exports: [UsersService],
 })
 export class UsersModule {}

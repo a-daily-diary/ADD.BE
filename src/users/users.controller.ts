@@ -34,6 +34,7 @@ import { UsersService } from './users.service';
 import { UserDTO, UserUpdateDTO } from './dto/user.dto';
 import { JwtAuthGuard } from './jwt/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { FindPasswordDTO } from './dto/find-password.dto';
 
 @ApiTags('USER')
 @Controller('users')
@@ -118,6 +119,11 @@ export class UsersController {
   @ApiResponse(responseExampleForUser.login)
   login(@Body() userLoginDto: UserLoginDTO) {
     return this.usersService.login(userLoginDto);
+  }
+
+  @Post('find-password')
+  findPassword(@Body() findPasswordDTO: FindPasswordDTO) {
+    return this.usersService.findPassword(findPasswordDTO);
   }
 
   @Put()

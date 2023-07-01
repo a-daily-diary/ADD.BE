@@ -63,6 +63,11 @@ export class UserEntity {
   isAdmin: boolean;
 
   @Exclude()
+  @IsUUID()
+  @Column({ type: 'uuid', nullable: true, default: null })
+  tempToken: string | null;
+
+  @Exclude()
   @CreateDateColumn({
     type: 'timestamptz' /* timestamp with time zone */,
   })
