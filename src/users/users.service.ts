@@ -17,7 +17,7 @@ import { userExceptionMessage } from 'src/constants/exceptionMessage';
 import { AwsService } from 'src/aws.service';
 import { UserToTermsAgreementsService } from 'src/user-to-terms-agreements/user-to-terms-agreements.service';
 import { UserDTO, UserUpdateDTO } from './dto/user.dto';
-import { FindPasswordDTO } from './dto/find-password.dto';
+import { PasswordResetLinkDTO } from './dto/password-reset-link.dto';
 import { MailService } from 'src/email.service';
 
 @Injectable()
@@ -111,8 +111,8 @@ export class UsersService {
     }
   }
 
-  async findPassword(findPasswordDTO: FindPasswordDTO) {
-    const { email, redirectUrl } = findPasswordDTO;
+  async sendPasswordResetLink(sendPasswordResetLinkDTO: PasswordResetLinkDTO) {
+    const { email, redirectUrl } = sendPasswordResetLinkDTO;
 
     const user = await this.findUserByEmail(email);
 

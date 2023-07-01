@@ -34,7 +34,7 @@ import { UsersService } from './users.service';
 import { UserDTO, UserUpdateDTO } from './dto/user.dto';
 import { JwtAuthGuard } from './jwt/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
-import { FindPasswordDTO } from './dto/find-password.dto';
+import { PasswordResetLinkDTO } from './dto/password-reset-link.dto';
 
 @ApiTags('USER')
 @Controller('users')
@@ -121,7 +121,7 @@ export class UsersController {
     return this.usersService.login(userLoginDto);
   }
 
-  @Post('find-password')
+  @Post('password-reset-link')
   @ApiOperation({
     summary: '비밀번호 재설정 링크 반환 API',
     description: `메일 발송 이후 5분 동안 해당 토큰을 사용할 수 있습니다.
@@ -133,9 +133,11 @@ export class UsersController {
 <br />
 <div>\${redirectUrl}?email=\${email}&token=uuid</div>`,
   })
-  @ApiResponse(responseExampleForUser.findPassword)
-  findPassword(@Body() findPasswordDTO: FindPasswordDTO) {
-    return this.usersService.findPassword(findPasswordDTO);
+  @ApiResponse(responseExampleForUser.sendPasswordResetLink)
+  sendPasswordResetLink(
+    @Body() sendPasswordResetLinkDTO: PasswordResetLinkDTO,
+  ) {
+    return this.usersService.sendPasswordResetLink(sendPasswordResetLinkDTO);
   }
 
   @Put()
