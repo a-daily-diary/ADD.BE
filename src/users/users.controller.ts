@@ -122,6 +122,18 @@ export class UsersController {
   }
 
   @Post('find-password')
+  @ApiOperation({
+    summary: '비밀번호 재설정 링크 반환 API',
+    description: `메일 발송 이후 5분 동안 해당 토큰을 사용할 수 있습니다.
+<br />
+아래는 사용자에게 반환되는 메일 내용입니다.
+
+<div>비밀번호 변경 링크입니다.</div>
+<div>아래의 링크로 접근하여 비밀번호를 변경해주세요.</div>
+<br />
+<div>\${redirectUrl}?email=\${email}&token=uuid</div>`,
+  })
+  @ApiResponse(responseExampleForUser.findPassword)
   findPassword(@Body() findPasswordDTO: FindPasswordDTO) {
     return this.usersService.findPassword(findPasswordDTO);
   }
