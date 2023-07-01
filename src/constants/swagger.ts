@@ -79,6 +79,12 @@ export const responseExampleForUser = {
   register: responseTemplate({
     message: '회원가입에 성공하였습니다.',
   }),
+  sendPasswordResetLink: responseTemplate({
+    message: '비밀번호 재설정 메일이 발송되었습니다.',
+  }),
+  passwordReset: responseTemplate({
+    message: '비밀번호가 재설정되었습니다.',
+  }),
   login: responseTemplate({
     token: 'token',
     user: userResponse,

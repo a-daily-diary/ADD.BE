@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as uuid from 'uuid';
 import * as bcrypt from 'bcrypt';
 
 import { UserEmailDTO, UserRegisterDTO } from './dto/user-register.dto';
@@ -16,6 +17,9 @@ import { userExceptionMessage } from 'src/constants/exceptionMessage';
 import { AwsService } from 'src/aws.service';
 import { UserToTermsAgreementsService } from 'src/user-to-terms-agreements/user-to-terms-agreements.service';
 import { UserDTO, UserUpdateDTO } from './dto/user.dto';
+import { PasswordResetLinkDTO } from './dto/password-reset-link.dto';
+import { MailService } from 'src/email.service';
+import { PasswordResetDTO } from './dto/password-reset.dto';
 
 @Injectable()
 export class UsersService {
@@ -25,6 +29,7 @@ export class UsersService {
     private readonly jwtService: JwtService,
     private readonly awsService: AwsService,
     private readonly userToTermsAgreementsService: UserToTermsAgreementsService,
+    private readonly mailService: MailService,
   ) {}
   async uploadImg(file: Express.Multer.File) {
     const uploadInfo = await this.awsService.uploadFileToS3('users', file);
@@ -107,8 +112,61 @@ export class UsersService {
     }
   }
 
+  async sendPasswordResetLink(sendPasswordResetLinkDTO: PasswordResetLinkDTO) {
+    const { email, redirectUrl } = sendPasswordResetLinkDTO;
+
+    const user = await this.findUserByEmail(email);
+
+    user.tempToken = uuid.v1();
+
+    await this.usersRepository.update(user.id, user);
+
+    await this.mailService.sendEmail(
+      user.email,
+      '[ADD] 비밀번호 재설정 링크입니다.',
+      `비밀번호 변경 링크입니다.
+아래의 링크로 접근하여 비밀번호를 변경해주세요.
+
+${redirectUrl}?email=${email}&token=${user.tempToken}`,
+    );
+
+    setTimeout(async () => {
+      user.tempToken = null;
+
+      await this.usersRepository.update(user.id, user);
+    }, 1000 * 60 * 5); // 5 minutes
+
+    return { message: '비밀번호 재설정 메일이 발송되었습니다.' };
+  }
+
+  async passwordReset(passwordResetDTO: PasswordResetDTO) {
+    const { email, password, tempToken } = passwordResetDTO;
+
+    const user = await this.findUserByEmail(email);
+
+    if (user.tempToken !== tempToken)
+      throw new BadRequestException(userExceptionMessage.INVALID_TOKEN);
+
+    const hashedPassword = await bcrypt.hashSync(password, 10);
+    user.password = hashedPassword;
+    user.tempToken = null;
+
+    await this.usersRepository.update(user.id, user);
+
+    return { message: '비밀번호가 재설정되었습니다.' };
+  }
+
+  async findUserByEmail(email: string) {
+    const user = await this.usersRepository.findOneBy({ email });
+
+    if (!user)
+      throw new NotFoundException(userExceptionMessage.DOES_NOT_EXIST_USER);
+
+    return user;
+  }
+
   async findUserById(id: string) {
-    const user = this.usersRepository.findOneBy({ id });
+    const user = await this.usersRepository.findOneBy({ id });
 
     if (!user) {
       throw new NotFoundException(userExceptionMessage.DOES_NOT_EXIST_USER);

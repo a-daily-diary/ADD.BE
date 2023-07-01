@@ -3,7 +3,6 @@ import { TermsAgreementsService } from './terms-agreements/terms-agreements.serv
 import { BadgesService } from './badges/badges.service';
 import { exceptionMessage } from './constants/exceptionMessage';
 import { UsersService } from './users/users.service';
-
 @Injectable()
 export class AppService {
   constructor(
