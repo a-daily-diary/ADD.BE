@@ -79,7 +79,7 @@ export class DiariesService {
 
   async getDiaries(
     accessUser: UserDTO,
-    diaryAuthorName?: string,
+    targetProfileUsername?: string,
     searchKeyword?: string | undefined,
     take = DEFAULT_TAKE,
     skip = DEFAULT_SKIP,
@@ -87,15 +87,15 @@ export class DiariesService {
     const { selectDiaryInstance, tableAliasInfo } =
       this.generateSelectDiaryInstance();
 
-    diaryAuthorName === undefined
-      ? selectDiaryInstance
+    targetProfileUsername === undefined
+      ? selectDiaryInstance // 전체 일기 조회
           .where(`${tableAliasInfo.diary}.isPublic = true`)
           .orWhere(`${tableAliasInfo.diaryAuthor}.id = :accessUserId`, {
             accessUserId: accessUser.id,
           })
-      : selectDiaryInstance
+      : selectDiaryInstance // 특정 유저가 작성한 일기 조회
           .where(`${tableAliasInfo.diaryAuthor}.username = :username`, {
-            username: diaryAuthorName,
+            username: targetProfileUsername,
           })
           .andWhere(
             new Brackets((qb) => {
@@ -152,21 +152,59 @@ export class DiariesService {
     return this.generateCustomFieldForDiary(diaryByDiaryId, accessUser.id);
   }
 
-  async getDiariesByUsersBookmark(username: string, accessUser: UserDTO) {
+  async getDiariesByUsersBookmark(
+    accessUser: UserDTO,
+    targetProfileUsername: string,
+    searchKeyword?: string | undefined,
+    take = DEFAULT_TAKE,
+    skip = DEFAULT_SKIP,
+  ) {
     const { selectDiaryInstance, tableAliasInfo } =
       this.generateSelectDiaryInstance();
 
-    const diariesByUsername = await selectDiaryInstance
+    const diariesByUsername = selectDiaryInstance
       .where(`${tableAliasInfo.bookmarksUser}.username = :username`, {
-        username,
+        username: targetProfileUsername,
       })
-      .getMany();
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where(`${tableAliasInfo.diary}.isPublic = true`).orWhere(
+            `${tableAliasInfo.diaryAuthor}.id = :accessUserId`,
+            {
+              accessUserId: accessUser.id,
+            },
+          );
+        }),
+      );
 
-    const responseDiariesByUsername = diariesByUsername.map((diary) => {
+    if (searchKeyword) {
+      diariesByUsername
+        .where(`${tableAliasInfo.diaryAuthor}.username ILIKE :searchKeyword`, {
+          searchKeyword: `%${searchKeyword}%`,
+        })
+        .orWhere(`${tableAliasInfo.diary}.title ILIKE :searchKeyword`, {
+          searchKeyword: `%${searchKeyword}%`,
+        })
+        .orWhere(`${tableAliasInfo.diary}.content ILIKE :searchKeyword`, {
+          searchKeyword: `%${searchKeyword}%`,
+        });
+    }
+
+    const [diaries, totalCount] = await diariesByUsername
+      .orderBy(`${tableAliasInfo.diary}.createdAt`, 'DESC')
+      .take(take)
+      .skip(skip)
+      .getManyAndCount();
+
+    const resultDiaries = diaries.map((diary) => {
       return this.generateCustomFieldForDiary(diary, accessUser.id);
     });
 
-    return responseDiariesByUsername;
+    return {
+      diaries: resultDiaries,
+      totalCount,
+      totalPage: Math.ceil(totalCount / take),
+    };
   }
 
   async create(diaryFormDto: DiaryFormDTO, author: UserDTO) {
