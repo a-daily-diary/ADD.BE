@@ -136,14 +136,18 @@ export const responseExampleForDiary = {
     isBookmark: 'boolean',
     author: userResponse,
   }),
-  getDiariesByUsersBookmark: responseTemplate([
-    {
-      ...diaryResponse,
-      isFavorite: 'boolean',
-      isBookmark: 'boolean',
-      author: userResponse,
-    },
-  ]),
+  getDiariesByUsersBookmark: responseTemplate({
+    diaries: [
+      {
+        ...diaryResponse,
+        isFavorite: 'boolean',
+        isBookmark: 'boolean',
+        author: userResponse,
+      },
+    ],
+    totalCount: 'number',
+    totalPage: 'number',
+  }),
   updateDiary: responseTemplate({
     ...diaryResponse,
     isFavorite: 'boolean',

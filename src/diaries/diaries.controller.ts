@@ -101,13 +101,25 @@ export class DiariesController {
     summary: '유저별 북마크한 일기 리스트 조회',
   })
   @ApiBearerAuth('access-token')
+  @ApiQuery({ name: 'take', required: false, type: 'number' })
+  @ApiQuery({ name: 'skip', required: false, type: 'number' })
+  @ApiQuery({ name: 'searchKeyword', required: false, type: 'string' })
   @ApiResponse(responseExampleForDiary.getDiariesByUsersBookmark)
   @UseGuards(JwtAuthGuard)
   getDiariesByUsersBookmark(
-    @Param('username') username: string,
     @CurrentUser() currentUser: UserDTO,
+    @Param('username') username: string,
+    @Query('take') take?: number | typeof NaN,
+    @Query('skip') skip?: number | typeof NaN,
+    @Query('searchKeyword') searchKeyword?: string,
   ) {
-    return this.diariesService.getDiariesByUsersBookmark(username, currentUser);
+    return this.diariesService.getDiariesByUsersBookmark(
+      currentUser,
+      username,
+      searchKeyword,
+      take,
+      skip,
+    );
   }
 
   @Get(':diaryId')
