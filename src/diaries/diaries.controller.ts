@@ -101,7 +101,6 @@ export class DiariesController {
     summary: '유저별 북마크한 일기 리스트 조회',
   })
   @ApiBearerAuth('access-token')
-  @ApiQuery({ name: 'username', required: false, type: 'string' })
   @ApiQuery({ name: 'take', required: false, type: 'number' })
   @ApiQuery({ name: 'skip', required: false, type: 'number' })
   @ApiQuery({ name: 'searchKeyword', required: false, type: 'string' })
@@ -109,7 +108,7 @@ export class DiariesController {
   @UseGuards(JwtAuthGuard)
   getDiariesByUsersBookmark(
     @CurrentUser() currentUser: UserDTO,
-    @Query('username') username?: string,
+    @Param('username') username: string,
     @Query('take') take?: number | typeof NaN,
     @Query('skip') skip?: number | typeof NaN,
     @Query('searchKeyword') searchKeyword?: string,
