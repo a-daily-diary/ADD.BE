@@ -28,7 +28,7 @@ class Application {
     this.PORT = process.env.PORT || '5000';
     this.corsOriginList = process.env.CORS_ORIGIN_LIST
       ? process.env.CORS_ORIGIN_LIST.split(',').map((origin) => origin.trim())
-      : '*';
+      : true;
     this.ADMIN_USER = process.env.ADMIN_USER || 'admin';
     this.ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
   }
@@ -45,7 +45,7 @@ class Application {
     );
   }
 
-  private setUpOpenAPIMidleware() {
+  private setUpOpenAPIMiddleware() {
     SwaggerModule.setup(
       'docs',
       this.server,
@@ -75,7 +75,7 @@ class Application {
       credentials: true,
     });
     this.setUpBasicAuth();
-    this.setUpOpenAPIMidleware();
+    this.setUpOpenAPIMiddleware();
     this.server.useGlobalPipes(
       new ValidationPipe({
         transform: true,
