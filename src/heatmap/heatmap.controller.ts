@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Query,
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
@@ -30,12 +31,19 @@ export class HeatmapController {
   @Get('/graph/:username')
   @ApiOperation({
     summary: '잔디 그래프 데이터용 API',
+    description: '잔디 그래프 데이터는 연도별로 제공됩니다.',
   })
   @ApiBearerAuth('access-token')
   @ApiResponse(responseExampleForHeatmap.graphData)
   @UseGuards(JwtAuthGuard)
-  getHeatmapGraph(@Param('username') username: string) {
-    return this.heatmapService.getHeatmapGraphData(username);
+  getHeatmapGraph(
+    @Param('username') username: string,
+    @Query('year') year: `${number}`,
+  ) {
+    if (/^([0-9]){4}$/g.test(year) === false)
+      throw new BadRequestException(heatmapExceptionMessage.ONLY_YEAR_FORMAT);
+
+    return this.heatmapService.getHeatmapGraphData(username, year);
   }
 
   @Get('/graph/:username/:dateString')
