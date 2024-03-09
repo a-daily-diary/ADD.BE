@@ -25,7 +25,7 @@ services:
       - add_net
     restart: always
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - ./db-data:/var/lib/postgresql/data
 networks:
   add_net:
     driver: bridge
