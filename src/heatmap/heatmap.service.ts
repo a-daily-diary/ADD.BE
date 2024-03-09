@@ -56,7 +56,7 @@ export class HeatmapService {
         : 0;
 
       return {
-        date: new Date(dateString),
+        date: dateString,
         activityCount: diaryCount + commentCount,
       };
     });
