@@ -31,6 +31,7 @@ export class HeatmapController {
   @Get('/graph/:username')
   @ApiOperation({
     summary: '잔디 그래프 데이터용 API',
+    description: '잔디 그래프 데이터는 연도별로 제공됩니다.',
   })
   @ApiBearerAuth('access-token')
   @ApiResponse(responseExampleForHeatmap.graphData)
