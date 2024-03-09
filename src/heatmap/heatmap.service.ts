@@ -3,10 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CommentEntity } from 'src/comments/comments.entity';
 import { DiaryEntity } from 'src/diaries/diaries.entity';
 import { UserDTO } from 'src/users/dto/user.dto';
-import {
-  convertDateToString,
-  generateLastOneYearDateList,
-} from 'src/utility/date';
+import { convertDateToString, generateYearDateList } from 'src/utility/date';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -18,13 +15,16 @@ export class HeatmapService {
     private readonly commentsRepository: Repository<CommentEntity>,
   ) {}
 
-  async getHeatmapGraphData(username: string) {
+  async getHeatmapGraphData(username: string, year: `${number}`) {
     const diaryCountGroupByDate = await this.diariesRepository
       .createQueryBuilder('diary')
       .leftJoin('diary.author', 'author')
       .select("DATE_TRUNC('day', diary.createdAt) as date")
       .addSelect('COUNT(*)', 'diaryCount')
       .where('author.username = :username', { username })
+      .andWhere(`EXTRACT(YEAR FROM diary.createdAt) = :yearToQuery`, {
+        yearToQuery: year,
+      })
       .groupBy("DATE_TRUNC('day', diary.createdAt)")
       .getRawMany();
 
@@ -34,12 +34,15 @@ export class HeatmapService {
       .select("DATE_TRUNC('day', comment.createdAt) as date")
       .addSelect('COUNT(*)', 'commentCount')
       .where('commenter.username = :username', { username })
+      .andWhere(`EXTRACT(YEAR FROM comment.createdAt) = :yearToQuery`, {
+        yearToQuery: year,
+      })
       .groupBy("DATE_TRUNC('day', comment.createdAt)")
       .getRawMany();
 
-    const lastOneYearDateList = generateLastOneYearDateList();
+    const yearDateList = generateYearDateList(year);
 
-    const responseData = lastOneYearDateList.map((dateString) => {
+    const responseData = yearDateList.map((dateString) => {
       const diaryCountInfo = diaryCountGroupByDate.find(
         (el) => convertDateToString(el.date) === dateString,
       );
