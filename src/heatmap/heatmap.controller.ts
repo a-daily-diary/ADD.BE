@@ -11,6 +11,7 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -34,13 +35,14 @@ export class HeatmapController {
     description: '잔디 그래프 데이터는 연도별로 제공됩니다.',
   })
   @ApiBearerAuth('access-token')
+  @ApiQuery({ name: 'year', required: false, type: 'string' })
   @ApiResponse(responseExampleForHeatmap.graphData)
   @UseGuards(JwtAuthGuard)
   getHeatmapGraph(
     @Param('username') username: string,
-    @Query('year') year: `${number}`,
+    @Query('year') year?: `${number}`,
   ) {
-    if (/^([0-9]){4}$/g.test(year) === false)
+    if (year !== undefined && /^([0-9]){4}$/g.test(year) === false)
       throw new BadRequestException(heatmapExceptionMessage.ONLY_YEAR_FORMAT);
 
     return this.heatmapService.getHeatmapGraphData(username, year);
