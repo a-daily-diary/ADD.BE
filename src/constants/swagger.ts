@@ -19,14 +19,17 @@ const userResponse = {
 
 const diaryResponse = {
   id: 'uuid',
+  createdAt: 'Date(string)',
+  updatedAt: 'Date(string)',
   title: 'string',
   content: 'text',
   imgUrl: 'null | string',
   isPublic: 'boolean',
   favoriteCount: 'number',
   commentCount: 'number',
-  createdAt: 'Date(string)',
-  updatedAt: 'Date(string)',
+  isFavorite: false,
+  isBookmark: false,
+  author: userResponse,
 };
 
 const commentResponse = {
