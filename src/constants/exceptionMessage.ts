@@ -55,7 +55,7 @@ export const exceptionMessage = {
   INCORRECT_KEY: 'incorrect key value',
 };
 
-export const heatmapExceptionMessage = {
+export const ActivitiesExceptionMessage = {
   ONLY_DATE_TYPE: 'Date 타입 포맷의 요청만 가능합니다.',
   ONLY_YEAR_FORMAT: '연도 포맷의 요청만 가능합니다.',
 };
