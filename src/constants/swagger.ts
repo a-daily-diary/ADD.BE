@@ -232,9 +232,9 @@ export const responseExampleForTermsAgreement = {
   deleteTermsAgreement: responseTemplate(deleteResponse),
 };
 
-export const responseExampleForHeatmap = {
+export const responseExampleForActivities = {
   graphData: responseTemplate([{ date: 'Date', activityCount: 'number' }]),
-  getUserActivityHistory: responseTemplate({
+  getUserActivity: responseTemplate({
     date: 'date',
     activityCount: 'number',
     activities: {

@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
-import { HeatmapService } from './heatmap.service';
-import { HeatmapController } from './heatmap.controller';
+import { ActivitiesService } from './activities.service';
+import { ActivitiesController } from './activities.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DiaryEntity } from 'src/diaries/diaries.entity';
 import { CommentEntity } from 'src/comments/comments.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([DiaryEntity, CommentEntity])],
-  providers: [HeatmapService],
-  controllers: [HeatmapController],
-  exports: [HeatmapService],
+  providers: [ActivitiesService],
+  controllers: [ActivitiesController],
+  exports: [ActivitiesService],
 })
-export class HeatmapModule {}
+export class ActivitiesModule {}

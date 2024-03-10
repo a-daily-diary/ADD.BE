@@ -1,3 +1,4 @@
+import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentEntity } from 'src/comments/comments.entity';
@@ -9,10 +10,9 @@ import {
   generateLastOneYearDateList,
   generateYearDateList,
 } from 'src/utility/date';
-import { Repository } from 'typeorm';
 
 @Injectable()
-export class HeatmapService {
+export class ActivitiesService {
   constructor(
     @InjectRepository(DiaryEntity)
     private readonly diariesRepository: Repository<DiaryEntity>,
@@ -84,11 +84,7 @@ export class HeatmapService {
     return responseData;
   }
 
-  async getUserActivityHistory(
-    accessedUser: UserDTO,
-    username: string,
-    date: Date,
-  ) {
+  async getUserActivity(accessedUser: UserDTO, username: string, date: Date) {
     const [diaries, diaryCount] = await this.diariesRepository
       .createQueryBuilder('diary')
       .leftJoinAndSelect('diary.author', 'author')

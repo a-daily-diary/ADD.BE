@@ -16,39 +16,41 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
-import { HeatmapService } from './heatmap.service';
+import { ActivitiesService } from './activities.service';
+import { responseExampleForActivities } from 'src/constants/swagger';
 import { JwtAuthGuard } from 'src/users/jwt/jwt.guard';
-import { responseExampleForHeatmap } from 'src/constants/swagger';
-import { heatmapExceptionMessage } from 'src/constants/exceptionMessage';
+import { ActivitiesExceptionMessage } from 'src/constants/exceptionMessage';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UserDTO } from 'src/users/dto/user.dto';
 
-@ApiTags('Heatmap')
-@Controller('heatmap')
+@ApiTags('Activities')
+@Controller('activities')
 @UseFilters(HttpApiExceptionFilter)
-export class HeatmapController {
-  constructor(private readonly heatmapService: HeatmapService) {}
+export class ActivitiesController {
+  constructor(private readonly activitiesService: ActivitiesService) {}
 
-  @Get('/graph/:username')
+  @Get('/:username')
   @ApiOperation({
     summary: '잔디 그래프 데이터용 API',
     description: '잔디 그래프 데이터는 연도별로 제공됩니다.',
   })
   @ApiBearerAuth('access-token')
   @ApiQuery({ name: 'year', required: false, type: 'string' })
-  @ApiResponse(responseExampleForHeatmap.graphData)
+  @ApiResponse(responseExampleForActivities.graphData)
   @UseGuards(JwtAuthGuard)
   getHeatmapGraph(
     @Param('username') username: string,
     @Query('year') year?: `${number}`,
   ) {
     if (year !== undefined && /^([0-9]){4}$/g.test(year) === false)
-      throw new BadRequestException(heatmapExceptionMessage.ONLY_YEAR_FORMAT);
+      throw new BadRequestException(
+        ActivitiesExceptionMessage.ONLY_YEAR_FORMAT,
+      );
 
-    return this.heatmapService.getHeatmapGraphData(username, year);
+    return this.activitiesService.getHeatmapGraphData(username, year);
   }
 
-  @Get('/graph/:username/:dateString')
+  @Get('/:username/:dateString')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: '날짜 별 유저 활동 내역 조회 API',
@@ -56,21 +58,21 @@ export class HeatmapController {
       '일기의 경우 공개 여부에 따라 응답(response) 구조 중 diaries에는 공개한 일기만 담겨져있습니다. diaryCount는 공개 여부와 상관없이 해당 날짜에 작성한 일기의 개수가 반환됩니다.',
   })
   @ApiBearerAuth('access-token')
-  @ApiResponse(responseExampleForHeatmap.getUserActivityHistory)
+  @ApiResponse(responseExampleForActivities.getUserActivity)
   @ApiParam({
     name: 'dateString',
     description:
       '2023-06-25와 같은 형식도 가능합니다. 다만 **2023-06-25**와 **2023-6-25**는 다르게 쿼리가 되므로 2자리 수를 지켜주세요',
   })
-  getDetailHeatmap(
+  getDetailActivity(
     @CurrentUser() accessedUser: UserDTO,
     @Param('username') username: string,
     @Param('dateString') dateString: string,
   ) {
     if (isNaN(Date.parse(dateString)))
-      throw new BadRequestException(heatmapExceptionMessage.ONLY_DATE_TYPE);
+      throw new BadRequestException(ActivitiesExceptionMessage.ONLY_DATE_TYPE);
 
-    return this.heatmapService.getUserActivityHistory(
+    return this.activitiesService.getUserActivity(
       accessedUser,
       username,
       new Date(dateString),
