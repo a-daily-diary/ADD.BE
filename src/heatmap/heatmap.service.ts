@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CommentEntity } from 'src/comments/comments.entity';
 import { DiaryEntity } from 'src/diaries/diaries.entity';
 import { UserDTO } from 'src/users/dto/user.dto';
+import { generateCustomFieldForDiary } from 'src/utility/customField';
 import {
   convertDateToString,
   generateLastOneYearDateList,
@@ -90,12 +91,20 @@ export class HeatmapService {
   ) {
     const [diaries, diaryCount] = await this.diariesRepository
       .createQueryBuilder('diary')
-      .leftJoin('diary.author', 'author')
+      .leftJoinAndSelect('diary.author', 'author')
+      .leftJoinAndSelect('diary.favorites', 'favorites')
+      .leftJoinAndSelect('favorites.user', 'favoriteUser')
+      .leftJoinAndSelect('diary.bookmarks', 'bookmarks')
+      .leftJoinAndSelect('bookmarks.user', 'bookmarksUser')
       .where('author.username = :username', { username })
       .andWhere("to_char(diary.createdAt, 'YYYY-MM-DD') = :date", {
         date: convertDateToString(date),
       })
       .getManyAndCount();
+
+    const resultDiaries = diaries.map((diary) => {
+      return generateCustomFieldForDiary(diary, accessedUser.id);
+    });
 
     const commentCount = await this.commentsRepository
       .createQueryBuilder('comment')
@@ -110,7 +119,7 @@ export class HeatmapService {
       date,
       activityCount: diaryCount + commentCount,
       activities: {
-        diaries: diaries.filter(
+        diaries: resultDiaries.filter(
           (diary) =>
             diary.isPublic === true || username === accessedUser.username,
         ),

@@ -13,6 +13,7 @@ import { DiaryFormDTO } from './dto/diary-form.dto';
 import { DEFAULT_SKIP, DEFAULT_TAKE } from 'src/constants/page';
 import { UserToBadgesService } from 'src/user-to-badges/user-to-badges.service';
 import { BadgeAcquisitionConditionForDiary } from 'src/constants/badgeAcquisitionCondition';
+import { generateCustomFieldForDiary } from 'src/utility/customField';
 
 @Injectable()
 export class DiariesService {
@@ -35,25 +36,6 @@ export class DiariesService {
     }
 
     return diary;
-  }
-
-  generateCustomFieldForDiary(diary: DiaryEntity, accessUserId: string) {
-    const { author, favorites, bookmarks, deleteAt: _, ...otherInfo } = diary; // FIXME: nest의 classSerializerInterceptor로 처리할 수 있는 방법 고안하기
-
-    const isFavorite = favorites
-      .map((favorite) => favorite.user.id)
-      .includes(accessUserId);
-
-    const isBookmark = bookmarks
-      .map((bookmark) => bookmark.user.id)
-      .includes(accessUserId);
-
-    return {
-      ...otherInfo,
-      isFavorite,
-      isBookmark,
-      author,
-    };
   }
 
   generateSelectDiaryInstance() {
@@ -128,7 +110,7 @@ export class DiariesService {
       .getManyAndCount();
 
     const resultDiaries = diaries.map((diary) => {
-      return this.generateCustomFieldForDiary(diary, accessUser.id);
+      return generateCustomFieldForDiary(diary, accessUser.id);
     });
 
     return {
@@ -149,7 +131,7 @@ export class DiariesService {
     if (!diaryByDiaryId) {
       throw new NotFoundException(diaryExceptionMessage.DOES_NOT_EXIST_DIARY);
     }
-    return this.generateCustomFieldForDiary(diaryByDiaryId, accessUser.id);
+    return generateCustomFieldForDiary(diaryByDiaryId, accessUser.id);
   }
 
   async getDiariesByUsersBookmark(
@@ -197,7 +179,7 @@ export class DiariesService {
       .getManyAndCount();
 
     const resultDiaries = diaries.map((diary) => {
-      return this.generateCustomFieldForDiary(diary, accessUser.id);
+      return generateCustomFieldForDiary(diary, accessUser.id);
     });
 
     return {
