@@ -17,7 +17,6 @@ import { BadgesModule } from './badges/badges.module';
 import { TermsAgreementsModule } from './terms-agreements/terms-agreements.module';
 import { UserToTermsAgreementsModule } from './user-to-terms-agreements/user-to-terms-agreements.module';
 import { UserToBadgesModule } from './user-to-badges/user-to-badges.module';
-import { HeatmapModule } from './heatmap/heatmap.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MailService } from './email.service';
 import { MatchingRulesModule } from './matching-rules/matching-rules.module';
@@ -55,7 +54,6 @@ const typeOrmModuleOptions = {
     TermsAgreementsModule,
     UserToTermsAgreementsModule,
     UserToBadgesModule,
-    HeatmapModule,
     MailerModule.forRoot({
       transport: {
         host: process.env.SMTP_HOST,
