@@ -76,11 +76,6 @@ export class UserToBadgesService {
         userToBadgesExceptionMessage.DOES_NOT_EXIST_USER_TO_BADGE,
       );
 
-    if (targetUserToBadge.user.id !== accessedUser.id)
-      throw new BadRequestException(
-        userToBadgesExceptionMessage.OWNER_ONLY_PINNED,
-      );
-
     const pinnedCount = await this.userToBadgeRepository
       .createQueryBuilder('userToBadge')
       .leftJoin('userToBadge.user', 'user')
