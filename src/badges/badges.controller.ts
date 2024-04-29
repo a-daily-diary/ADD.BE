@@ -37,6 +37,7 @@ import { UserDTO } from 'src/users/dto/user.dto';
 import { BadgeFormDTO } from './dto/badge-form.dto';
 import { BadgeCode } from 'src/types/badges.type';
 import { UserToBadgesService } from 'src/user-to-badges/user-to-badges.service';
+import { BadgeUpdateFormDTO } from './dto/badge-update-form.dto';
 
 @ApiTags('Badge')
 @Controller('badges')
@@ -144,9 +145,9 @@ export class BadgesController {
   @UseGuards(JwtAuthGuard)
   updateBadge(
     @Param('badgeId', new ParseEnumPipe(BadgeCode)) badgeId: BadgeCode,
-    @Body() badgeFormDTO: BadgeFormDTO,
+    @Body() badgeUpdateFormDTO: BadgeUpdateFormDTO,
   ) {
-    return this.badgesService.updateBadge(badgeId, badgeFormDTO);
+    return this.badgesService.updateBadge(badgeId, badgeUpdateFormDTO);
   }
 
   @Delete(':badgeId')
