@@ -32,27 +32,27 @@ export const steady3Badge: BadgeFormDTO = {
 export const newBieBadge: BadgeFormDTO = {
   id: BadgeCode.new_bie,
   name: '디디의 첫걸음',
-  imgUrl: 'http://add.bucket.s3.amazonaws.com/badges/steady/new_bie.png',
+  imgUrl: 'http://add.bucket.s3.amazonaws.com/badges/activity/new_bie.png',
   description: '기본 thumbnail 변경',
 };
 
 export const bookmarkBadge: BadgeFormDTO = {
   id: BadgeCode.bookmark,
   name: '일기 수집가',
-  imgUrl: 'http://add.bucket.s3.amazonaws.com/badges/steady/bookmark.png',
+  imgUrl: 'http://add.bucket.s3.amazonaws.com/badges/activity/bookmark.png',
   description: '북마크 10회 등록',
 };
 
 export const heartBadge: BadgeFormDTO = {
   id: BadgeCode.heart,
   name: '응원의 하트',
-  imgUrl: 'http://add.bucket.s3.amazonaws.com/badges/steady/heart.png',
+  imgUrl: 'http://add.bucket.s3.amazonaws.com/badges/activity/heart.png',
   description: '하트 10회 등록',
 };
 
 export const commentBadge: BadgeFormDTO = {
   id: BadgeCode.comment,
   name: '리액션 부자',
-  imgUrl: 'http://add.bucket.s3.amazonaws.com/badges/steady/comment.png',
+  imgUrl: 'http://add.bucket.s3.amazonaws.com/badges/activity/comment.png',
   description: '댓글 10회 작성',
 };
