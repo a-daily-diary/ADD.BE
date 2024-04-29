@@ -25,6 +25,7 @@ import {
   steady2Badge,
   steady3Badge,
 } from 'src/data/badges';
+import { BadgeUpdateFormDTO } from './dto/badge-update-form.dto';
 
 @Injectable()
 export class BadgesService {
@@ -127,21 +128,24 @@ export class BadgesService {
     return newBadgeList;
   }
 
-  async updateBadge(badgeId: BadgeCode, badgeFormDTO: BadgeFormDTO) {
+  async updateBadge(
+    badgeId: BadgeCode,
+    badgeUpdateFormDTO: BadgeUpdateFormDTO,
+  ) {
     const targetBadge = await this.findById(badgeId);
 
     if (!targetBadge) {
       throw new NotFoundException(badgeExceptionMessage.DOES_NOT_EXIST_BADGE);
     }
 
-    const hasBadgeName = await this.findByBadgeName(badgeFormDTO.name);
+    const badgeByName = await this.findByBadgeName(badgeUpdateFormDTO.name);
 
-    if (hasBadgeName) {
+    if (badgeByName && targetBadge.id !== badgeByName.id) {
       throw new BadRequestException(badgeExceptionMessage.EXIST_BADGE_NAME);
     }
 
-    // FIXME: 접근한 유저가 관리자인기 확인 로직 추가 예정
-    await this.badgeRepository.update(badgeId, badgeFormDTO);
+    // FIXME: 접근한 유저가 관리자인지 확인 로직 추가 예정
+    await this.badgeRepository.update(badgeId, badgeUpdateFormDTO);
 
     return await this.findById(badgeId);
   }

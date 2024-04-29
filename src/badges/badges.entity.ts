@@ -27,7 +27,7 @@ export class BadgeEntity {
   @ApiProperty()
   @IsString()
   @IsNotEmpty({ message: '뱃지의 이름을 설정해주세요.' })
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: false, unique: true })
   name: string;
 
   @ApiProperty()
