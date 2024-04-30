@@ -9,7 +9,10 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Socket, Namespace } from 'socket.io';
-import { MatchingWaitingUser } from 'src/matching/matching.type';
+import {
+  MatchingWaitingUser,
+  MatchingSuccessResponse,
+} from 'src/matching/matching.type';
 import { MATCHING_SOCKET_EVENT } from './matching.constants';
 
 @WebSocketGateway({
@@ -62,7 +65,21 @@ export class MatchingGateway
         this.matchedSocketIds.push(offerSocketId);
         this.matchedSocketIds.push(answerSocketId);
 
-        // TODO: Matching 작업 수행
+        this.namespace.sockets
+          .get(offerSocketId)
+          .emit(MATCHING_SOCKET_EVENT.server.matchingSuccess, {
+            role: 'offer',
+            matchingSocket: answerSocketId,
+            matchingUser: this.matchingQueue[answerSocketId].username,
+          } as MatchingSuccessResponse);
+
+        this.namespace.sockets
+          .get(answerSocketId)
+          .emit(MATCHING_SOCKET_EVENT.server.matchingSuccess, {
+            role: 'answer',
+            matchingSocket: offerSocketId,
+            matchingUser: this.matchingQueue[offerSocketId].username,
+          } as MatchingSuccessResponse);
       }
 
       this.matchedSocketIds.forEach((matchedSocketId) => {
