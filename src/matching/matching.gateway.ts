@@ -9,13 +9,13 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Socket, Namespace } from 'socket.io';
-import { MatchingWaitingUser } from 'src/signaling/signaling.type';
+import { MatchingWaitingUser } from 'src/matching/matching.type';
 
 @WebSocketGateway({
-  namespace: 'signaling',
+  namespace: 'matching',
   cors: '*',
 })
-export class SignalingGateway
+export class MatchingGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   @WebSocketServer()
@@ -61,7 +61,7 @@ export class SignalingGateway
         this.matchedSocketIds.push(offerSocketId);
         this.matchedSocketIds.push(answerSocketId);
 
-        // TODO: Signaling 작업 수행
+        // TODO: Matching 작업 수행
       }
 
       this.matchedSocketIds.forEach((matchedSocketId) => {
