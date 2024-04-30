@@ -10,6 +10,7 @@ import {
 } from '@nestjs/websockets';
 import { Socket, Namespace } from 'socket.io';
 import { MatchingWaitingUser } from 'src/matching/matching.type';
+import { MATCHING_SOCKET_EVENT } from './matching.constants';
 
 @WebSocketGateway({
   namespace: 'matching',
@@ -73,12 +74,15 @@ export class MatchingGateway
   }
 
   handleConnection(socket: Socket) {
-    socket.on('userInfo', (userInfo: MatchingWaitingUser) => {
-      console.log(
-        `Connection username is ${userInfo.username} (socket id: ${socket.id})`,
-      );
-      this.matchingQueue[socket.id] = userInfo;
-    });
+    socket.on(
+      MATCHING_SOCKET_EVENT.client.joinMatchingQueue,
+      (userInfo: MatchingWaitingUser) => {
+        console.log(
+          `Connection username is ${userInfo.username} (socket id: ${socket.id})`,
+        );
+        this.matchingQueue[socket.id] = userInfo;
+      },
+    );
   }
 
   handleDisconnect(socket: Socket) {
