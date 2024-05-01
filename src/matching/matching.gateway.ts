@@ -117,4 +117,26 @@ export class MatchingGateway
 
     socket.emit('message', 'Hello world!');
   }
+
+  @SubscribeMessage(MATCHING_SOCKET_EVENT.client.offer)
+  handleOffer(@ConnectedSocket() socket: Socket, @MessageBody() data: any) {
+    const { answerSocket, offer } = data;
+    socket.to(answerSocket).emit(MATCHING_SOCKET_EVENT.server.offer, { offer });
+  }
+
+  @SubscribeMessage(MATCHING_SOCKET_EVENT.client.answer)
+  handleAnswer(@ConnectedSocket() socket: Socket, @MessageBody() data: any) {
+    const { offerSocket, answer } = data;
+    socket
+      .to(offerSocket)
+      .emit(MATCHING_SOCKET_EVENT.server.answer, { answer });
+  }
+
+  @SubscribeMessage(MATCHING_SOCKET_EVENT.client.ice)
+  handleIce(@ConnectedSocket() socket: Socket, @MessageBody() data: any) {
+    const { matchingSocket, candidate } = data;
+    socket
+      .to(matchingSocket)
+      .emit(MATCHING_SOCKET_EVENT.server.ice, { candidate });
+  }
 }
