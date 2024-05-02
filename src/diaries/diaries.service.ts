@@ -1,11 +1,15 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AwsService } from 'src/aws.service';
-import { diaryExceptionMessage } from 'src/constants/exceptionMessage';
+import {
+  diaryExceptionMessage,
+  exceptionMessage,
+} from 'src/constants/exceptionMessage';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { Brackets, Repository } from 'typeorm';
 import { DiaryEntity } from './diaries.entity';
@@ -109,6 +113,9 @@ export class DiariesService {
         });
     }
 
+    if (sortByConverter[sortBy] === undefined)
+      throw new BadRequestException(diaryExceptionMessage.INVALID_SORT_BY);
+
     const [diaries, totalCount] = await selectDiaryInstance
       .orderBy(`${tableAliasInfo.diary}.${sortByConverter[sortBy]}`, 'DESC')
       .take(take)
@@ -178,6 +185,9 @@ export class DiariesService {
           searchKeyword: `%${searchKeyword}%`,
         });
     }
+
+    if (sortByConverter[sortBy] === undefined)
+      throw new BadRequestException(diaryExceptionMessage.INVALID_SORT_BY);
 
     const [diaries, totalCount] = await diariesByUsername
       .orderBy(`${tableAliasInfo.diary}.${sortByConverter[sortBy]}`, 'DESC')
