@@ -10,10 +10,15 @@ import { UserDTO } from 'src/users/dto/user.dto';
 import { Brackets, Repository } from 'typeorm';
 import { DiaryEntity } from './diaries.entity';
 import { DiaryFormDTO } from './dto/diary-form.dto';
-import { DEFAULT_SKIP, DEFAULT_TAKE } from 'src/constants/page';
+import {
+  DEFAULT_DIARY_SORT_BY,
+  DEFAULT_SKIP,
+  DEFAULT_TAKE,
+} from 'src/constants/page';
 import { UserToBadgesService } from 'src/user-to-badges/user-to-badges.service';
 import { BadgeAcquisitionConditionForDiary } from 'src/constants/badgeAcquisitionCondition';
 import { generateCustomFieldForDiary } from 'src/utility/customField';
+import { sortByConverter } from './diaries.utils';
 
 @Injectable()
 export class DiariesService {
@@ -65,6 +70,7 @@ export class DiariesService {
     searchKeyword?: string | undefined,
     take = DEFAULT_TAKE,
     skip = DEFAULT_SKIP,
+    sortBy = DEFAULT_DIARY_SORT_BY,
   ) {
     const { selectDiaryInstance, tableAliasInfo } =
       this.generateSelectDiaryInstance();
@@ -104,7 +110,7 @@ export class DiariesService {
     }
 
     const [diaries, totalCount] = await selectDiaryInstance
-      .orderBy(`${tableAliasInfo.diary}.createdAt`, 'DESC')
+      .orderBy(`${tableAliasInfo.diary}.${sortByConverter[sortBy]}`, 'DESC')
       .take(take)
       .skip(skip)
       .getManyAndCount();
@@ -140,6 +146,7 @@ export class DiariesService {
     searchKeyword?: string | undefined,
     take = DEFAULT_TAKE,
     skip = DEFAULT_SKIP,
+    sortBy = DEFAULT_DIARY_SORT_BY,
   ) {
     const { selectDiaryInstance, tableAliasInfo } =
       this.generateSelectDiaryInstance();
@@ -173,7 +180,7 @@ export class DiariesService {
     }
 
     const [diaries, totalCount] = await diariesByUsername
-      .orderBy(`${tableAliasInfo.diary}.createdAt`, 'DESC')
+      .orderBy(`${tableAliasInfo.diary}.${sortByConverter[sortBy]}`, 'DESC')
       .take(take)
       .skip(skip)
       .getManyAndCount();

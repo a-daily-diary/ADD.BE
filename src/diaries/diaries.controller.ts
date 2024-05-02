@@ -41,6 +41,7 @@ import { UserDTO } from 'src/users/dto/user.dto';
 import { JwtAuthGuard } from 'src/users/jwt/jwt.guard';
 import { DiariesService } from './diaries.service';
 import { DiaryFormDTO } from './dto/diary-form.dto';
+import { DiarySortBy } from './diaries.type';
 
 @ApiTags('Diary')
 @Controller('diaries')
@@ -78,6 +79,12 @@ export class DiariesController {
   @ApiQuery({ name: 'take', required: false, type: 'number' })
   @ApiQuery({ name: 'skip', required: false, type: 'number' })
   @ApiQuery({ name: 'searchKeyword', required: false, type: 'string' })
+  @ApiQuery({
+    name: 'sortBy',
+    required: false,
+    // When you change the sortBy Enum, you must also change the DiarySortBy type.
+    enum: ['popularity', 'latest', 'comments'],
+  })
   @ApiResponse(responseExampleForDiary.getDiaries)
   @UseGuards(JwtAuthGuard) // FIXME: 비로그인 상태 로직 생각하기
   getDiaries(
@@ -86,6 +93,7 @@ export class DiariesController {
     @Query('take') take?: number | typeof NaN,
     @Query('skip') skip?: number | typeof NaN,
     @Query('searchKeyword') searchKeyword?: string,
+    @Query('sortBy') sortBy?: DiarySortBy,
   ) {
     return this.diariesService.getDiaries(
       currentUser,
@@ -93,6 +101,7 @@ export class DiariesController {
       searchKeyword,
       take,
       skip,
+      sortBy,
     );
   }
 
@@ -104,6 +113,12 @@ export class DiariesController {
   @ApiQuery({ name: 'take', required: false, type: 'number' })
   @ApiQuery({ name: 'skip', required: false, type: 'number' })
   @ApiQuery({ name: 'searchKeyword', required: false, type: 'string' })
+  @ApiQuery({
+    name: 'sortBy',
+    required: false,
+    // When you change the sortBy Enum, you must also change the DiarySortBy type.
+    enum: ['popularity', 'latest', 'comments'],
+  })
   @ApiResponse(responseExampleForDiary.getDiariesByUsersBookmark)
   @UseGuards(JwtAuthGuard)
   getDiariesByUsersBookmark(
@@ -112,6 +127,7 @@ export class DiariesController {
     @Query('take') take?: number | typeof NaN,
     @Query('skip') skip?: number | typeof NaN,
     @Query('searchKeyword') searchKeyword?: string,
+    @Query('sortBy') sortBy?: DiarySortBy,
   ) {
     return this.diariesService.getDiariesByUsersBookmark(
       currentUser,
@@ -119,6 +135,7 @@ export class DiariesController {
       searchKeyword,
       take,
       skip,
+      sortBy,
     );
   }
 
