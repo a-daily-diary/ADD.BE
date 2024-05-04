@@ -11,6 +11,7 @@ export class PasswordResetDTO extends PickType(UserEntity, ['email'] as const) {
 
   @ApiProperty()
   @IsUUID()
-  @Column({ type: 'uuid', nullable: true, default: null })
-  tempToken: string | null;
+  @IsNotEmpty({ message: '임시 토큰을 입력해주세요.' })
+  @Column({ type: 'uuid' })
+  tempToken: string;
 }
