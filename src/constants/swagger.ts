@@ -88,6 +88,9 @@ export const responseExampleForUser = {
   passwordReset: responseTemplate({
     message: '비밀번호가 재설정되었습니다.',
   }),
+  tempTokenValidation: responseTemplate({
+    isValidate: 'boolean',
+  }),
   login: responseTemplate({
     token: 'token',
     user: userResponse,
