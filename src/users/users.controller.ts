@@ -148,6 +148,7 @@ export class UsersController {
     description:
       '이메일과 임시 토큰을 body로 요청하면, 유효여부를 boolean 값으로 반환합니다.',
   })
+  @ApiResponse(responseExampleForUser.tempTokenValidation)
   tempTokenValidation(@Body() tempTokenValidationDTO: TempTokenValidationDTO) {
     return this.usersService.tempTokenValidation(tempTokenValidationDTO);
   }
