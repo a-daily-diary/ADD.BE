@@ -20,6 +20,7 @@ import { UserDTO, UserUpdateDTO } from './dto/user.dto';
 import { PasswordResetLinkDTO } from './dto/password-reset-link.dto';
 import { MailService } from 'src/email.service';
 import { PasswordResetDTO } from './dto/password-reset.dto';
+import { TempTokenValidationDTO } from './dto/temp-token-validation.dto';
 
 @Injectable()
 export class UsersService {
@@ -137,6 +138,14 @@ ${redirectUrl}?email=${email}&token=${user.tempToken}`,
     }, 1000 * 60 * 5); // 5 minutes
 
     return { message: '비밀번호 재설정 메일이 발송되었습니다.' };
+  }
+
+  async tempTokenValidation(tempTokenValidation: TempTokenValidationDTO) {
+    const { email, tempToken } = tempTokenValidation;
+
+    const user = await this.findUserByEmail(email);
+
+    return { isValidate: user.tempToken === tempToken };
   }
 
   async passwordReset(passwordResetDTO: PasswordResetDTO) {

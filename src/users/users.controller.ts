@@ -36,6 +36,7 @@ import { JwtAuthGuard } from './jwt/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { PasswordResetLinkDTO } from './dto/password-reset-link.dto';
 import { PasswordResetDTO } from './dto/password-reset.dto';
+import { TempTokenValidationDTO } from './dto/temp-token-validation.dto';
 
 @ApiTags('USER')
 @Controller('users')
@@ -139,6 +140,16 @@ export class UsersController {
     @Body() sendPasswordResetLinkDTO: PasswordResetLinkDTO,
   ) {
     return this.usersService.sendPasswordResetLink(sendPasswordResetLinkDTO);
+  }
+
+  @Post('temp-token-validation')
+  @ApiOperation({
+    summary: '이메일과 임시 토큰이 유효한지 여부를 반환하는 API',
+    description:
+      '이메일과 임시 토큰을 body로 요청하면, 유효여부를 boolean 값으로 반환합니다.',
+  })
+  tempTokenValidation(@Body() tempTokenValidationDTO: TempTokenValidationDTO) {
+    return this.usersService.tempTokenValidation(tempTokenValidationDTO);
   }
 
   @Put('password')
