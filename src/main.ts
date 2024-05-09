@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as expressBasicAuth from 'express-basic-auth';
 import * as path from 'path';
@@ -86,6 +87,7 @@ class Application {
     ); // 해당 interceptor를 통해 exclude 데코레이터가 붙은 필드를 조회 결과에서 제외해준다.
     this.server.useGlobalInterceptors(new SuccessInterceptor());
     this.server.useGlobalFilters(new HttpApiExceptionFilter());
+    this.server.useWebSocketAdapter(new IoAdapter(this.server));
     this.server.useStaticAssets(path.join(__dirname, './common', 'uploads'), {
       prefix: '/media',
     });

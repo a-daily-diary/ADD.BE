@@ -21,6 +21,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { MailService } from './email.service';
 import { MatchingRulesModule } from './matching-rules/matching-rules.module';
 import { ActivitiesModule } from './activities/activities.module';
+import { MatchingModule } from './matching/matching.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (): Promise<TypeOrmModuleOptions> => {
@@ -67,6 +68,7 @@ const typeOrmModuleOptions = {
     }),
     MatchingRulesModule,
     ActivitiesModule,
+    MatchingModule,
   ],
   controllers: [AppController],
   providers: [AppService, AwsService, MailService],
