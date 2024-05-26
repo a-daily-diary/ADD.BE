@@ -67,18 +67,18 @@ export class MatchingGateway
 
         this.namespace.sockets
           .get(offerSocketId)
-          .emit(MATCHING_SOCKET_EVENT.server.matchingSuccess, {
+          .emit(MATCHING_SOCKET_EVENT.server.success, {
             role: 'offer',
-            matchingSocket: answerSocketId,
-            matchingUser: this.matchingQueue[answerSocketId].username,
+            socketId: answerSocketId,
+            userId: this.matchingQueue[answerSocketId].username,
           } as MatchingSuccessResponse);
 
         this.namespace.sockets
           .get(answerSocketId)
-          .emit(MATCHING_SOCKET_EVENT.server.matchingSuccess, {
+          .emit(MATCHING_SOCKET_EVENT.server.success, {
             role: 'answer',
-            matchingSocket: offerSocketId,
-            matchingUser: this.matchingQueue[offerSocketId].username,
+            socketId: offerSocketId,
+            userId: this.matchingQueue[offerSocketId].username,
           } as MatchingSuccessResponse);
       }
 
@@ -92,7 +92,7 @@ export class MatchingGateway
 
   handleConnection(socket: Socket) {
     socket.on(
-      MATCHING_SOCKET_EVENT.client.joinMatchingQueue,
+      MATCHING_SOCKET_EVENT.client.joinQueue,
       (userInfo: MatchingWaitingUser) => {
         console.log(
           `Connection username is ${userInfo.username} (socket id: ${socket.id})`,
@@ -121,22 +121,18 @@ export class MatchingGateway
   @SubscribeMessage(MATCHING_SOCKET_EVENT.client.offer)
   handleOffer(@ConnectedSocket() socket: Socket, @MessageBody() data: any) {
     const { answerSocket, offer } = data;
-    socket.to(answerSocket).emit(MATCHING_SOCKET_EVENT.server.offer, { offer });
+    socket.to(answerSocket).emit(MATCHING_SOCKET_EVENT.server.offer, offer);
   }
 
   @SubscribeMessage(MATCHING_SOCKET_EVENT.client.answer)
   handleAnswer(@ConnectedSocket() socket: Socket, @MessageBody() data: any) {
     const { offerSocket, answer } = data;
-    socket
-      .to(offerSocket)
-      .emit(MATCHING_SOCKET_EVENT.server.answer, { answer });
+    socket.to(offerSocket).emit(MATCHING_SOCKET_EVENT.server.answer, answer);
   }
 
   @SubscribeMessage(MATCHING_SOCKET_EVENT.client.ice)
   handleIce(@ConnectedSocket() socket: Socket, @MessageBody() data: any) {
     const { matchingSocket, candidate } = data;
-    socket
-      .to(matchingSocket)
-      .emit(MATCHING_SOCKET_EVENT.server.ice, { candidate });
+    socket.to(matchingSocket).emit(MATCHING_SOCKET_EVENT.server.ice, candidate);
   }
 }

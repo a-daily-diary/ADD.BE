@@ -1,14 +1,14 @@
 export const MATCHING_SOCKET_EVENT = {
   client: {
-    joinMatchingQueue: 'joinMatchingQueue',
+    joinQueue: 'joinQueue',
     offer: 'offer',
     answer: 'answer',
     ice: 'ice',
   },
   server: {
-    matchingSuccess: 'matchingSuccess',
+    success: 'success',
     offer: 'offer',
     answer: 'answer',
     ice: 'ice',
   },
-};
+} as const;

@@ -6,6 +6,6 @@ export interface MatchingWaitingUser {
 
 export interface MatchingSuccessResponse {
   role: 'offer' | 'answer';
-  matchingSocket: string;
-  matchingUser: string;
+  socketId: string;
+  userId: string;
 }
