@@ -13,12 +13,18 @@ jobs:
 
       - name: Login Dockerhub
         env:
-          DOCKER_HUB_REPO: ${{secrets.DOCKER_HUB_REPO}}
-          DOCKER_HUB_TOKEN: ${{secrets.DOCKER_HUB_TOKEN}}
+          DOCKER_HUB_REPO: ${{ secrets.DOCKER_HUB_REPO }}
+          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
         run: echo "$DOCKER_HUB_TOKEN" | docker login --username $DOCKER_HUB_REPO --password-stdin
 
+      - name: auto increment tag
+        id: tag
+        uses: sophiware/actions-auto-increment-tag@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag $DOCKER_HUB_REPO/add-be:$(date +%s)
+        run: docker build . --file Dockerfile --tag $DOCKER_HUB_REPO/add-be:${{ steps.tag.outputs.tag }}
 
       - name: push to docker hub repository
-        run: docker push $DOCKER_HUB_REPO/add-be:$(date +%s)
+        run: docker push $DOCKER_HUB_REPO/add-be:${{ steps.tag.outputs.tag }}
