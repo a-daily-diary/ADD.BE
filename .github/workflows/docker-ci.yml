@@ -13,12 +13,12 @@ jobs:
 
       - name: Login Dockerhub
         env:
-          DOCKER_HUB_USERNAME: ${{secrets.DOCKER_HUB_USERNAME}}
+          DOCKER_HUB_REPO: ${{secrets.DOCKER_HUB_REPO}}
           DOCKER_HUB_TOKEN: ${{secrets.DOCKER_HUB_TOKEN}}
-        run: echo "$DOCKER_HUB_TOKEN" | docker login --username $DOCKER_HUB_USERNAME --password-stdin
+        run: echo "$DOCKER_HUB_TOKEN" | docker login --username $DOCKER_HUB_REPO --password-stdin
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag $DOCKER_HUB_USERNAME/add-be:$(date +%s)
+        run: docker build . --file Dockerfile --tag $DOCKER_HUB_REPO/add-be:$(date +%s)
 
       - name: push to docker hub repository
-        run: docker push $DOCKER_HUB_USERNAME/add-be:$(date +%s)
+        run: docker push $DOCKER_HUB_REPO/add-be:$(date +%s)
