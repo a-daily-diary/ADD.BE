@@ -7,13 +7,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      DOCKER_HUB_REPO: ${{ secrets.DOCKER_HUB_REPO }}
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Login Dockerhub
         env:
-          DOCKER_HUB_REPO: ${{ secrets.DOCKER_HUB_REPO }}
           DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
         run: echo "$DOCKER_HUB_TOKEN" | docker login --username $DOCKER_HUB_REPO --password-stdin
 
