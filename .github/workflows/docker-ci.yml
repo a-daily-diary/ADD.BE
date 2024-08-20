@@ -28,5 +28,7 @@ jobs:
         run: docker build . --file Dockerfile --tag $DOCKER_HUB_REPO/add-be:${{ steps.tag.outputs.tag }}
 
       - name: push to docker hub repository
-        run: docker push $DOCKER_HUB_REPO/add-be:${{ steps.tag.outputs.tag }}
-        run: docker push $DOCKER_HUB_REPO/add-be:latest
+        run: |
+          docker push $DOCKER_HUB_REPO/add-be:${{ steps.tag.outputs.tag }}
+          docker tag $DOCKER_HUB_REPO/add-be:${{ steps.tag.outputs.tag }} $DOCKER_HUB_REPO/add-be:latest
+          docker push $DOCKER_HUB_REPO/add-be:latest
