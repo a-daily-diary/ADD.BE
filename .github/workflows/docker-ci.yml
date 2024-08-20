@@ -29,3 +29,4 @@ jobs:
 
       - name: push to docker hub repository
         run: docker push $DOCKER_HUB_REPO/add-be:${{ steps.tag.outputs.tag }}
+        run: docker push $DOCKER_HUB_REPO/add-be:latest
