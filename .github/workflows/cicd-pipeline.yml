@@ -44,14 +44,9 @@ jobs:
       - name: Login Dockerhub
         run: echo "$DOCKER_HUB_TOKEN" | docker login --username $DOCKER_HUB_REPO --password-stdin
 
-      - name: Move to directory
-        run: cd /home/ec2-user/workspace/docker-compose
-
-      - name: Container down
-        run: docker-compose -f add-be.yml down
-
-      - name: Pull the Docker image
-        run: docker-compose -f add-be.yml pull
-
-      - name: Container running
-        run: docker-compose -f add-be.yml up -d
+      - name: Change new version container
+        run: |
+          cd /home/ec2-user/workspace/docker-compose
+          docker-compose -f add-be.yml down
+          docker-compose -f add-be.yml pull
+          docker-compose -f add-be.yml up -d
