@@ -1,21 +1,20 @@
-name: Docker Image CI
+name: Docker CI/CD PIPELINE
 
 on:
   push:
     branches: ['main']
 
 jobs:
-  build:
+  CI:
     runs-on: ubuntu-latest
     env:
       DOCKER_HUB_REPO: ${{ secrets.DOCKER_HUB_REPO }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Login Dockerhub
-        env:
-          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
         run: echo "$DOCKER_HUB_TOKEN" | docker login --username $DOCKER_HUB_REPO --password-stdin
 
       - name: auto increment tag
@@ -27,8 +26,25 @@ jobs:
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag $DOCKER_HUB_REPO/add-be:${{ steps.tag.outputs.tag }}
 
-      - name: push to docker hub repository
+      - name: Push to docker hub repository
         run: |
           docker push $DOCKER_HUB_REPO/add-be:${{ steps.tag.outputs.tag }}
           docker tag $DOCKER_HUB_REPO/add-be:${{ steps.tag.outputs.tag }} $DOCKER_HUB_REPO/add-be:latest
           docker push $DOCKER_HUB_REPO/add-be:latest
+  CD:
+    runs-on: self-hosted
+    needs: CI
+    env:
+      DOCKER_HUB_REPO: ${{ secrets.DOCKER_HUB_REPO }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login Dockerhub
+        run: echo "$DOCKER_HUB_TOKEN" | docker login --username $DOCKER_HUB_REPO --password-stdin
+
+      - name: Pull the Docker image
+        run: docker-compose -f add-be.yml pull
+
+      - name: Container running
+        run: docker-compose -f add-be.yml up -d

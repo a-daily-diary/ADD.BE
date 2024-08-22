@@ -1,31 +1,18 @@
 version: '3.5'
 
 services:
-  nest:
-    container_name: nest
-    build:
-      context: .
+  add-be:
+    container_name: add-be
+    image: woosang0430/add-be:latest
     env_file:
       - ./.env
     ports:
       - 5000:5000
     networks:
-      - add_net
+      - add-network
     depends_on:
       - postgres
     restart: always
-  postgres:
-    container_name: postgres
-    image: postgres:9.6.23
-    env_file:
-      - ./.env
-    ports:
-      - 5432:5432
-    networks:
-      - add_net
-    restart: always
-    volumes:
-      - ./db-data:/var/lib/postgresql/data
 networks:
-  add_net:
-    driver: bridge
+  add-network:
+    external: true
