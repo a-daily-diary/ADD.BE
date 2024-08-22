@@ -36,12 +36,16 @@ jobs:
     needs: CI
     env:
       DOCKER_HUB_REPO: ${{ secrets.DOCKER_HUB_REPO }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Login Dockerhub
         run: echo "$DOCKER_HUB_TOKEN" | docker login --username $DOCKER_HUB_REPO --password-stdin
+
+      - name: Container down
+        run: docker-compose -f add-be.yml down
 
       - name: Pull the Docker image
         run: docker-compose -f add-be.yml pull
