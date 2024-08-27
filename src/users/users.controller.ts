@@ -17,6 +17,7 @@ import {
   ApiResponse,
   ApiOperation,
   ApiTags,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { FileUploadDto } from 'src/common/dto/FileUpload.dto';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
@@ -170,6 +171,7 @@ export class UsersController {
   })
   @ApiResponse(responseExampleForUser.getUserInfo)
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
   updateUserInfo(
     @CurrentUser() accessedUser: UserDTO,
     @Body() userUpdateDto: UserUpdateDTO,
