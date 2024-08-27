@@ -228,7 +228,10 @@ ${redirectUrl}?email=${email}&token=${user.tempToken}`,
   }
 
   async updateUserInfo(accessedUser: UserDTO, userUpdateDto: UserUpdateDTO) {
-    await this.usernameExists(userUpdateDto.username);
+    if (accessedUser.username !== userUpdateDto.username) {
+      await this.usernameExists(userUpdateDto.username);
+    }
+
     await this.usersRepository.update(accessedUser.id, userUpdateDto);
     return await this.findUserById(accessedUser.id);
   }
