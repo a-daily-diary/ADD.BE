@@ -157,6 +157,8 @@ export class UsersController {
   @Put('password')
   @ApiOperation({
     summary: '비밀번호 재설정 API',
+    description:
+      'Request Body에 token 값은 이메일로 받은 임시 토큰 혹은 유효한 jwt 토큰을 입력해야 합니다.',
   })
   @ApiResponse(responseExampleForUser.passwordReset)
   passwordReset(@Body() passwordResetDTO: PasswordResetDTO) {

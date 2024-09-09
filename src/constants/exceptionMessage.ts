@@ -18,7 +18,8 @@ export const userExceptionMessage = {
   INCORRECT_LOGIN: '로그인 정보를 확인해주세요.',
   DOES_NOT_EXIST_USER: '해당하는 유저가 존재하지 않습니다.',
   UNAUTHORIZED: '로그인이 필요합니다.',
-  INVALID_TOKEN: '토큰이 일치하지 않습니다.',
+  INVALID_TOKEN: '유효하지 않은 토큰입니다.',
+  INVALID_JWT_TOKEN: '변경하려는 이메일과 토큰 정보가 일치하지 않습니다.',
 };
 
 export const bookmarkExceptionMessage = {

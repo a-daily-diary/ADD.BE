@@ -1,5 +1,5 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { Column } from 'typeorm';
 import { UserEntity } from '../users.entity';
 
@@ -10,8 +10,7 @@ export class PasswordResetDTO extends PickType(UserEntity, ['email'] as const) {
   password: string;
 
   @ApiProperty()
-  @IsUUID()
-  @IsNotEmpty({ message: '임시 토큰을 입력해주세요.' })
+  @IsNotEmpty({ message: '토큰을 입력해주세요.' })
   @Column({ type: 'uuid' })
-  tempToken: string;
+  token: string;
 }
