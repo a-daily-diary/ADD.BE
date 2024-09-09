@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
 
 import { UserEmailDTO, UserRegisterDTO } from './dto/user-register.dto';
 import { UserEntity } from './users.entity';
@@ -149,14 +150,27 @@ ${redirectUrl}?email=${email}&token=${user.tempToken}`,
   }
 
   async passwordReset(passwordResetDTO: PasswordResetDTO) {
-    const { email, password, tempToken } = passwordResetDTO;
+    const { email, password, token } = passwordResetDTO;
 
-    const user = await this.findUserByEmail(email);
+    let user: UserEntity;
 
-    if (user.tempToken !== tempToken)
-      throw new BadRequestException(userExceptionMessage.INVALID_TOKEN);
+    try {
+      // JWT 토큰으로 비밀번호를 변경하는 경우
+      const decoded = jwt.verify(token, process.env.SECRET_KEY);
+      user = await this.findUserById(decoded.sub as string);
+
+      if (user.email !== email)
+        throw new BadRequestException(userExceptionMessage.INVALID_JWT_TOKEN);
+    } catch {
+      // 임시 토큰으로 비밀번호를 변경하는 경우
+      user = await this.findUserByEmail(email);
+
+      if (user.tempToken !== token)
+        throw new BadRequestException(userExceptionMessage.INVALID_TOKEN);
+    }
 
     const hashedPassword = await bcrypt.hashSync(password, 10);
+
     user.password = hashedPassword;
     user.tempToken = null;
 
