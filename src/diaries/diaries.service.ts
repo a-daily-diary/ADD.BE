@@ -6,10 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AwsService } from 'src/aws.service';
-import {
-  diaryExceptionMessage,
-  exceptionMessage,
-} from 'src/constants/exceptionMessage';
+import { diaryExceptionMessage } from 'src/constants/exceptionMessage';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { Brackets, Repository } from 'typeorm';
 import { DiaryEntity } from './diaries.entity';
@@ -207,7 +204,7 @@ export class DiariesService {
   }
 
   async create(diaryFormDto: DiaryFormDTO, author: UserDTO) {
-    const newDiary = await this.diaryRepository.create({
+    const newDiary = this.diaryRepository.create({
       author,
       ...diaryFormDto,
     });
