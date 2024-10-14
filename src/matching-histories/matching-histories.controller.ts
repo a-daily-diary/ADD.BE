@@ -16,6 +16,7 @@ import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exception
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -50,6 +51,13 @@ export class MatchingHistoriesController {
   }
 
   @Get()
+  @ApiOperation({
+    summary: '매칭 이력 조회 (개발용)',
+    description: '매칭 이력 생성일을 기준을 내림차순 정렬(최신 먼저)합니다.',
+  })
+  @ApiQuery({ name: 'take', required: false, type: 'number' })
+  @ApiQuery({ name: 'skip', required: false, type: 'number' })
+  @ApiResponse(responseExampleForMatchingHistory.getMatchingHistories)
   // 개발용
   getMatchingHistories(
     @Query('take') take?: number | typeof NaN,

@@ -257,4 +257,13 @@ export const responseExampleForMatchingHistory = {
     matchedUser: userResponse,
     createdAt: 'date',
   }),
+  getMatchingHistories: responseTemplate([
+    {
+      id: 'uuid',
+      matchTime: 'number',
+      user: userResponse,
+      matchedUser: userResponse,
+      createdAt: 'date',
+    },
+  ]),
 };
