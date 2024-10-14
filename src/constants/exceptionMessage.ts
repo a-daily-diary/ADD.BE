@@ -61,3 +61,7 @@ export const ActivitiesExceptionMessage = {
   ONLY_DATE_TYPE: 'Date 타입 포맷의 요청만 가능합니다.',
   ONLY_YEAR_FORMAT: '연도 포맷의 요청만 가능합니다.',
 };
+
+export const matchingHistoryExceptionMessage = {
+  DOES_NOT_EXIST_MATCHING_HISTORY: '해당하는 매칭 이력은 존재하지 않습니다.',
+};

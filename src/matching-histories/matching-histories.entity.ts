@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsUUID } from 'class-validator';
 import { UserEntity } from 'src/users/users.entity';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   Index,
   JoinColumn,
@@ -44,4 +46,9 @@ export class MatchingHistoryEntity {
     type: 'timestamptz' /* timestamp with time zone */,
   })
   createdAt: Date;
+
+  // Soft Delete : 기존에는 null, 삭제 시 timestamp를 찍는다.
+  @Exclude()
+  @DeleteDateColumn({ type: 'timestamptz' })
+  deleteAt?: Date | null;
 }

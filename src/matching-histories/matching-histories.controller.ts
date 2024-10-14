@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
+  ParseUUIDPipe,
   Post,
   Query,
   UseFilters,
@@ -64,5 +67,11 @@ export class MatchingHistoriesController {
     @Query('skip') skip?: number | typeof NaN,
   ) {
     return this.matchingHistoriesService.getMatchingHistories(take, skip);
+  }
+
+  @Delete(':historyId')
+  deleteMatchingHistory(@Param('historyId', ParseUUIDPipe) historyId: string) {
+    console.log(historyId);
+    return this.matchingHistoriesService.delete(historyId);
   }
 }
