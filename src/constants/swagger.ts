@@ -266,4 +266,5 @@ export const responseExampleForMatchingHistory = {
       createdAt: 'date',
     },
   ]),
+  deleteMatchingHistory: responseTemplate(deleteResponse),
 };

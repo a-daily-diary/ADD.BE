@@ -70,6 +70,10 @@ export class MatchingHistoriesController {
   }
 
   @Delete(':historyId')
+  @ApiOperation({
+    summary: '매칭 이력 삭제 (개발용)',
+  })
+  @ApiResponse(responseExampleForMatchingHistory.deleteMatchingHistory)
   deleteMatchingHistory(@Param('historyId', ParseUUIDPipe) historyId: string) {
     console.log(historyId);
     return this.matchingHistoriesService.delete(historyId);
