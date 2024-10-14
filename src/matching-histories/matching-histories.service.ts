@@ -32,4 +32,14 @@ export class MatchingHistoriesService {
 
     return newMatchingHistory;
   }
+
+  async getMatchingHistories() {
+    const matchingHistories = await this.matchingHistoryRepository
+      .createQueryBuilder('matchingHistory')
+      .leftJoinAndSelect('matchingHistory.user', 'user')
+      .leftJoinAndSelect('matchingHistory.matchedUser', 'matchedUser')
+      .getMany();
+
+    return matchingHistories;
+  }
 }

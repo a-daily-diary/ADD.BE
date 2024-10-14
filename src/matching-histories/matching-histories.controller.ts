@@ -1,4 +1,11 @@
-import { Body, Controller, Post, UseFilters, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from 'src/users/jwt/jwt.guard';
 import { MatchingHistoryFormDTO } from './dto/matching-history-form.dto';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
@@ -39,5 +46,11 @@ export class MatchingHistoriesController {
       matchingHistoryForm,
       currentUser,
     );
+  }
+
+  @Get()
+  // 개발용
+  getMatchingHistories() {
+    return this.matchingHistoriesService.getMatchingHistories();
   }
 }
