@@ -139,9 +139,18 @@ export class ActivitiesService {
       })
       .getCount();
 
+    const randomMatchingCount = await this.matchingHistoryRepository
+      .createQueryBuilder('matchingHistory')
+      .leftJoin('matchingHistory.user', 'user')
+      .where('user.username = :username', { username })
+      .andWhere("to_char(matchingHistory.createdAt, 'YYYY-MM-DD') = :date", {
+        date: convertDateToString(date),
+      })
+      .getCount();
+
     return {
       date,
-      activityCount: diaryCount + commentCount,
+      activityCount: diaryCount + commentCount + randomMatchingCount,
       activities: {
         diaries: resultDiaries.filter(
           (diary) =>
@@ -149,7 +158,7 @@ export class ActivitiesService {
         ),
         diaryCount,
         commentCount,
-        randomMatchingCount: 0,
+        randomMatchingCount,
       },
     };
   }
