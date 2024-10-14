@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Post,
+  Query,
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
@@ -50,7 +51,10 @@ export class MatchingHistoriesController {
 
   @Get()
   // 개발용
-  getMatchingHistories() {
-    return this.matchingHistoriesService.getMatchingHistories();
+  getMatchingHistories(
+    @Query('take') take?: number | typeof NaN,
+    @Query('skip') skip?: number | typeof NaN,
+  ) {
+    return this.matchingHistoriesService.getMatchingHistories(take, skip);
   }
 }

@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MatchingHistoryEntity } from './matching-histories.entity';
 import { Repository } from 'typeorm';
 import { UsersService } from 'src/users/users.service';
+import { DEFAULT_SKIP, DEFAULT_TAKE } from 'src/constants/page';
 
 @Injectable()
 export class MatchingHistoriesService {
@@ -33,12 +34,15 @@ export class MatchingHistoriesService {
     return newMatchingHistory;
   }
 
-  async getMatchingHistories() {
+  async getMatchingHistories(take = DEFAULT_TAKE, skip = DEFAULT_SKIP) {
     const matchingHistories = await this.matchingHistoryRepository
       .createQueryBuilder('matchingHistory')
       .leftJoinAndSelect('matchingHistory.user', 'user')
       .leftJoinAndSelect('matchingHistory.matchedUser', 'matchedUser')
-      .getMany();
+      .orderBy('matchingHistory.createdAt', 'DESC')
+      .take(take)
+      .skip(skip)
+      .getManyAndCount();
 
     return matchingHistories;
   }
