@@ -10,6 +10,7 @@ import {
   generateLastOneYearDateList,
   generateYearDateList,
 } from 'src/utility/date';
+import { MatchingHistoryEntity } from 'src/matching-histories/matching-histories.entity';
 
 @Injectable()
 export class ActivitiesService {
@@ -18,6 +19,8 @@ export class ActivitiesService {
     private readonly diariesRepository: Repository<DiaryEntity>,
     @InjectRepository(CommentEntity)
     private readonly commentsRepository: Repository<CommentEntity>,
+    @InjectRepository(MatchingHistoryEntity)
+    private readonly matchingHistoryRepository: Repository<MatchingHistoryEntity>,
   ) {}
   async getHeatmapGraphData(username: string, year?: `${number}`) {
     const diariesCountQuery = this.diariesRepository
@@ -34,6 +37,13 @@ export class ActivitiesService {
       .addSelect('COUNT(*)', 'commentCount')
       .where('commenter.username = :username', { username });
 
+    const matchingHistoryCountQuery = this.matchingHistoryRepository
+      .createQueryBuilder('matchingHistory')
+      .leftJoin('matchingHistory.user', 'user')
+      .select("DATE_TRUNC('day', matchingHistory.createdAt) as date")
+      .addSelect('COUNT(*)', 'matchingHistoryCount')
+      .where('user.username = :username', { username });
+
     if (year !== undefined) {
       diariesCountQuery.andWhere(
         `EXTRACT(YEAR FROM diary.createdAt) = :yearToQuery`,
@@ -48,6 +58,13 @@ export class ActivitiesService {
           yearToQuery: year,
         },
       );
+
+      matchingHistoryCountQuery.andWhere(
+        `EXTRACT(YEAR FROM matchingHistory.createdAt) = :yearToQuery`,
+        {
+          yearToQuery: year,
+        },
+      );
     }
     const diaryCountGroupByDate = await diariesCountQuery
       .groupBy("DATE_TRUNC('day', diary.createdAt)")
@@ -55,6 +72,10 @@ export class ActivitiesService {
 
     const commentCountGroupByDate = await commentsCountQuery
       .groupBy("DATE_TRUNC('day', comment.createdAt)")
+      .getRawMany();
+
+    const matchingHistoryCountGroupByDate = await matchingHistoryCountQuery
+      .groupBy("DATE_TRUNC('day', matchingHistory.createdAt)")
       .getRawMany();
 
     const yearDateList =
@@ -69,15 +90,22 @@ export class ActivitiesService {
       const commentCountInfo = commentCountGroupByDate.find(
         (el) => convertDateToString(el.date) === dateString,
       );
+      const matchingHistoryCountInfo = matchingHistoryCountGroupByDate.find(
+        (el) => convertDateToString(el.date) === dateString,
+      );
 
       const diaryCount = diaryCountInfo ? +diaryCountInfo.diaryCount : 0;
       const commentCount = commentCountInfo
         ? +commentCountInfo.commentCount
         : 0;
 
+      const matchingHistoryCount = matchingHistoryCountInfo
+        ? +matchingHistoryCountInfo.matchingHistoryCount
+        : 0;
+
       return {
         date: dateString,
-        activityCount: diaryCount + commentCount,
+        activityCount: diaryCount + commentCount + matchingHistoryCount,
       };
     });
 
@@ -111,9 +139,18 @@ export class ActivitiesService {
       })
       .getCount();
 
+    const randomMatchingCount = await this.matchingHistoryRepository
+      .createQueryBuilder('matchingHistory')
+      .leftJoin('matchingHistory.user', 'user')
+      .where('user.username = :username', { username })
+      .andWhere("to_char(matchingHistory.createdAt, 'YYYY-MM-DD') = :date", {
+        date: convertDateToString(date),
+      })
+      .getCount();
+
     return {
       date,
-      activityCount: diaryCount + commentCount,
+      activityCount: diaryCount + commentCount + randomMatchingCount,
       activities: {
         diaries: resultDiaries.filter(
           (diary) =>
@@ -121,7 +158,7 @@ export class ActivitiesService {
         ),
         diaryCount,
         commentCount,
-        randomMatchingCount: 0,
+        randomMatchingCount,
       },
     };
   }

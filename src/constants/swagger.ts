@@ -248,3 +248,23 @@ export const responseExampleForActivities = {
     randomMatchingCount: 'number',
   }),
 };
+
+export const responseExampleForMatchingHistory = {
+  createMatchingHistory: responseTemplate({
+    id: 'uuid',
+    matchTime: 'number',
+    user: userResponse,
+    matchedUser: userResponse,
+    createdAt: 'date',
+  }),
+  getMatchingHistories: responseTemplate([
+    {
+      id: 'uuid',
+      matchTime: 'number',
+      user: userResponse,
+      matchedUser: userResponse,
+      createdAt: 'date',
+    },
+  ]),
+  deleteMatchingHistory: responseTemplate(deleteResponse),
+};
