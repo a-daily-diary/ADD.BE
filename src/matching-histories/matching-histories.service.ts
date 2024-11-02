@@ -30,6 +30,30 @@ export class MatchingHistoriesService {
     return newMatchingHistory;
   }
 
+  async updateMatchTime(matchingHistoryId: string, matchTime: number) {
+    await this.matchingHistoryRepository.update(matchingHistoryId, {
+      matchTime,
+    });
+
+    return await this.findOneById(matchingHistoryId);
+  }
+
+  async findOneById(id: string) {
+    const matchingHistory = await this.matchingHistoryRepository
+      .createQueryBuilder('matchingHistory')
+      .leftJoinAndSelect('matchingHistory.user1', 'user1')
+      .leftJoinAndSelect('matchingHistory.user2', 'user2')
+      .where('matchingHistory.id = :id', { id })
+      .getOne();
+
+    if (!matchingHistory)
+      throw new NotFoundException(
+        matchingHistoryExceptionMessage.DOES_NOT_EXIST_MATCHING_HISTORY,
+      );
+
+    return matchingHistory;
+  }
+
   async getMatchingHistories(take = DEFAULT_TAKE, skip = DEFAULT_SKIP) {
     const matchingHistories = await this.matchingHistoryRepository
       .createQueryBuilder('matchingHistory')

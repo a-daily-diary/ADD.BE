@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Query,
   UseFilters,
@@ -37,7 +38,7 @@ export class MatchingHistoriesController {
     summary: '매칭 이력 생성 (개발용)',
     description: `
     matchTime의 단위는 초(seconds)입니다.
-    매칭 종료 시 offer role을 갖는 유가 매칭 이력을 생성합니다.
+    매칭 시작 시 offer role을 갖는 유가 매칭 이력을 생성합니다.
     `,
   })
   @ApiBearerAuth('access-token')
@@ -51,6 +52,27 @@ export class MatchingHistoriesController {
     return this.matchingHistoriesService.create(
       currentUser.id,
       matchedUserId,
+      matchTime,
+    );
+  }
+
+  @Patch(':matchingHistoryId')
+  @ApiOperation({
+    summary: '매칭 이력 매칭 시간 수정 (개발용)',
+    description: `
+    matchTime의 단위는 초(seconds)입니다.
+    매칭 종료 시 offer role을 갖는 유가 매칭 시간을 수정합니다.
+    `,
+  })
+  @ApiResponse(responseExampleForMatchingHistory.getMatchingHistory)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  updateMatchTime(
+    @Param('matchingHistoryId', ParseUUIDPipe) matchingHistoryId: string,
+    @Body() { matchTime }: { matchTime: number },
+  ) {
+    return this.matchingHistoriesService.updateMatchTime(
+      matchingHistoryId,
       matchTime,
     );
   }
