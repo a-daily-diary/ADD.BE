@@ -16,6 +16,7 @@ export class MatchingHistoriesService {
     private readonly usersService: UsersService,
   ) {}
 
+  // 매칭이 종료되는 경우(socket이 끊기는 경우) offer 사용자가 이력을 생성합니다.
   async create(
     matchingHistoryForm: MatchingHistoryFormDTO,
     currentUser: UserDTO,
@@ -25,8 +26,8 @@ export class MatchingHistoriesService {
     const matchedUser = await this.usersService.findUserById(matchedUserId);
 
     const newMatchingHistory = this.matchingHistoryRepository.create({
-      user: currentUser,
-      matchedUser,
+      user1: currentUser,
+      user2: matchedUser,
       matchTime,
     });
 
@@ -38,8 +39,8 @@ export class MatchingHistoriesService {
   async getMatchingHistories(take = DEFAULT_TAKE, skip = DEFAULT_SKIP) {
     const matchingHistories = await this.matchingHistoryRepository
       .createQueryBuilder('matchingHistory')
-      .leftJoinAndSelect('matchingHistory.user', 'user')
-      .leftJoinAndSelect('matchingHistory.matchedUser', 'matchedUser')
+      .leftJoinAndSelect('matchingHistory.user1', 'user1')
+      .leftJoinAndSelect('matchingHistory.user2', 'user2')
       .orderBy('matchingHistory.createdAt', 'DESC')
       .take(take)
       .skip(skip)

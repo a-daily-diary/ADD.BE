@@ -24,7 +24,6 @@ import {
 } from 'typeorm';
 import { UserToTermsAgreementEntity } from 'src/user-to-terms-agreements/user-to-terms-agreements.entity';
 import { UserToBadgeEntity } from 'src/user-to-badges/user-to-badges.entity';
-import { MatchingHistoryEntity } from 'src/matching-histories/matching-histories.entity';
 
 @Index('email', ['email'], { unique: true })
 @Entity({
@@ -136,14 +135,4 @@ export class UserEntity {
     cascade: true,
   })
   userToBadges: UserToBadgeEntity[];
-
-  @ApiProperty()
-  @OneToMany(
-    () => MatchingHistoryEntity,
-    (matchingHistory: MatchingHistoryEntity) => matchingHistory.user,
-    {
-      cascade: true,
-    },
-  )
-  matchingHistories: MatchingHistoryEntity[];
 }
