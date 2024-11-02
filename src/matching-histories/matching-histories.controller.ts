@@ -56,7 +56,7 @@ export class MatchingHistoriesController {
     );
   }
 
-  @Patch(':matchingHistoryId')
+  @Patch(':historyId')
   @ApiOperation({
     summary: '매칭 이력 매칭 시간 수정 (개발용)',
     description: `
@@ -68,13 +68,10 @@ export class MatchingHistoriesController {
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   updateMatchTime(
-    @Param('matchingHistoryId', ParseUUIDPipe) matchingHistoryId: string,
+    @Param('historyId', ParseUUIDPipe) historyId: string,
     @Body() { matchTime }: { matchTime: number },
   ) {
-    return this.matchingHistoriesService.updateMatchTime(
-      matchingHistoryId,
-      matchTime,
-    );
+    return this.matchingHistoriesService.updateMatchTime(historyId, matchTime);
   }
 
   @Get()
@@ -85,12 +82,22 @@ export class MatchingHistoriesController {
   @ApiQuery({ name: 'take', required: false, type: 'number' })
   @ApiQuery({ name: 'skip', required: false, type: 'number' })
   @ApiResponse(responseExampleForMatchingHistory.getMatchingHistories)
-  // 개발용
   getMatchingHistories(
     @Query('take') take?: number | typeof NaN,
     @Query('skip') skip?: number | typeof NaN,
   ) {
     return this.matchingHistoriesService.getMatchingHistories(take, skip);
+  }
+
+  @Get(':userId')
+  @ApiOperation({
+    summary: '유저의 최신 매칭 이력 조회 (개발용)',
+  })
+  @ApiResponse(responseExampleForMatchingHistory.getMatchingHistory)
+  getLatestMatchingHistoryByUser(
+    @Param('userId', ParseUUIDPipe) userId: string,
+  ) {
+    return this.matchingHistoriesService.findLatestOneByUserId(userId);
   }
 
   @Delete(':historyId')

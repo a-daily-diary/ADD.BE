@@ -54,6 +54,24 @@ export class MatchingHistoriesService {
     return matchingHistory;
   }
 
+  async findLatestOneByUserId(userId: string) {
+    const latestMatchingHistoriesByUser = await this.matchingHistoryRepository
+      .createQueryBuilder('matchingHistory')
+      .leftJoinAndSelect('matchingHistory.user1', 'user1')
+      .leftJoinAndSelect('matchingHistory.user2', 'user2')
+      .where('user1.id = :userId', { userId })
+      .orWhere('user2.id = :userId', { userId })
+      .orderBy('matchingHistory.createdAt', 'DESC')
+      .getOne();
+
+    if (!latestMatchingHistoriesByUser)
+      throw new NotFoundException(
+        matchingHistoryExceptionMessage.DOES_NOT_EXIST_MATCHING_HISTORY,
+      );
+
+    return latestMatchingHistoriesByUser;
+  }
+
   async getMatchingHistories(take = DEFAULT_TAKE, skip = DEFAULT_SKIP) {
     const matchingHistories = await this.matchingHistoryRepository
       .createQueryBuilder('matchingHistory')
