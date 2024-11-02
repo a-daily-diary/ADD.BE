@@ -106,7 +106,6 @@ export class MatchingHistoriesController {
   })
   @ApiResponse(responseExampleForMatchingHistory.deleteMatchingHistory)
   deleteMatchingHistory(@Param('historyId', ParseUUIDPipe) historyId: string) {
-    console.log(historyId);
     return this.matchingHistoriesService.delete(historyId);
   }
 }

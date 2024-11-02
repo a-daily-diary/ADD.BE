@@ -111,8 +111,6 @@ export class MatchingGateway
     socket.on(
       MATCHING_SOCKET_EVENT.client.joinQueue,
       (userInfo: MatchingWaitingUser) => {
-        console.log(userInfo);
-
         const { id: userId, username } = userInfo;
         this.matchingQueue[socket.id] = { id: userId, username };
         socket.data.userInfo = { id: userId, username };
@@ -124,16 +122,28 @@ export class MatchingGateway
     );
   }
 
-  handleDisconnect(socket: Socket) {
-    console.log(socket.data);
+  async handleDisconnect(socket: Socket) {
+    const socketData = socket.data;
 
-    if (socket.data.role && socket.data.role === 'offer') {
-      // TODO: role이 offer이 사용자가 해당 매칭 이력의 매칭 시간을 update
-      console.log('update matching history');
+    if (socketData.role && socketData.role === 'offer') {
+      const matchingHistory =
+        await this.matchingHistoriesService.findLatestOneByUserId(
+          socketData.userInfo.id,
+        );
+
+      const matchStartTime = new Date(matchingHistory.createdAt).valueOf();
+      const matchEndTime = new Date().valueOf();
+
+      const matchTime = Math.floor((matchEndTime - matchStartTime) / 1000);
+
+      await this.matchingHistoriesService.updateMatchTime(
+        matchingHistory.id,
+        matchTime,
+      );
     }
 
     console.log(
-      `Disconnect username is ${socket.data?.userInfo?.username} (socket id: ${socket.id})`,
+      `Disconnect username is ${socketData?.userInfo?.username} (socket id: ${socket.id})`,
     );
   }
 
