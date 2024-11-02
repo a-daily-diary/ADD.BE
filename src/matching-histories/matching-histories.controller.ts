@@ -11,7 +11,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/users/jwt/jwt.guard';
-import { MatchingHistoryFormDTO } from './dto/matching-history-form.dto';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { MatchingHistoriesService } from './matching-histories.service';
@@ -35,21 +34,24 @@ export class MatchingHistoriesController {
 
   @Post()
   @ApiOperation({
-    summary: '매칭 이력 생성',
+    summary: '매칭 이력 생성 (개발용)',
     description: `
     matchTime의 단위는 초(seconds)입니다.
-    하나의 매칭이 종료되면 2개의 매칭 이력이 생성됩니다.(각자 이력 생성)`,
+    매칭 종료 시 offer role을 갖는 유가 매칭 이력을 생성합니다.
+    `,
   })
   @ApiBearerAuth('access-token')
   @ApiResponse(responseExampleForMatchingHistory.createMatchingHistory)
   @UseGuards(JwtAuthGuard)
   createMatchingHistory(
-    @Body() matchingHistoryForm: MatchingHistoryFormDTO,
     @CurrentUser() currentUser: UserDTO,
+    @Body()
+    { matchedUserId, matchTime }: { matchedUserId: string; matchTime: number },
   ) {
     return this.matchingHistoriesService.create(
-      matchingHistoryForm,
-      currentUser,
+      currentUser.id,
+      matchedUserId,
+      matchTime,
     );
   }
 

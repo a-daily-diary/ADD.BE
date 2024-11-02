@@ -1,6 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { MatchingHistoryFormDTO } from './dto/matching-history-form.dto';
-import { UserDTO } from 'src/users/dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MatchingHistoryEntity } from './matching-histories.entity';
 import { Repository } from 'typeorm';
@@ -17,17 +15,13 @@ export class MatchingHistoriesService {
   ) {}
 
   // 매칭이 종료되는 경우(socket이 끊기는 경우) offer 사용자가 이력을 생성합니다.
-  async create(
-    matchingHistoryForm: MatchingHistoryFormDTO,
-    currentUser: UserDTO,
-  ) {
-    const { matchedUserId, matchTime } = matchingHistoryForm;
-
-    const matchedUser = await this.usersService.findUserById(matchedUserId);
+  async create(offerUserId: string, answerUserId: string, matchTime = 0) {
+    const offerUser = await this.usersService.findUserById(offerUserId);
+    const answerUser = await this.usersService.findUserById(answerUserId);
 
     const newMatchingHistory = this.matchingHistoryRepository.create({
-      user1: currentUser,
-      user2: matchedUser,
+      user1: offerUser,
+      user2: answerUser,
       matchTime,
     });
 
