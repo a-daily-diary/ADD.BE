@@ -1,4 +1,4 @@
-const responseTemplate = (data) => {
+const responseTemplate = <T>(data: T) => {
   return {
     schema: {
       example: {
@@ -60,6 +60,14 @@ const termsAgreementResponse = {
   title: 'string',
   content: 'string',
   isRequired: 'boolean',
+};
+
+const matchingHistoryResponse = {
+  id: 'uuid',
+  matchTime: 'number',
+  user: userResponse,
+  matchedUser: userResponse,
+  createdAt: 'date',
 };
 
 const deleteResponse = {
@@ -250,28 +258,24 @@ export const responseExampleForActivities = {
 };
 
 export const responseExampleForMatchingHistory = {
-  createMatchingHistory: responseTemplate({
-    id: 'uuid',
-    matchTime: 'number',
-    user: userResponse,
-    matchedUser: userResponse,
-    createdAt: 'date',
-  }),
-  getMatchingHistory: responseTemplate({
-    id: 'uuid',
-    matchTime: 'number',
-    user: userResponse,
-    matchedUser: userResponse,
-    createdAt: 'date',
-  }),
-  getMatchingHistories: responseTemplate([
-    {
-      id: 'uuid',
-      matchTime: 'number',
-      user: userResponse,
-      matchedUser: userResponse,
-      createdAt: 'date',
-    },
-  ]),
+  createMatchingHistory: responseTemplate(matchingHistoryResponse),
+  getMatchingHistory: responseTemplate(matchingHistoryResponse),
+  getMatchingHistories: responseTemplate([matchingHistoryResponse]),
   deleteMatchingHistory: responseTemplate(deleteResponse),
+};
+
+export const responseExampleForFeedback = {
+  create: responseTemplate({
+    isNice: 'boolean',
+    isFluent: 'boolean',
+    isFun: 'boolean',
+    isBad: 'boolean',
+    content: 'text',
+    writer: userResponse,
+    recipient: userResponse,
+    matchingHistory: matchingHistoryResponse,
+    id: 'uuid',
+    createdAt: 'date',
+    updatedAt: 'date',
+  }),
 };
