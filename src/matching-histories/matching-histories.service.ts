@@ -41,8 +41,6 @@ export class MatchingHistoriesService {
   async findOneById(id: string) {
     const matchingHistory = await this.matchingHistoryRepository
       .createQueryBuilder('matchingHistory')
-      .leftJoinAndSelect('matchingHistory.user1', 'user1')
-      .leftJoinAndSelect('matchingHistory.user2', 'user2')
       .where('matchingHistory.id = :id', { id })
       .getOne();
 

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
-import { IsBoolean, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 import { CommonEntity } from 'src/common/entities/common.entity';
 import { UserEntity } from 'src/users/users.entity';
 import { MatchingHistoryEntity } from 'src/matching-histories/matching-histories.entity';
@@ -32,27 +32,33 @@ export class FeedbackEntity extends CommonEntity {
 
   @ApiProperty()
   @IsString()
-  @Column({ type: 'text' })
+  @Column({ type: 'text', default: '' })
   content: string;
 
   @ApiProperty()
-  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE', nullable: false })
+  @IsNotEmpty({ message: '피드백 작성자를 입력해주세요.' })
   @JoinColumn({
-    name: 'giver_id',
+    name: 'writer_id',
     referencedColumnName: 'id',
   })
-  giver: UserEntity;
+  writer: UserEntity;
 
   @ApiProperty()
-  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE', nullable: false })
+  @IsNotEmpty({ message: '피드백 받는 사용자를 입력해주세요.' })
   @JoinColumn({
-    name: 'receiver_id',
+    name: 'recipient_id',
     referencedColumnName: 'id',
   })
-  receiver: UserEntity;
+  recipient: UserEntity;
 
   @ApiProperty()
-  @ManyToOne(() => MatchingHistoryEntity, { onDelete: 'CASCADE' })
+  @ManyToOne(() => MatchingHistoryEntity, {
+    onDelete: 'CASCADE',
+    nullable: false,
+  })
+  @IsNotEmpty({ message: '매칭 이력을 입력해주세요.' })
   @JoinColumn({
     name: 'matchingHistory_id',
     referencedColumnName: 'id',
