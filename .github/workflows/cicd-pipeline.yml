@@ -47,6 +47,6 @@ jobs:
       - name: Change new version container
         run: |
           cd /home/ec2-user/workspace/docker-compose
-          docker-compose -f add-be.yml down
-          docker-compose -f add-be.yml pull
-          docker-compose -f add-be.yml up -d
+          docker-compose down
+          docker-compose pull
+          docker-compose up -d
