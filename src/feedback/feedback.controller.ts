@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   ParseUUIDPipe,
   Post,
+  Query,
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
@@ -20,6 +22,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { responseExampleForFeedback } from 'src/constants/swagger';
+import { DateValidationPipe } from 'src/common/pipes/date-validation.pipe';
 
 @ApiTags('Feedback')
 @Controller('feedback')
@@ -45,5 +48,15 @@ export class FeedbackController {
       matchingHistoryId,
       feedbackFormDTO,
     );
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  getFeedbackList(
+    @Query('take') take?: number | typeof NaN,
+    @Query('skip') skip?: number | typeof NaN,
+    @Query('dateString', new DateValidationPipe(false)) date?: Date,
+  ) {
+    return this.feedbackService.getFeedbackList(take, skip, date);
   }
 }

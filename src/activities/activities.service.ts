@@ -124,9 +124,7 @@ export class ActivitiesService {
       .leftJoinAndSelect('diary.bookmarks', 'bookmarks')
       .leftJoinAndSelect('bookmarks.user', 'bookmarksUser')
       .where('author.username = :username', { username })
-      .andWhere('DATE(diary.createdAt) = :date', {
-        date: convertDateToString(date),
-      })
+      .andWhere('DATE(diary.createdAt) = :date', { date })
       .getManyAndCount();
 
     const resultDiaries = diaries.map((diary) => {
@@ -137,9 +135,7 @@ export class ActivitiesService {
       .createQueryBuilder('comment')
       .leftJoin('comment.commenter', 'commenter')
       .where('commenter.username = :username', { username })
-      .andWhere('DATE(comment.createdAt) = :date', {
-        date: convertDateToString(date),
-      })
+      .andWhere('DATE(comment.createdAt) = :date', { date })
       .getCount();
 
     const randomMatchingCount = await this.matchingHistoryRepository
@@ -149,9 +145,7 @@ export class ActivitiesService {
       .where('(user1.username = :username OR user2.username = :username)', {
         username,
       })
-      .andWhere('DATE(matchingHistory.createdAt) = :date', {
-        date: convertDateToString(date),
-      })
+      .andWhere('DATE(matchingHistory.createdAt) = :date', { date })
       .getCount();
 
     return {

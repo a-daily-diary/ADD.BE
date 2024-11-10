@@ -55,10 +55,11 @@ export const termsAgreementExceptionMessage = {
 export const exceptionMessage = {
   ONLY_ADMIN: '해당 API는 관리자 계정만 요청 가능합니다.',
   INCORRECT_KEY: 'incorrect key value',
+  INVALID_DATE_FORMAT:
+    '데이터 형식이 옳바르지 않습니다. Date 형식(YYYY-MM-DD)에 맞춰 입력해주세요.',
 };
 
 export const ActivitiesExceptionMessage = {
-  ONLY_DATE_TYPE: 'Date 타입 포맷의 요청만 가능합니다.',
   ONLY_YEAR_FORMAT: '연도 포맷의 요청만 가능합니다.',
 };
 
