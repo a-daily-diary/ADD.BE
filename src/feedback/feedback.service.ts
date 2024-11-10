@@ -87,6 +87,7 @@ export class FeedbackService {
     const [feedbackList, totalCount] = await feedbackQueryBuilder
       .take(take)
       .skip(skip)
+      .orderBy('feedback.createdAt', 'DESC')
       .getManyAndCount();
 
     return {

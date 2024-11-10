@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { FeedbackService } from './feedback.service';
 import { FeedbackController } from './feedback.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,9 +10,10 @@ import { MatchingHistoriesModule } from 'src/matching-histories/matching-histori
   imports: [
     TypeOrmModule.forFeature([FeedbackEntity]),
     UsersModule,
-    MatchingHistoriesModule,
+    forwardRef(() => MatchingHistoriesModule),
   ],
   providers: [FeedbackService],
   controllers: [FeedbackController],
+  exports: [FeedbackService],
 })
 export class FeedbackModule {}

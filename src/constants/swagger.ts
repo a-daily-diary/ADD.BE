@@ -63,14 +63,40 @@ const termsAgreementResponse = {
 };
 
 const matchingHistoryResponse = {
-  id: 'uuid',
-  matchTime: 'number',
-  user: userResponse,
-  matchedUser: userResponse,
-  createdAt: 'date',
+  basic: {
+    id: 'uuid',
+    matchTime: 'number',
+    createdAt: 'date',
+  },
+  raw: {
+    id: 'uuid',
+    matchTime: 'number',
+    user1: userResponse,
+    user2: userResponse,
+    createdAt: 'date',
+  },
+  familiar: {
+    id: 'uuid',
+    matchTime: 'number',
+    matchedUser: userResponse,
+    createdAt: 'date',
+  },
 };
 
 const feedbackResponse = {
+  create: {
+    isNice: 'boolean',
+    isFluent: 'boolean',
+    isFun: 'boolean',
+    isBad: 'boolean',
+    content: 'text',
+    id: 'uuid',
+    createdAt: 'date',
+    updatedAt: 'date',
+    writer: userResponse,
+    recipient: userResponse,
+    matchingHistory: matchingHistoryResponse.basic,
+  },
   short: {
     isNice: 'boolean',
     isFluent: 'boolean',
@@ -89,7 +115,7 @@ const feedbackResponse = {
     content: 'text',
     writer: userResponse,
     recipient: userResponse,
-    matchingHistory: matchingHistoryResponse,
+    matchingHistory: matchingHistoryResponse.raw,
     id: 'uuid',
     createdAt: 'date',
     updatedAt: 'date',
@@ -284,14 +310,15 @@ export const responseExampleForActivities = {
 };
 
 export const responseExampleForMatchingHistory = {
-  createMatchingHistory: responseTemplate(matchingHistoryResponse),
-  getMatchingHistory: responseTemplate(matchingHistoryResponse),
-  getMatchingHistories: responseTemplate([matchingHistoryResponse]),
+  createMatchingHistory: responseTemplate(matchingHistoryResponse.raw),
+  updateMatchingHistory: responseTemplate(matchingHistoryResponse.raw),
+  getRecentMatchingHistory: responseTemplate(matchingHistoryResponse.familiar),
+  getMatchingHistories: responseTemplate([matchingHistoryResponse.raw]),
   deleteMatchingHistory: responseTemplate(deleteResponse),
 };
 
 export const responseExampleForFeedback = {
-  create: responseTemplate(feedbackResponse.detail),
+  create: responseTemplate(feedbackResponse.create),
   getFeedbackList: responseTemplate({
     detail_false_example: {
       feedbackList: [feedbackResponse.short],

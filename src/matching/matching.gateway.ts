@@ -127,7 +127,7 @@ export class MatchingGateway
 
     if (socketData.role && socketData.role === 'offer') {
       const matchingHistory =
-        await this.matchingHistoriesService.findLatestOneByUserId(
+        await this.matchingHistoriesService.findRecentOneByUserId(
           socketData.userInfo.id,
         );
 

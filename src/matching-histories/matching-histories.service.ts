@@ -52,7 +52,7 @@ export class MatchingHistoriesService {
     return matchingHistory;
   }
 
-  async findLatestOneByUserId(userId: string) {
+  async findRecentOneByUserId(userId: string) {
     const latestMatchingHistoriesByUser = await this.matchingHistoryRepository
       .createQueryBuilder('matchingHistory')
       .leftJoinAndSelect('matchingHistory.user1', 'user1')
@@ -67,7 +67,19 @@ export class MatchingHistoriesService {
         matchingHistoryExceptionMessage.DOES_NOT_EXIST_MATCHING_HISTORY,
       );
 
-    return latestMatchingHistoriesByUser;
+    const {
+      user1,
+      user2,
+      deleteAt: _,
+      ...matchingHistory
+    } = latestMatchingHistoriesByUser;
+
+    const response =
+      user1.id === userId
+        ? { ...matchingHistory, matchedUser: user2 }
+        : { ...matchingHistory, matchedUser: user1 };
+
+    return response;
   }
 
   async getMatchingHistories(take = DEFAULT_TAKE, skip = DEFAULT_SKIP) {

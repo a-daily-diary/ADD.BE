@@ -23,7 +23,12 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { responseExampleForMatchingHistory } from 'src/constants/swagger';
+import {
+  responseExampleForFeedback,
+  responseExampleForMatchingHistory,
+} from 'src/constants/swagger';
+import { FeedbackService } from 'src/feedback/feedback.service';
+import { FeedbackFormDTO } from 'src/feedback/dto/feedback-form.dto';
 
 @ApiTags('MatchingHistory')
 @Controller('matching-histories')
@@ -31,6 +36,7 @@ import { responseExampleForMatchingHistory } from 'src/constants/swagger';
 export class MatchingHistoriesController {
   constructor(
     private readonly matchingHistoriesService: MatchingHistoriesService,
+    private readonly feedbackService: FeedbackService,
   ) {}
 
   @Post()
@@ -56,7 +62,7 @@ export class MatchingHistoriesController {
     );
   }
 
-  @Patch(':historyId')
+  @Patch(':id')
   @ApiOperation({
     summary: '매칭 이력 매칭 시간 수정 (개발용)',
     description: `
@@ -64,14 +70,14 @@ export class MatchingHistoriesController {
     매칭 종료 시 offer role을 갖는 유가 매칭 시간을 수정합니다.
     `,
   })
-  @ApiResponse(responseExampleForMatchingHistory.getMatchingHistory)
+  @ApiResponse(responseExampleForMatchingHistory.updateMatchingHistory)
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   updateMatchTime(
-    @Param('historyId', ParseUUIDPipe) historyId: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() { matchTime }: { matchTime: number },
   ) {
-    return this.matchingHistoriesService.updateMatchTime(historyId, matchTime);
+    return this.matchingHistoriesService.updateMatchTime(id, matchTime);
   }
 
   @Get()
@@ -89,23 +95,41 @@ export class MatchingHistoriesController {
     return this.matchingHistoriesService.getMatchingHistories(take, skip);
   }
 
-  @Get(':userId')
+  @Get('/recent')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
-    summary: '유저의 최신 매칭 이력 조회 (개발용)',
+    summary: '유저의 최신 매칭 이력 조회',
+    description: '해당 API를 요청하는 사용자의 최신 매칭 이력을 조회합니다.',
   })
-  @ApiResponse(responseExampleForMatchingHistory.getMatchingHistory)
-  getLatestMatchingHistoryByUser(
-    @Param('userId', ParseUUIDPipe) userId: string,
-  ) {
-    return this.matchingHistoriesService.findLatestOneByUserId(userId);
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForMatchingHistory.getRecentMatchingHistory)
+  getRecentMatchingHistoryByUser(@CurrentUser() user: UserDTO) {
+    return this.matchingHistoriesService.findRecentOneByUserId(user.id);
   }
 
-  @Delete(':historyId')
+  @Delete(':id')
   @ApiOperation({
     summary: '매칭 이력 삭제 (개발용)',
   })
   @ApiResponse(responseExampleForMatchingHistory.deleteMatchingHistory)
-  deleteMatchingHistory(@Param('historyId', ParseUUIDPipe) historyId: string) {
-    return this.matchingHistoriesService.delete(historyId);
+  deleteMatchingHistory(@Param('id', ParseUUIDPipe) id: string) {
+    return this.matchingHistoriesService.delete(id);
+  }
+
+  // Feedback api
+  @Post(':id/feedback')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: '피드백 생성',
+    description: '매칭 상대에 대한 피드백 생성 API 입니다.',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForFeedback.create)
+  createFeedback(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() feedbackFormDTO: FeedbackFormDTO,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.feedbackService.create(currentUser, id, feedbackFormDTO);
   }
 }
