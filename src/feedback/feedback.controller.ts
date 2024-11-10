@@ -86,6 +86,11 @@ export class FeedbackController {
 
   @Delete(':feedbackId')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: '피드백 삭제 (개발용)',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForFeedback.delete)
   delete(@Param('feedbackId', ParseUUIDPipe) feedbackId: string) {
     return this.feedbackService.delete(feedbackId);
   }

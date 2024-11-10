@@ -291,4 +291,5 @@ export const responseExampleForFeedback = {
     },
     totalCount: 'number',
   }),
+  delete: responseTemplate(deleteResponse),
 };
