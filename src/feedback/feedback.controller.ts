@@ -74,14 +74,28 @@ export class FeedbackController {
     type: 'string',
     description: 'YYYY-MM-DD 형식을 맞춰주세요.',
   })
+  @ApiQuery({
+    name: 'detail',
+    required: false,
+    type: 'boolean',
+    description:
+      '매칭 이력, 피드백 작성자, 받는 사용자의 정보까지 같이 조회하고 싶은 경우 해당 값을 true로 넘깁니다. **해당 값에 따라 response 구조가 변경됩니다. 참고 부탁드립니다.**',
+  })
   @ApiResponse(responseExampleForFeedback.getFeedbackList)
   getFeedbackList(
     @Query('take') take?: number | typeof NaN,
     @Query('skip') skip?: number | typeof NaN,
     @Query('recipient') recipient?: string,
     @Query('dateString', new DateValidationPipe(false)) date?: Date,
+    @Query('detail') detail?: boolean,
   ) {
-    return this.feedbackService.getFeedbackList(take, skip, recipient, date);
+    return this.feedbackService.getFeedbackList(
+      take,
+      skip,
+      recipient,
+      date,
+      detail,
+    );
   }
 
   @Delete(':feedbackId')

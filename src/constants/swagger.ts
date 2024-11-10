@@ -70,6 +70,32 @@ const matchingHistoryResponse = {
   createdAt: 'date',
 };
 
+const feedbackResponse = {
+  short: {
+    isNice: 'boolean',
+    isFluent: 'boolean',
+    isFun: 'boolean',
+    isBad: 'boolean',
+    content: 'text',
+    id: 'uuid',
+    createdAt: 'date',
+    updatedAt: 'date',
+  },
+  detail: {
+    isNice: 'boolean',
+    isFluent: 'boolean',
+    isFun: 'boolean',
+    isBad: 'boolean',
+    content: 'text',
+    writer: userResponse,
+    recipient: userResponse,
+    matchingHistory: matchingHistoryResponse,
+    id: 'uuid',
+    createdAt: 'date',
+    updatedAt: 'date',
+  },
+};
+
 const deleteResponse = {
   message: '삭제되었습니다.',
 };
@@ -265,31 +291,16 @@ export const responseExampleForMatchingHistory = {
 };
 
 export const responseExampleForFeedback = {
-  create: responseTemplate({
-    isNice: 'boolean',
-    isFluent: 'boolean',
-    isFun: 'boolean',
-    isBad: 'boolean',
-    content: 'text',
-    writer: userResponse,
-    recipient: userResponse,
-    matchingHistory: matchingHistoryResponse,
-    id: 'uuid',
-    createdAt: 'date',
-    updatedAt: 'date',
-  }),
+  create: responseTemplate(feedbackResponse.detail),
   getFeedbackList: responseTemplate({
-    feedbackList: {
-      isNice: 'boolean',
-      isFluent: 'boolean',
-      isFun: 'boolean',
-      isBad: 'boolean',
-      content: 'text',
-      id: 'uuid',
-      createdAt: 'date',
-      updatedAt: 'date',
+    detail_false_example: {
+      feedbackList: [feedbackResponse.short],
+      totalCount: 'number',
     },
-    totalCount: 'number',
+    detail_true_example: {
+      feedbackList: [feedbackResponse.detail],
+      totalCount: 'number',
+    },
   }),
   delete: responseTemplate(deleteResponse),
 };

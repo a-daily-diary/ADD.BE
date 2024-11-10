@@ -58,10 +58,19 @@ export class FeedbackService {
     skip = DEFAULT_SKIP,
     recipient?: string,
     date?: Date,
+    detail?: boolean,
   ) {
-    const feedbackQueryBuilder = this.feedbackRepository
-      .createQueryBuilder('feedback')
-      .leftJoin('feedback.recipient', 'recipient');
+    const feedbackQueryBuilder =
+      this.feedbackRepository.createQueryBuilder('feedback');
+
+    if (detail) {
+      feedbackQueryBuilder
+        .leftJoinAndSelect('feedback.writer', 'writer')
+        .leftJoinAndSelect('feedback.recipient', 'recipient')
+        .leftJoinAndSelect('feedback.matchingHistory', 'matchingHistory');
+    } else {
+      feedbackQueryBuilder.leftJoin('feedback.recipient', 'recipient');
+    }
 
     if (recipient) {
       feedbackQueryBuilder.where('recipient.username = :username', {
