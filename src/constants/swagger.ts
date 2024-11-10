@@ -278,4 +278,19 @@ export const responseExampleForFeedback = {
     createdAt: 'date',
     updatedAt: 'date',
   }),
+  getFeedbackList: responseTemplate({
+    feedbackList: {
+      isNice: 'boolean',
+      isFluent: 'boolean',
+      isFun: 'boolean',
+      isBad: 'boolean',
+      content: 'text',
+      writer: userResponse,
+      recipient: userResponse,
+      id: 'uuid',
+      createdAt: 'date',
+      updatedAt: 'date',
+    },
+    totalCount: 'number',
+  }),
 };
