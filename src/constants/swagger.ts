@@ -285,8 +285,6 @@ export const responseExampleForFeedback = {
       isFun: 'boolean',
       isBad: 'boolean',
       content: 'text',
-      writer: userResponse,
-      recipient: userResponse,
       id: 'uuid',
       createdAt: 'date',
       updatedAt: 'date',

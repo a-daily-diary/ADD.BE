@@ -41,14 +41,26 @@ export class FeedbackService {
     return newFeedback;
   }
 
-  async getFeedbackList(take = DEFAULT_TAKE, skip = DEFAULT_SKIP, date?: Date) {
+  async getFeedbackList(
+    take = DEFAULT_TAKE,
+    skip = DEFAULT_SKIP,
+    recipient?: string,
+    date?: Date,
+  ) {
     const feedbackQueryBuilder = this.feedbackRepository
       .createQueryBuilder('feedback')
-      .leftJoinAndSelect('feedback.writer', 'writer')
-      .leftJoinAndSelect('feedback.recipient', 'recipient');
+      .leftJoin('feedback.recipient', 'recipient');
+
+    if (recipient) {
+      feedbackQueryBuilder.where('recipient.username = :username', {
+        username: recipient,
+      });
+    }
 
     if (date) {
-      feedbackQueryBuilder.where('DATE(feedback.createdAt) = :date', { date });
+      feedbackQueryBuilder.andWhere('DATE(feedback.createdAt) = :date', {
+        date,
+      });
     }
 
     const [feedbackList, totalCount] = await feedbackQueryBuilder

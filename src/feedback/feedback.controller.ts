@@ -62,6 +62,12 @@ export class FeedbackController {
   @ApiQuery({ name: 'take', required: false, type: 'number' })
   @ApiQuery({ name: 'skip', required: false, type: 'number' })
   @ApiQuery({
+    name: 'recipient',
+    required: false,
+    type: 'string',
+    description: '피드백 받은 사용자의 이름을 입력해주세요.',
+  })
+  @ApiQuery({
     name: 'dateString',
     required: false,
     type: 'string',
@@ -71,8 +77,9 @@ export class FeedbackController {
   getFeedbackList(
     @Query('take') take?: number | typeof NaN,
     @Query('skip') skip?: number | typeof NaN,
+    @Query('recipient') recipient?: string,
     @Query('dateString', new DateValidationPipe(false)) date?: Date,
   ) {
-    return this.feedbackService.getFeedbackList(take, skip, date);
+    return this.feedbackService.getFeedbackList(take, skip, recipient, date);
   }
 }
