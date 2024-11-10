@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FeedbackEntity } from './feedback.entity';
 import { Repository } from 'typeorm';
@@ -7,6 +7,7 @@ import { FeedbackFormDTO } from './dto/feedback-form.dto';
 import { UsersService } from 'src/users/users.service';
 import { MatchingHistoriesService } from 'src/matching-histories/matching-histories.service';
 import { DEFAULT_SKIP, DEFAULT_TAKE } from 'src/constants/page';
+import { feedbackExceptionMessage } from 'src/constants/exceptionMessage';
 
 @Injectable()
 export class FeedbackService {
@@ -16,6 +17,17 @@ export class FeedbackService {
     private readonly usersService: UsersService,
     private readonly matchingHistoriesService: MatchingHistoriesService,
   ) {}
+
+  async findOneById(id: string) {
+    const feedback = await this.feedbackRepository.findOneBy({ id });
+
+    if (!feedback)
+      throw new NotFoundException(
+        feedbackExceptionMessage.DOES_NOT_EXIST_FEEDBACK,
+      );
+
+    return feedback;
+  }
 
   async create(
     writer: UserDTO,
@@ -72,5 +84,13 @@ export class FeedbackService {
       feedbackList,
       totalCount,
     };
+  }
+
+  async delete(id: string) {
+    await this.findOneById(id);
+
+    await this.feedbackRepository.softDelete(id);
+
+    return { message: '삭제되었습니다.' };
   }
 }

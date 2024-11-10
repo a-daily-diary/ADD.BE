@@ -66,3 +66,7 @@ export const ActivitiesExceptionMessage = {
 export const matchingHistoryExceptionMessage = {
   DOES_NOT_EXIST_MATCHING_HISTORY: '해당하는 매칭 이력은 존재하지 않습니다.',
 };
+
+export const feedbackExceptionMessage = {
+  DOES_NOT_EXIST_FEEDBACK: '해당하는 피드백은 존재하지 않습니다.',
+};

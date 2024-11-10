@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -81,5 +82,11 @@ export class FeedbackController {
     @Query('dateString', new DateValidationPipe(false)) date?: Date,
   ) {
     return this.feedbackService.getFeedbackList(take, skip, recipient, date);
+  }
+
+  @Delete(':feedbackId')
+  @UseGuards(JwtAuthGuard)
+  delete(@Param('feedbackId', ParseUUIDPipe) feedbackId: string) {
+    return this.feedbackService.delete(feedbackId);
   }
 }
