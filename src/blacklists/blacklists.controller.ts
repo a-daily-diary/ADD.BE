@@ -1,5 +1,6 @@
 import {
   Controller,
+  Get,
   Param,
   ParseUUIDPipe,
   Post,
@@ -37,5 +38,16 @@ export class BlacklistsController {
     @CurrentUser() currentUser: UserDTO,
   ) {
     return this.blacklistsService.create(currentUser, blockedUserId);
+  }
+
+  @Get(':ownerId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: '특정 유저의 블랙리스트한 유저들 조회',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForBlacklist.getBlockedUserList)
+  getBlockedUserList(@Param('ownerId', ParseUUIDPipe) ownerId: string) {
+    return this.blacklistsService.getBlockedUserList(ownerId);
   }
 }
