@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -33,11 +34,11 @@ export class BlacklistsController {
   })
   @ApiBearerAuth('access-token')
   @ApiResponse(responseExampleForBlacklist.create)
-  createBlacklist(
+  blockUser(
     @Param('blockedUserId', ParseUUIDPipe) blockedUserId: string,
     @CurrentUser() currentUser: UserDTO,
   ) {
-    return this.blacklistsService.create(currentUser, blockedUserId);
+    return this.blacklistsService.blockUser(currentUser, blockedUserId);
   }
 
   @Get(':ownerId')
@@ -49,5 +50,19 @@ export class BlacklistsController {
   @ApiResponse(responseExampleForBlacklist.getBlockedUserList)
   getBlockedUserList(@Param('ownerId', ParseUUIDPipe) ownerId: string) {
     return this.blacklistsService.getBlockedUserList(ownerId);
+  }
+
+  @Delete(':unblockUserId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: '블랙리스트 취소',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForBlacklist.delete)
+  unblockUser(
+    @Param('unblockUserId', ParseUUIDPipe) unblockUserId: string,
+    @CurrentUser() currentUser: UserDTO,
+  ) {
+    return this.blacklistsService.unblockUser(currentUser, unblockUserId);
   }
 }

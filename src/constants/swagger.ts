@@ -341,4 +341,5 @@ export const responseExampleForBlacklist = {
     updatedAt: 'date string',
   }),
   getBlockedUserList: responseTemplate([userResponse]),
+  delete: responseTemplate(deleteResponse),
 };

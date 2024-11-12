@@ -73,4 +73,5 @@ export const feedbackExceptionMessage = {
 
 export const blacklistExceptionMessage = {
   EXIST_BLOCKED_USER: '해당 유저는 블랙리스트에 포함되어 있습니다.',
+  DOES_NOT_EXIST_BLACKLIST: '해당 유저는 블랙리스트에 포함되어 있지 않습니다.',
 };
