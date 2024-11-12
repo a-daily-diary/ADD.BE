@@ -70,3 +70,7 @@ export const matchingHistoryExceptionMessage = {
 export const feedbackExceptionMessage = {
   DOES_NOT_EXIST_FEEDBACK: '해당하는 피드백은 존재하지 않습니다.',
 };
+
+export const blacklistExceptionMessage = {
+  EXIST_BLOCKED_USER: '해당 유저는 블랙리스트에 포함되어 있습니다.',
+};

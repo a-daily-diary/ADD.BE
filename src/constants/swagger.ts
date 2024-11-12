@@ -331,3 +331,13 @@ export const responseExampleForFeedback = {
   }),
   delete: responseTemplate(deleteResponse),
 };
+
+export const responseExampleForBlacklist = {
+  create: responseTemplate({
+    owner: userResponse,
+    blockedUser: userResponse,
+    id: 'uuid',
+    createdAt: 'date string',
+    updatedAt: 'date string',
+  }),
+};
