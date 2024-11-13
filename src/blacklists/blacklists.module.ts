@@ -9,5 +9,6 @@ import { UsersModule } from 'src/users/users.module';
   imports: [TypeOrmModule.forFeature([BlacklistEntity]), UsersModule],
   controllers: [BlacklistsController],
   providers: [BlacklistsService],
+  exports: [BlacklistsService],
 })
 export class BlacklistsModule {}

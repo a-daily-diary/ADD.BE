@@ -15,6 +15,7 @@ import {
 } from 'src/matching/matching.type';
 import { MatchingHistoriesService } from 'src/matching-histories/matching-histories.service';
 import { MATCHING_SOCKET_EVENT } from './matching.constants';
+import { BlacklistsService } from 'src/blacklists/blacklists.service';
 
 @WebSocketGateway({
   namespace: 'matching',
@@ -25,13 +26,14 @@ export class MatchingGateway
 {
   constructor(
     private readonly matchingHistoriesService: MatchingHistoriesService,
+    private readonly blacklistsService: BlacklistsService,
   ) {}
 
   @WebSocketServer()
   namespace: Namespace;
 
   // key = socket id, value = user information
-  private matchingQueue: Record<string, MatchingWaitingUser> = {};
+  private matchingQueue: Map<string, MatchingWaitingUser> = new Map();
 
   private matchedSocketIds: string[] = [];
 
@@ -46,11 +48,19 @@ export class MatchingGateway
 
       if (this.matchedSocketIds.includes(offerSocketId)) continue;
 
-      // TODO: BlackList 목록 필터 조건 추가 예정
+      const offerUser = this.matchingQueue.get(offerSocketId);
+
       const filteredSocketIds = matchingQueueSocketIds.filter(
-        (waitingUserSocketId) =>
-          waitingUserSocketId !== offerSocketId &&
-          this.matchedSocketIds.includes(waitingUserSocketId) === false,
+        (waitingUserSocketId) => {
+          const waitingUser = this.matchingQueue.get(waitingUserSocketId);
+
+          return (
+            waitingUserSocketId !== offerSocketId &&
+            this.matchedSocketIds.includes(waitingUserSocketId) === false &&
+            offerUser.blockedUserIdList.includes(waitingUser.id) === false &&
+            waitingUser.blockedUserIdList.includes(offerUser.id) === false
+          );
+        },
       );
 
       if (filteredSocketIds.length === 0) continue;
@@ -90,7 +100,7 @@ export class MatchingGateway
     }
 
     this.matchedSocketIds.forEach((matchedSocketId) => {
-      delete this.matchingQueue[matchedSocketId];
+      this.matchingQueue.delete(matchedSocketId);
     });
 
     this.matchedSocketIds = [];
@@ -101,7 +111,7 @@ export class MatchingGateway
     console.info('Start random matching job.');
 
     setInterval(() => {
-      const matchingQueueSocketIds = Object.keys(this.matchingQueue);
+      const matchingQueueSocketIds = Array.from(this.matchingQueue.keys());
 
       this.matchingJob(matchingQueueSocketIds);
     }, 5000);
@@ -110,9 +120,18 @@ export class MatchingGateway
   handleConnection(socket: Socket) {
     socket.on(
       MATCHING_SOCKET_EVENT.client.joinQueue,
-      (userInfo: MatchingWaitingUser) => {
+      async (userInfo: MatchingWaitingUser) => {
         const { id: userId, username } = userInfo;
-        this.matchingQueue[socket.id] = { id: userId, username };
+
+        const blockedUserList = await this.blacklistsService.getBlockedUserList(
+          userId,
+        );
+
+        this.matchingQueue.set(socket.id, {
+          id: userId,
+          username,
+          blockedUserIdList: blockedUserList.map((user) => user.id),
+        });
         socket.data.userInfo = { id: userId, username };
 
         console.log(
@@ -124,6 +143,8 @@ export class MatchingGateway
 
   async handleDisconnect(socket: Socket) {
     const socketData = socket.data;
+
+    this.matchingQueue.delete(socket.id);
 
     if (socketData.role && socketData.role === 'offer') {
       const matchingHistory =
