@@ -2,7 +2,7 @@ name: Docker CI/CD PIPELINE
 
 on:
   push:
-    branches: ['main']
+    branches: ['dev']
 
 jobs:
   CI:
@@ -32,7 +32,7 @@ jobs:
           docker tag $DOCKER_HUB_REPO/add-be:${{ steps.tag.outputs.tag }} $DOCKER_HUB_REPO/add-be:latest
           docker push $DOCKER_HUB_REPO/add-be:latest
   CD:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: CI
     env:
       DOCKER_HUB_REPO: ${{ secrets.DOCKER_HUB_REPO }}
