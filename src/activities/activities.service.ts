@@ -39,10 +39,13 @@ export class ActivitiesService {
 
     const matchingHistoryCountQuery = this.matchingHistoryRepository
       .createQueryBuilder('matchingHistory')
-      .leftJoin('matchingHistory.user', 'user')
+      .leftJoin('matchingHistory.user1', 'user1')
+      .leftJoin('matchingHistory.user2', 'user2')
       .select("DATE_TRUNC('day', matchingHistory.createdAt) as date")
       .addSelect('COUNT(*)', 'matchingHistoryCount')
-      .where('user.username = :username', { username });
+      .where('(user1.username = :username OR user2.username = :username)', {
+        username,
+      });
 
     if (year !== undefined) {
       diariesCountQuery.andWhere(
@@ -121,9 +124,7 @@ export class ActivitiesService {
       .leftJoinAndSelect('diary.bookmarks', 'bookmarks')
       .leftJoinAndSelect('bookmarks.user', 'bookmarksUser')
       .where('author.username = :username', { username })
-      .andWhere("to_char(diary.createdAt, 'YYYY-MM-DD') = :date", {
-        date: convertDateToString(date),
-      })
+      .andWhere('DATE(diary.createdAt) = :date', { date })
       .getManyAndCount();
 
     const resultDiaries = diaries.map((diary) => {
@@ -134,18 +135,17 @@ export class ActivitiesService {
       .createQueryBuilder('comment')
       .leftJoin('comment.commenter', 'commenter')
       .where('commenter.username = :username', { username })
-      .andWhere("to_char(comment.createdAt, 'YYYY-MM-DD') = :date", {
-        date: convertDateToString(date),
-      })
+      .andWhere('DATE(comment.createdAt) = :date', { date })
       .getCount();
 
     const randomMatchingCount = await this.matchingHistoryRepository
       .createQueryBuilder('matchingHistory')
-      .leftJoin('matchingHistory.user', 'user')
-      .where('user.username = :username', { username })
-      .andWhere("to_char(matchingHistory.createdAt, 'YYYY-MM-DD') = :date", {
-        date: convertDateToString(date),
+      .leftJoin('matchingHistory.user1', 'user1')
+      .leftJoin('matchingHistory.user2', 'user2')
+      .where('(user1.username = :username OR user2.username = :username)', {
+        username,
       })
+      .andWhere('DATE(matchingHistory.createdAt) = :date', { date })
       .getCount();
 
     return {

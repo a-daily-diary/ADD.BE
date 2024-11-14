@@ -1,6 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { MatchingHistoryFormDTO } from './dto/matching-history-form.dto';
-import { UserDTO } from 'src/users/dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MatchingHistoryEntity } from './matching-histories.entity';
 import { Repository } from 'typeorm';
@@ -16,17 +14,14 @@ export class MatchingHistoriesService {
     private readonly usersService: UsersService,
   ) {}
 
-  async create(
-    matchingHistoryForm: MatchingHistoryFormDTO,
-    currentUser: UserDTO,
-  ) {
-    const { matchedUserId, matchTime } = matchingHistoryForm;
-
-    const matchedUser = await this.usersService.findUserById(matchedUserId);
+  // 매칭이 종료되는 경우(socket이 끊기는 경우) offer 사용자가 이력을 생성합니다.
+  async create(offerUserId: string, answerUserId: string, matchTime = 0) {
+    const offerUser = await this.usersService.findUserById(offerUserId);
+    const answerUser = await this.usersService.findUserById(answerUserId);
 
     const newMatchingHistory = this.matchingHistoryRepository.create({
-      user: currentUser,
-      matchedUser,
+      user1: offerUser,
+      user2: answerUser,
       matchTime,
     });
 
@@ -35,11 +30,63 @@ export class MatchingHistoriesService {
     return newMatchingHistory;
   }
 
+  async updateMatchTime(matchingHistoryId: string, matchTime: number) {
+    await this.matchingHistoryRepository.update(matchingHistoryId, {
+      matchTime,
+    });
+
+    return await this.findOneById(matchingHistoryId);
+  }
+
+  async findOneById(id: string) {
+    const matchingHistory = await this.matchingHistoryRepository
+      .createQueryBuilder('matchingHistory')
+      .where('matchingHistory.id = :id', { id })
+      .getOne();
+
+    if (!matchingHistory)
+      throw new NotFoundException(
+        matchingHistoryExceptionMessage.DOES_NOT_EXIST_MATCHING_HISTORY,
+      );
+
+    return matchingHistory;
+  }
+
+  async findRecentOneByUserId(userId: string) {
+    const latestMatchingHistoriesByUser = await this.matchingHistoryRepository
+      .createQueryBuilder('matchingHistory')
+      .leftJoinAndSelect('matchingHistory.user1', 'user1')
+      .leftJoinAndSelect('matchingHistory.user2', 'user2')
+      .where('user1.id = :userId', { userId })
+      .orWhere('user2.id = :userId', { userId })
+      .orderBy('matchingHistory.createdAt', 'DESC')
+      .getOne();
+
+    if (!latestMatchingHistoriesByUser)
+      throw new NotFoundException(
+        matchingHistoryExceptionMessage.DOES_NOT_EXIST_MATCHING_HISTORY,
+      );
+
+    const {
+      user1,
+      user2,
+      deleteAt: _,
+      ...matchingHistory
+    } = latestMatchingHistoriesByUser;
+
+    const response =
+      user1.id === userId
+        ? { ...matchingHistory, matchedUser: user2 }
+        : { ...matchingHistory, matchedUser: user1 };
+
+    return response;
+  }
+
   async getMatchingHistories(take = DEFAULT_TAKE, skip = DEFAULT_SKIP) {
     const matchingHistories = await this.matchingHistoryRepository
       .createQueryBuilder('matchingHistory')
-      .leftJoinAndSelect('matchingHistory.user', 'user')
-      .leftJoinAndSelect('matchingHistory.matchedUser', 'matchedUser')
+      .leftJoinAndSelect('matchingHistory.user1', 'user1')
+      .leftJoinAndSelect('matchingHistory.user2', 'user2')
       .orderBy('matchingHistory.createdAt', 'DESC')
       .take(take)
       .skip(skip)

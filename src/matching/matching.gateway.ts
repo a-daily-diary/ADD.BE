@@ -13,7 +13,9 @@ import {
   MatchingWaitingUser,
   MatchingSuccessResponse,
 } from 'src/matching/matching.type';
+import { MatchingHistoriesService } from 'src/matching-histories/matching-histories.service';
 import { MATCHING_SOCKET_EVENT } from './matching.constants';
+import { BlacklistsService } from 'src/blacklists/blacklists.service';
 
 @WebSocketGateway({
   namespace: 'matching',
@@ -22,93 +24,148 @@ import { MATCHING_SOCKET_EVENT } from './matching.constants';
 export class MatchingGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
+  constructor(
+    private readonly matchingHistoriesService: MatchingHistoriesService,
+    private readonly blacklistsService: BlacklistsService,
+  ) {}
+
   @WebSocketServer()
   namespace: Namespace;
 
   // key = socket id, value = user information
-  private matchingQueue: Record<string, MatchingWaitingUser> = {};
+  private matchingQueue: Map<string, MatchingWaitingUser> = new Map();
 
   private matchedSocketIds: string[] = [];
 
-  afterInit() {
-    // socket 서버가 구동되었을 때 5초에 한번씩 랜덤 매칭 로직이 수행 됨.
-    console.log('Start random matching job.');
+  private async matchingJob(matchingQueueSocketIds: string[]) {
+    if (matchingQueueSocketIds.length === 0) return;
 
-    setInterval(() => {
-      const matchingQueueSocketIds = Object.keys(this.matchingQueue);
+    for (let i = 0; i < matchingQueueSocketIds.length; i++) {
+      // 매칭이 전부 이루어진 경우 반복문 종료
+      if (matchingQueueSocketIds.length === this.matchedSocketIds.length) break;
 
-      if (matchingQueueSocketIds.length === 0) return;
+      const offerSocketId = matchingQueueSocketIds[i];
 
-      for (let i = 0; i < matchingQueueSocketIds.length; i++) {
-        if (matchingQueueSocketIds.length === this.matchedSocketIds.length)
-          break;
+      if (this.matchedSocketIds.includes(offerSocketId)) continue;
 
-        const offerSocketId = matchingQueueSocketIds[i];
+      const offerUser = this.matchingQueue.get(offerSocketId);
 
-        if (this.matchedSocketIds.includes(offerSocketId)) continue;
+      const filteredSocketIds = matchingQueueSocketIds.filter(
+        (waitingUserSocketId) => {
+          const waitingUser = this.matchingQueue.get(waitingUserSocketId);
 
-        // TODO: BlackList 목록 필터 조건 추가 예정
-        const filteredSocketIds = matchingQueueSocketIds.filter(
-          (waitingUserSocketId) =>
+          return (
             waitingUserSocketId !== offerSocketId &&
-            this.matchedSocketIds.includes(waitingUserSocketId) === false,
+            this.matchedSocketIds.includes(waitingUserSocketId) === false &&
+            offerUser.blockedUserIdList.includes(waitingUser.id) === false &&
+            waitingUser.blockedUserIdList.includes(offerUser.id) === false
+          );
+        },
+      );
+
+      if (filteredSocketIds.length === 0) continue;
+
+      const randomIndex = Math.floor(Math.random() * filteredSocketIds.length);
+      const answerSocketId = filteredSocketIds[randomIndex];
+
+      const offerSocket = this.namespace.sockets.get(offerSocketId);
+      const answerSocket = this.namespace.sockets.get(answerSocketId);
+
+      try {
+        offerSocket.data.role = 'offer';
+        answerSocket.data.role = 'answer';
+
+        offerSocket.emit(MATCHING_SOCKET_EVENT.server.success, {
+          role: 'offer',
+          socketId: answerSocketId,
+          userId: answerSocket.data.userInfo.username,
+        } as MatchingSuccessResponse);
+
+        answerSocket.emit(MATCHING_SOCKET_EVENT.server.success, {
+          role: 'answer',
+          socketId: offerSocketId,
+          userId: offerSocket.data.userInfo.username,
+        } as MatchingSuccessResponse);
+
+        await this.matchingHistoriesService.create(
+          offerSocket.data.userInfo.id,
+          answerSocket.data.userInfo.id,
         );
-
-        if (filteredSocketIds.length === 0) continue;
-
-        const randomIndex = Math.floor(
-          Math.random() * filteredSocketIds.length,
-        );
-
-        const answerSocketId = filteredSocketIds[randomIndex];
 
         this.matchedSocketIds.push(offerSocketId);
         this.matchedSocketIds.push(answerSocketId);
-
-        this.namespace.sockets
-          .get(offerSocketId)
-          .emit(MATCHING_SOCKET_EVENT.server.success, {
-            role: 'offer',
-            socketId: answerSocketId,
-            userId: this.matchingQueue[answerSocketId].username,
-          } as MatchingSuccessResponse);
-
-        this.namespace.sockets
-          .get(answerSocketId)
-          .emit(MATCHING_SOCKET_EVENT.server.success, {
-            role: 'answer',
-            socketId: offerSocketId,
-            userId: this.matchingQueue[offerSocketId].username,
-          } as MatchingSuccessResponse);
+      } catch {
+        continue; // error가 발생하는 경우 무시하고 다음 반복문 실행
       }
+    }
 
-      this.matchedSocketIds.forEach((matchedSocketId) => {
-        delete this.matchingQueue[matchedSocketId];
-      });
+    this.matchedSocketIds.forEach((matchedSocketId) => {
+      this.matchingQueue.delete(matchedSocketId);
+    });
 
-      this.matchedSocketIds = [];
+    this.matchedSocketIds = [];
+  }
+
+  afterInit() {
+    // socket 서버가 구동되었을 때 5초에 한번씩 랜덤 매칭 로직이 수행 됨.
+    console.info('Start random matching job.');
+
+    setInterval(() => {
+      const matchingQueueSocketIds = Array.from(this.matchingQueue.keys());
+
+      this.matchingJob(matchingQueueSocketIds);
     }, 5000);
   }
 
   handleConnection(socket: Socket) {
     socket.on(
       MATCHING_SOCKET_EVENT.client.joinQueue,
-      (userInfo: MatchingWaitingUser) => {
-        console.log(
-          `Connection username is ${userInfo.username} (socket id: ${socket.id})`,
+      async (userInfo: MatchingWaitingUser) => {
+        const { id: userId, username } = userInfo;
+
+        const blockedUserList = await this.blacklistsService.getBlockedUserList(
+          userId,
         );
-        this.matchingQueue[socket.id] = userInfo;
+
+        this.matchingQueue.set(socket.id, {
+          id: userId,
+          username,
+          blockedUserIdList: blockedUserList.map((user) => user.id),
+        });
+        socket.data.userInfo = { id: userId, username };
+
+        console.log(
+          `Connection username is ${username} (socket id: ${socket.id})`,
+        );
       },
     );
   }
 
-  handleDisconnect(socket: Socket) {
+  async handleDisconnect(socket: Socket) {
+    const socketData = socket.data;
+
+    this.matchingQueue.delete(socket.id);
+
+    if (socketData.role && socketData.role === 'offer') {
+      const matchingHistory =
+        await this.matchingHistoriesService.findRecentOneByUserId(
+          socketData.userInfo.id,
+        );
+
+      const matchStartTime = new Date(matchingHistory.createdAt).valueOf();
+      const matchEndTime = new Date().valueOf();
+
+      const matchTime = Math.floor((matchEndTime - matchStartTime) / 1000);
+
+      await this.matchingHistoriesService.updateMatchTime(
+        matchingHistory.id,
+        matchTime,
+      );
+    }
+
     console.log(
-      `Disconnect username is ${
-        this.matchingQueue[socket.id]?.username
-      } (socket id: ${socket.id})`,
+      `Disconnect username is ${socketData?.userInfo?.username} (socket id: ${socket.id})`,
     );
-    delete this.matchingQueue[socket.id];
   }
 
   @SubscribeMessage('message')

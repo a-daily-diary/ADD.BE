@@ -23,18 +23,20 @@ export class MatchingHistoryEntity {
   id: string;
 
   @ApiProperty()
-  @ManyToOne(() => UserEntity, (user: UserEntity) => user.matchingHistories, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   @JoinColumn({
-    name: 'user_id',
+    name: 'user_1_id',
     referencedColumnName: 'id',
   })
-  user: UserEntity;
+  user1: UserEntity;
 
   @ApiProperty()
-  @ManyToOne(() => UserEntity)
-  matchedUser: UserEntity;
+  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
+  @JoinColumn({
+    name: 'user_2_id',
+    referencedColumnName: 'id',
+  })
+  user2: UserEntity;
 
   @ApiProperty()
   @IsNumber()

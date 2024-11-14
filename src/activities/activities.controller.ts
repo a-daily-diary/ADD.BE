@@ -22,6 +22,7 @@ import { JwtAuthGuard } from 'src/users/jwt/jwt.guard';
 import { ActivitiesExceptionMessage } from 'src/constants/exceptionMessage';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UserDTO } from 'src/users/dto/user.dto';
+import { DateValidationPipe } from 'src/common/pipes/date-validation.pipe';
 
 @ApiTags('Activities')
 @Controller('activities')
@@ -67,15 +68,8 @@ export class ActivitiesController {
   getDetailActivity(
     @CurrentUser() accessedUser: UserDTO,
     @Param('username') username: string,
-    @Param('dateString') dateString: string,
+    @Param('dateString', new DateValidationPipe(true)) date: Date,
   ) {
-    if (isNaN(Date.parse(dateString)))
-      throw new BadRequestException(ActivitiesExceptionMessage.ONLY_DATE_TYPE);
-
-    return this.activitiesService.getUserActivity(
-      accessedUser,
-      username,
-      new Date(dateString),
-    );
+    return this.activitiesService.getUserActivity(accessedUser, username, date);
   }
 }

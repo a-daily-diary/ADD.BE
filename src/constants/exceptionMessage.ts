@@ -55,13 +55,23 @@ export const termsAgreementExceptionMessage = {
 export const exceptionMessage = {
   ONLY_ADMIN: '해당 API는 관리자 계정만 요청 가능합니다.',
   INCORRECT_KEY: 'incorrect key value',
+  INVALID_DATE_FORMAT:
+    '데이터 형식이 옳바르지 않습니다. Date 형식(YYYY-MM-DD)에 맞춰 입력해주세요.',
 };
 
 export const ActivitiesExceptionMessage = {
-  ONLY_DATE_TYPE: 'Date 타입 포맷의 요청만 가능합니다.',
   ONLY_YEAR_FORMAT: '연도 포맷의 요청만 가능합니다.',
 };
 
 export const matchingHistoryExceptionMessage = {
   DOES_NOT_EXIST_MATCHING_HISTORY: '해당하는 매칭 이력은 존재하지 않습니다.',
+};
+
+export const feedbackExceptionMessage = {
+  DOES_NOT_EXIST_FEEDBACK: '해당하는 피드백은 존재하지 않습니다.',
+};
+
+export const blacklistExceptionMessage = {
+  EXIST_BLOCKED_USER: '해당 유저는 블랙리스트에 포함되어 있습니다.',
+  DOES_NOT_EXIST_BLACKLIST: '해당 유저는 블랙리스트에 포함되어 있지 않습니다.',
 };

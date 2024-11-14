@@ -23,6 +23,8 @@ import { MatchingRulesModule } from './matching-rules/matching-rules.module';
 import { ActivitiesModule } from './activities/activities.module';
 import { MatchingModule } from './matching/matching.module';
 import { MatchingHistoriesModule } from './matching-histories/matching-histories.module';
+import { FeedbackModule } from './feedback/feedback.module';
+import { BlacklistsModule } from './blacklists/blacklists.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (): Promise<TypeOrmModuleOptions> => {
@@ -71,6 +73,8 @@ const typeOrmModuleOptions = {
     ActivitiesModule,
     MatchingModule,
     MatchingHistoriesModule,
+    FeedbackModule,
+    BlacklistsModule,
   ],
   controllers: [AppController],
   providers: [AppService, AwsService, MailService],
