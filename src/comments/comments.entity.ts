@@ -20,7 +20,7 @@ export class CommentEntity extends CommonEntity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({
-    name: 'comment_id',
+    name: 'commenter_id',
     referencedColumnName: 'id',
   })
   commenter: UserEntity;
