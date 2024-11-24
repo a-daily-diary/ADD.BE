@@ -44,12 +44,12 @@ export class UsersService {
 
     const userByEmail = await this.usersRepository.findOneBy({ email });
     if (userByEmail) {
-      throw new UnauthorizedException(userExceptionMessage.EXIST_EMAIL);
+      throw new BadRequestException(userExceptionMessage.EXIST_EMAIL);
     }
 
     const userByUsername = await this.usersRepository.findOneBy({ username });
     if (userByUsername) {
-      throw new UnauthorizedException(userExceptionMessage.EXIST_USERNAME);
+      throw new BadRequestException(userExceptionMessage.EXIST_USERNAME);
     }
 
     const hashedPassword = await bcrypt.hashSync(password, 10);
@@ -76,7 +76,7 @@ export class UsersService {
 
     const user = await this.usersRepository.findOneBy({ email });
     if (user) {
-      throw new UnauthorizedException(userExceptionMessage.EXIST_EMAIL);
+      throw new BadRequestException(userExceptionMessage.EXIST_EMAIL);
     }
 
     return { message: '사용가능한 이메일입니다.' };
@@ -88,7 +88,7 @@ export class UsersService {
     });
 
     if (user) {
-      throw new UnauthorizedException(userExceptionMessage.EXIST_USERNAME);
+      throw new BadRequestException(userExceptionMessage.EXIST_USERNAME);
     }
 
     return { message: '사용가능한 유저이름입니다.' };
