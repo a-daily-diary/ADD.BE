@@ -57,6 +57,17 @@ export class ConversationTopicsController {
     return this.topicsService.getList(take, skip);
   }
 
+  @Get('/random')
+  @ApiOperation({
+    summary: '랜덤 추천 대화 주제 조회',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForConversationTopic.randomTopic)
+  @UseGuards(JwtAuthGuard)
+  getRandomTopic() {
+    return this.topicsService.getRandomTopic();
+  }
+
   @Put(':id')
   @ApiOperation({
     summary: '추천 대화 주제 수정 (개발용)',

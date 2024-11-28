@@ -360,6 +360,7 @@ export const responseExampleForConversationTopic = {
     list: [conversationTopicResponse],
     totalCount: 'number',
   }),
+  randomTopic: responseTemplate(conversationTopicResponse),
   update: responseTemplate(conversationTopicResponse),
   delete: responseTemplate(deleteResponse),
 };

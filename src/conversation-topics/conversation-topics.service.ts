@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConversationTopicEntity } from './conversation-topics.entity';
 import { Repository } from 'typeorm';
@@ -30,6 +34,19 @@ export class ConversationTopicsService {
       .getManyAndCount();
 
     return { list: topics, totalCount };
+  }
+
+  async getRandomTopic() {
+    const topics = await this.getList(100, 0);
+
+    if (topics.totalCount === 0)
+      throw new BadRequestException(
+        conversationTopicExceptionMessage.EMPTY_TOPIC_LIST,
+      );
+
+    const randomIndex = Math.floor(Math.random() * topics.totalCount);
+
+    return topics.list[randomIndex];
   }
 
   async findById(id: string) {

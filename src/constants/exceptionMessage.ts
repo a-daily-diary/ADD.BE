@@ -78,4 +78,5 @@ export const blacklistExceptionMessage = {
 
 export const conversationTopicExceptionMessage = {
   DOES_NOT_EXIST_TOPIC: '해당 대화 주제는 존재하지 않습니다.',
+  EMPTY_TOPIC_LIST: '추천할 대화 주제가 없습니다.',
 };
