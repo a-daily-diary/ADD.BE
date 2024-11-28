@@ -360,4 +360,5 @@ export const responseExampleForConversationTopic = {
     list: [conversationTopicResponse],
     totalCount: 'number',
   }),
+  update: responseTemplate(conversationTopicResponse),
 };

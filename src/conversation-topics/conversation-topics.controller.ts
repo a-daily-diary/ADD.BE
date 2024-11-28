@@ -2,7 +2,10 @@ import {
   Body,
   Controller,
   Get,
+  Param,
+  ParseUUIDPipe,
   Post,
+  Put,
   Query,
   UseFilters,
   UseGuards,
@@ -51,5 +54,19 @@ export class ConversationTopicsController {
     @Query('skip') skip?: number | typeof NaN,
   ) {
     return this.topicsService.getList(take, skip);
+  }
+
+  @Put(':id')
+  @ApiOperation({
+    summary: '추천 대화 주제 수정 (개발용)',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForConversationTopic.update)
+  @UseGuards(JwtAuthGuard)
+  updateTopic(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() topicFormDTO: ConversationTopicFormDTO,
+  ) {
+    return this.topicsService.update(id, topicFormDTO);
   }
 }

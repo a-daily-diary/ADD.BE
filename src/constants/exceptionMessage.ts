@@ -75,3 +75,7 @@ export const blacklistExceptionMessage = {
   EXIST_BLOCKED_USER: '해당 유저는 블랙리스트에 포함되어 있습니다.',
   DOES_NOT_EXIST_BLACKLIST: '해당 유저는 블랙리스트에 포함되어 있지 않습니다.',
 };
+
+export const conversationTopicExceptionMessage = {
+  DOES_NOT_EXIST_TOPIC: '해당 대화 주제는 존재하지 않습니다.',
+};

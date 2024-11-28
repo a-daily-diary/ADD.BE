@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConversationTopicEntity } from './conversation-topics.entity';
 import { Repository } from 'typeorm';
 import { ConversationTopicFormDTO } from './dto/conversation-topic-form.dto';
 import { DEFAULT_SKIP, DEFAULT_TAKE } from 'src/constants/page';
+import { conversationTopicExceptionMessage } from 'src/constants/exceptionMessage';
 
 @Injectable()
 export class ConversationTopicsService {
@@ -29,5 +30,24 @@ export class ConversationTopicsService {
       .getManyAndCount();
 
     return { list: topics, totalCount };
+  }
+
+  async findById(id: string) {
+    const topic = await this.topicRepository.findOneBy({ id });
+
+    if (!topic)
+      throw new NotFoundException(
+        conversationTopicExceptionMessage.DOES_NOT_EXIST_TOPIC,
+      );
+
+    return topic;
+  }
+
+  async update(id: string, topicFormDTO: ConversationTopicFormDTO) {
+    await this.findById(id);
+
+    await this.topicRepository.update(id, topicFormDTO);
+
+    return this.findById(id);
   }
 }
