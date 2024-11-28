@@ -356,4 +356,8 @@ export const responseExampleForBlacklist = {
 
 export const responseExampleForConversationTopic = {
   create: responseTemplate(conversationTopicResponse),
+  list: responseTemplate({
+    list: [conversationTopicResponse],
+    totalCount: 'number',
+  }),
 };
