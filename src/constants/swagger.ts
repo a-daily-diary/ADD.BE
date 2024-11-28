@@ -122,6 +122,16 @@ const feedbackResponse = {
   },
 };
 
+const conversationTopicResponse = {
+  id: 'uuid',
+  topicEn: 'string',
+  topicKr: 'string',
+  phraseEn: 'string',
+  phraseKr: 'string',
+  createdAt: 'date',
+  updatedAt: 'date',
+};
+
 const deleteResponse = {
   message: '삭제되었습니다.',
 };
@@ -341,5 +351,16 @@ export const responseExampleForBlacklist = {
     updatedAt: 'date string',
   }),
   getBlockedUserList: responseTemplate([userResponse]),
+  delete: responseTemplate(deleteResponse),
+};
+
+export const responseExampleForConversationTopic = {
+  create: responseTemplate(conversationTopicResponse),
+  list: responseTemplate({
+    list: [conversationTopicResponse],
+    totalCount: 'number',
+  }),
+  randomTopic: responseTemplate(conversationTopicResponse),
+  update: responseTemplate(conversationTopicResponse),
   delete: responseTemplate(deleteResponse),
 };
