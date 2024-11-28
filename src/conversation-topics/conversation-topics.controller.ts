@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -68,5 +69,16 @@ export class ConversationTopicsController {
     @Body() topicFormDTO: ConversationTopicFormDTO,
   ) {
     return this.topicsService.update(id, topicFormDTO);
+  }
+
+  @Delete(':id')
+  @ApiOperation({
+    summary: '추천 대화 주제 삭제 (개발용)',
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForConversationTopic.delete)
+  @UseGuards(JwtAuthGuard)
+  deleteTopic(@Param('id', ParseUUIDPipe) id: string) {
+    return this.topicsService.delete(id);
   }
 }

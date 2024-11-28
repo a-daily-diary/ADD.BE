@@ -50,4 +50,12 @@ export class ConversationTopicsService {
 
     return this.findById(id);
   }
+
+  async delete(id: string) {
+    await this.findById(id);
+
+    await this.topicRepository.delete(id);
+
+    return { message: '삭제되었습니다.' };
+  }
 }

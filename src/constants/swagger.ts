@@ -361,4 +361,5 @@ export const responseExampleForConversationTopic = {
     totalCount: 'number',
   }),
   update: responseTemplate(conversationTopicResponse),
+  delete: responseTemplate(deleteResponse),
 };
