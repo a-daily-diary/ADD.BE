@@ -122,7 +122,7 @@ const feedbackResponse = {
   },
 };
 
-const conversationTopicResponse = {
+const recommendTopicResponse = {
   id: 'uuid',
   topicEn: 'string',
   topicKr: 'string',
@@ -354,13 +354,13 @@ export const responseExampleForBlacklist = {
   delete: responseTemplate(deleteResponse),
 };
 
-export const responseExampleForConversationTopic = {
-  create: responseTemplate(conversationTopicResponse),
+export const responseExampleForRecommendTopic = {
+  create: responseTemplate(recommendTopicResponse),
   list: responseTemplate({
-    list: [conversationTopicResponse],
+    list: [recommendTopicResponse],
     totalCount: 'number',
   }),
-  randomTopic: responseTemplate(conversationTopicResponse),
-  update: responseTemplate(conversationTopicResponse),
+  randomTopic: responseTemplate(recommendTopicResponse),
+  update: responseTemplate(recommendTopicResponse),
   delete: responseTemplate(deleteResponse),
 };

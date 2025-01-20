@@ -3,11 +3,11 @@ import { IsString } from 'class-validator';
 import { CommonEntity } from 'src/common/entities/common.entity';
 import { Column, Entity, Index } from 'typeorm';
 
-@Index('conversationTopicId', ['id'], { unique: true })
+@Index('recommendTopicId', ['id'], { unique: true })
 @Entity({
-  name: 'CONVERSATION_TOPIC',
+  name: 'RECOMMEND_TOPIC',
 })
-export class ConversationTopicEntity extends CommonEntity {
+export class RecommendTopicEntity extends CommonEntity {
   @ApiProperty()
   @IsString()
   @Column({ type: 'varchar' })

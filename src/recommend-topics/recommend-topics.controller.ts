@@ -11,7 +11,6 @@ import {
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
-import { ConversationTopicsService } from './conversation-topics.service';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -21,14 +20,15 @@ import {
 } from '@nestjs/swagger';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
 import { JwtAuthGuard } from 'src/users/jwt/jwt.guard';
-import { ConversationTopicFormDTO } from './dto/conversation-topic-form.dto';
-import { responseExampleForConversationTopic } from 'src/constants/swagger';
+import { responseExampleForRecommendTopic } from 'src/constants/swagger';
+import { RecommendTopicFormDTO } from './dto/recommend-topic-form.dto';
+import { RecommendTopicsService } from './recommend-topics.service';
 
-@ApiTags('Conversation-topic')
-@Controller('conversation-topics')
+@ApiTags('Recommend-topic')
+@Controller('recommend-topics')
 @UseFilters(HttpApiExceptionFilter)
-export class ConversationTopicsController {
-  constructor(private readonly topicsService: ConversationTopicsService) {}
+export class RecommendTopicsController {
+  constructor(private readonly topicsService: RecommendTopicsService) {}
 
   @Post()
   @ApiOperation({
@@ -37,9 +37,9 @@ export class ConversationTopicsController {
   @ApiBearerAuth('access-token')
   @ApiQuery({ name: 'take', required: false, type: 'number' })
   @ApiQuery({ name: 'skip', required: false, type: 'number' })
-  @ApiResponse(responseExampleForConversationTopic.create)
+  @ApiResponse(responseExampleForRecommendTopic.create)
   @UseGuards(JwtAuthGuard)
-  createTopics(@Body() topicFormDTO: ConversationTopicFormDTO) {
+  createTopics(@Body() topicFormDTO: RecommendTopicFormDTO) {
     return this.topicsService.create(topicFormDTO);
   }
 
@@ -48,7 +48,7 @@ export class ConversationTopicsController {
     summary: '추천 대화 주제 목록 조회 (개발용)',
   })
   @ApiBearerAuth('access-token')
-  @ApiResponse(responseExampleForConversationTopic.list)
+  @ApiResponse(responseExampleForRecommendTopic.list)
   @UseGuards(JwtAuthGuard)
   getTopics(
     @Query('take') take?: number | typeof NaN,
@@ -62,7 +62,7 @@ export class ConversationTopicsController {
     summary: '랜덤 추천 대화 주제 조회',
   })
   @ApiBearerAuth('access-token')
-  @ApiResponse(responseExampleForConversationTopic.randomTopic)
+  @ApiResponse(responseExampleForRecommendTopic.randomTopic)
   @UseGuards(JwtAuthGuard)
   getRandomTopic() {
     return this.topicsService.getRandomTopic();
@@ -73,11 +73,11 @@ export class ConversationTopicsController {
     summary: '추천 대화 주제 수정 (개발용)',
   })
   @ApiBearerAuth('access-token')
-  @ApiResponse(responseExampleForConversationTopic.update)
+  @ApiResponse(responseExampleForRecommendTopic.update)
   @UseGuards(JwtAuthGuard)
   updateTopic(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() topicFormDTO: ConversationTopicFormDTO,
+    @Body() topicFormDTO: RecommendTopicFormDTO,
   ) {
     return this.topicsService.update(id, topicFormDTO);
   }
@@ -87,7 +87,7 @@ export class ConversationTopicsController {
     summary: '추천 대화 주제 삭제 (개발용)',
   })
   @ApiBearerAuth('access-token')
-  @ApiResponse(responseExampleForConversationTopic.delete)
+  @ApiResponse(responseExampleForRecommendTopic.delete)
   @UseGuards(JwtAuthGuard)
   deleteTopic(@Param('id', ParseUUIDPipe) id: string) {
     return this.topicsService.delete(id);

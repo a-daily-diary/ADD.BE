@@ -25,7 +25,7 @@ import { MatchingModule } from './matching/matching.module';
 import { MatchingHistoriesModule } from './matching-histories/matching-histories.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { BlacklistsModule } from './blacklists/blacklists.module';
-import { ConversationTopicsModule } from './conversation-topics/conversation-topics.module';
+import { RecommendTopicsModule } from './recommend-topics/recommend-topics.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (): Promise<TypeOrmModuleOptions> => {
@@ -76,7 +76,7 @@ const typeOrmModuleOptions = {
     MatchingHistoriesModule,
     FeedbackModule,
     BlacklistsModule,
-    ConversationTopicsModule,
+    RecommendTopicsModule,
   ],
   controllers: [AppController],
   providers: [AppService, AwsService, MailService],
