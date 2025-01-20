@@ -4,25 +4,33 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ConversationTopicEntity } from './conversation-topics.entity';
+import { RecommendTopicEntity } from './recommend-topics.entity';
 import { Repository } from 'typeorm';
-import { ConversationTopicFormDTO } from './dto/conversation-topic-form.dto';
+import { RecommendTopicFormDTO } from './dto/recommend-topic-form.dto';
 import { DEFAULT_SKIP, DEFAULT_TAKE } from 'src/constants/page';
-import { conversationTopicExceptionMessage } from 'src/constants/exceptionMessage';
+import { recommendTopicExceptionMessage } from 'src/constants/exceptionMessage';
 
 @Injectable()
-export class ConversationTopicsService {
+export class RecommendTopicsService {
   constructor(
-    @InjectRepository(ConversationTopicEntity)
-    private readonly topicRepository: Repository<ConversationTopicEntity>,
+    @InjectRepository(RecommendTopicEntity)
+    private readonly topicRepository: Repository<RecommendTopicEntity>,
   ) {}
 
-  async create(topicFormDTO: ConversationTopicFormDTO) {
+  async create(topicFormDTO: RecommendTopicFormDTO) {
     const newTopic = this.topicRepository.create(topicFormDTO);
 
     await this.topicRepository.save(newTopic);
 
     return newTopic;
+  }
+
+  async bulkCreate(topicFormDTOList: RecommendTopicFormDTO[]) {
+    const newTopics = this.topicRepository.create(topicFormDTOList);
+
+    await this.topicRepository.save(newTopics);
+
+    return newTopics;
   }
 
   async getList(take = DEFAULT_TAKE, skip = DEFAULT_SKIP) {
@@ -41,7 +49,7 @@ export class ConversationTopicsService {
 
     if (topics.totalCount === 0)
       throw new BadRequestException(
-        conversationTopicExceptionMessage.EMPTY_TOPIC_LIST,
+        recommendTopicExceptionMessage.EMPTY_TOPIC_LIST,
       );
 
     const randomIndex = Math.floor(Math.random() * topics.totalCount);
@@ -54,13 +62,13 @@ export class ConversationTopicsService {
 
     if (!topic)
       throw new NotFoundException(
-        conversationTopicExceptionMessage.DOES_NOT_EXIST_TOPIC,
+        recommendTopicExceptionMessage.DOES_NOT_EXIST_TOPIC,
       );
 
     return topic;
   }
 
-  async update(id: string, topicFormDTO: ConversationTopicFormDTO) {
+  async update(id: string, topicFormDTO: RecommendTopicFormDTO) {
     await this.findById(id);
 
     await this.topicRepository.update(id, topicFormDTO);

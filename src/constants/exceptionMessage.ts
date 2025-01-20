@@ -76,7 +76,7 @@ export const blacklistExceptionMessage = {
   DOES_NOT_EXIST_BLACKLIST: '해당 유저는 블랙리스트에 포함되어 있지 않습니다.',
 };
 
-export const conversationTopicExceptionMessage = {
+export const recommendTopicExceptionMessage = {
   DOES_NOT_EXIST_TOPIC: '해당 대화 주제는 존재하지 않습니다.',
   EMPTY_TOPIC_LIST: '추천할 대화 주제가 없습니다.',
 };
