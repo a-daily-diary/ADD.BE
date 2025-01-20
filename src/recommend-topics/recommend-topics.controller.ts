@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiQuery,
   ApiResponse,
@@ -35,12 +36,24 @@ export class RecommendTopicsController {
     summary: '추천 대화 주제 생성 (개발용)',
   })
   @ApiBearerAuth('access-token')
-  @ApiQuery({ name: 'take', required: false, type: 'number' })
-  @ApiQuery({ name: 'skip', required: false, type: 'number' })
   @ApiResponse(responseExampleForRecommendTopic.create)
   @UseGuards(JwtAuthGuard)
   createTopics(@Body() topicFormDTO: RecommendTopicFormDTO) {
     return this.topicsService.create(topicFormDTO);
+  }
+
+  @Post('/bulk')
+  @ApiOperation({
+    summary: '일괄 추천 대화 주제 생성 (개발용)',
+  })
+  @ApiBody({
+    type: [RecommendTopicFormDTO],
+  })
+  @ApiBearerAuth('access-token')
+  @ApiResponse(responseExampleForRecommendTopic.bulkCreate)
+  @UseGuards(JwtAuthGuard)
+  bulkCreateTopics(@Body() topicFormDTOList: RecommendTopicFormDTO[]) {
+    return this.topicsService.bulkCreate(topicFormDTOList);
   }
 
   @Get()
@@ -48,6 +61,8 @@ export class RecommendTopicsController {
     summary: '추천 대화 주제 목록 조회 (개발용)',
   })
   @ApiBearerAuth('access-token')
+  @ApiQuery({ name: 'take', required: false, type: 'number' })
+  @ApiQuery({ name: 'skip', required: false, type: 'number' })
   @ApiResponse(responseExampleForRecommendTopic.list)
   @UseGuards(JwtAuthGuard)
   getTopics(

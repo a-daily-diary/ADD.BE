@@ -356,6 +356,7 @@ export const responseExampleForBlacklist = {
 
 export const responseExampleForRecommendTopic = {
   create: responseTemplate(recommendTopicResponse),
+  bulkCreate: responseTemplate([recommendTopicResponse]),
   list: responseTemplate({
     list: [recommendTopicResponse],
     totalCount: 'number',

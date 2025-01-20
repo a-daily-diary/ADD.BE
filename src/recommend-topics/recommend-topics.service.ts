@@ -25,6 +25,14 @@ export class RecommendTopicsService {
     return newTopic;
   }
 
+  async bulkCreate(topicFormDTOList: RecommendTopicFormDTO[]) {
+    const newTopics = this.topicRepository.create(topicFormDTOList);
+
+    await this.topicRepository.save(newTopics);
+
+    return newTopics;
+  }
+
   async getList(take = DEFAULT_TAKE, skip = DEFAULT_SKIP) {
     const [topics, totalCount] = await this.topicRepository
       .createQueryBuilder('topic')
