@@ -56,9 +56,14 @@ const userToBadgeResponse = {
 };
 
 const termsAgreementResponse = {
-  id: 'service | privacy | marketing',
+  id: 'service | privacy',
   title: 'string',
-  content: 'string',
+  contents: [
+    {
+      subTitle: 'string',
+      content: 'string',
+    },
+  ],
   isRequired: 'boolean',
 };
 
