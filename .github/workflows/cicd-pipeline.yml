@@ -31,22 +31,22 @@ jobs:
           docker push $DOCKER_HUB_REPO/add-be:${{ steps.tag.outputs.tag }}
           docker tag $DOCKER_HUB_REPO/add-be:${{ steps.tag.outputs.tag }} $DOCKER_HUB_REPO/add-be:latest
           docker push $DOCKER_HUB_REPO/add-be:latest
-  CD:
-    runs-on: self-hosted
-    needs: CI
-    env:
-      DOCKER_HUB_REPO: ${{ secrets.DOCKER_HUB_REPO }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+  # CD:
+  #   runs-on: self-hosted
+  #   needs: CI
+  #   env:
+  #     DOCKER_HUB_REPO: ${{ secrets.DOCKER_HUB_REPO }}
+  #     DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-    steps:
-      - uses: actions/checkout@v4
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - name: Login Dockerhub
-        run: echo "$DOCKER_HUB_TOKEN" | docker login --username $DOCKER_HUB_REPO --password-stdin
+  #     - name: Login Dockerhub
+  #       run: echo "$DOCKER_HUB_TOKEN" | docker login --username $DOCKER_HUB_REPO --password-stdin
 
-      - name: Change new version container
-        run: |
-          cd /home/ec2-user/workspace/docker-compose
-          docker-compose down
-          docker-compose pull
-          docker-compose up -d
+  #     - name: Change new version container
+  #       run: |
+  #         cd /home/ec2-user/workspace/docker-compose
+  #         docker-compose down
+  #         docker-compose pull
+  #         docker-compose up -d
