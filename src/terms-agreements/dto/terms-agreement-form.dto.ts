@@ -4,6 +4,6 @@ import { TermsAgreementEntity } from '../terms-agreements.entity';
 export class TermsAgreementFormDTO extends PickType(TermsAgreementEntity, [
   'id',
   'title',
-  'content',
+  'contents',
   'isRequired',
 ] as const) {}

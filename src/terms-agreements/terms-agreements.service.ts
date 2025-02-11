@@ -10,7 +10,6 @@ import { TermsAgreementFormDTO } from './dto/terms-agreement-form.dto';
 import { termsAgreementExceptionMessage } from 'src/constants/exceptionMessage';
 import { TermsAgreementEnum } from 'src/types/terms-agreements.type';
 import {
-  marketingTermsAgreementDataSet,
   privacyTermsAgreementDataSet,
   serviceTermsAgreementDataSet,
 } from 'src/data/termsAgreements';
@@ -105,7 +104,6 @@ export class TermsAgreementsService {
     try {
       await this.createTermsAgreement(serviceTermsAgreementDataSet);
       await this.createTermsAgreement(privacyTermsAgreementDataSet);
-      await this.createTermsAgreement(marketingTermsAgreementDataSet);
       return true;
     } catch (error) {
       console.log(error);

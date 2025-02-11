@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { TermsAgreementEnum } from 'src/types/terms-agreements.type';
 import { UserToTermsAgreementEntity } from 'src/user-to-terms-agreements/user-to-terms-agreements.entity';
 import {
@@ -10,6 +18,7 @@ import {
   OneToMany,
   PrimaryColumn,
 } from 'typeorm';
+import { TermsContent } from './dto/terms-content.dto';
 
 @Index('termsAgreementId', ['id'], { unique: true })
 @Entity({
@@ -28,10 +37,11 @@ export class TermsAgreementEntity {
   title: string;
 
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty({ message: '약관동의 내용을 작성하세요.' })
-  @Column({ type: 'text', nullable: false })
-  content: string;
+  @IsArray()
+  @ValidateNested({ each: true }) // 배열 내부의 객체 검사
+  @Type(() => TermsContent) // 객체 타입 변환
+  @Column({ type: 'jsonb', nullable: false })
+  contents: TermsContent[];
 
   @ApiProperty()
   @IsBoolean()

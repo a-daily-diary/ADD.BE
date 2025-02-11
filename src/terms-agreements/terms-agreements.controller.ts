@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { TermsAgreementsService } from './terms-agreements.service';
 import { TermsAgreementFormDTO } from './dto/terms-agreement-form.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { responseExampleForTermsAgreement } from 'src/constants/swagger';
 import { HttpApiExceptionFilter } from 'src/common/exceptions/http-api-exceptions.filter';
 import { TermsAgreementEnum } from 'src/types/terms-agreements.type';
@@ -25,6 +25,21 @@ export class TermsAgreementsController {
   @Post()
   @ApiOperation({
     summary: '약관 생성 (관리자)',
+  })
+  @ApiBody({
+    schema: {
+      example: {
+        id: 'service | private',
+        title: 'string',
+        contents: [
+          {
+            subTitle: 'string',
+            content: 'string',
+          },
+        ],
+        isRequired: 'boolean',
+      },
+    },
   })
   @ApiResponse(responseExampleForTermsAgreement.createTermsAgreement)
   createTermsAgreement(@Body() termsAgreementFormDTO: TermsAgreementFormDTO) {
