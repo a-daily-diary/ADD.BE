@@ -116,7 +116,7 @@ export class DiariesService {
     const [diaries, totalCount] = await selectDiaryInstance
       .orderBy(`${tableAliasInfo.diary}.${sortByConverter[sortBy]}`, 'DESC')
       .take(take)
-      .skip(skip)
+      .skip(skip * take)
       .getManyAndCount();
 
     const resultDiaries = diaries.map((diary) => {
@@ -189,7 +189,7 @@ export class DiariesService {
     const [diaries, totalCount] = await diariesByUsername
       .orderBy(`${tableAliasInfo.diary}.${sortByConverter[sortBy]}`, 'DESC')
       .take(take)
-      .skip(skip)
+      .skip(skip * take)
       .getManyAndCount();
 
     const resultDiaries = diaries.map((diary) => {

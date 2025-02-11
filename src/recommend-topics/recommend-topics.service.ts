@@ -38,7 +38,7 @@ export class RecommendTopicsService {
       .createQueryBuilder('topic')
       .orderBy('topic.createdAt', 'DESC')
       .take(take)
-      .skip(skip)
+      .skip(skip * take)
       .getManyAndCount();
 
     return { list: topics, totalCount };

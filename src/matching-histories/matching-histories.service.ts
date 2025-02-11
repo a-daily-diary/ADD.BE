@@ -89,7 +89,7 @@ export class MatchingHistoriesService {
       .leftJoinAndSelect('matchingHistory.user2', 'user2')
       .orderBy('matchingHistory.createdAt', 'DESC')
       .take(take)
-      .skip(skip)
+      .skip(skip * take)
       .getManyAndCount();
 
     return matchingHistories;
