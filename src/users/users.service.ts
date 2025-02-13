@@ -71,6 +71,12 @@ export class UsersService {
     return { message: '회원가입에 성공하였습니다.' };
   }
 
+  async unregister(id: string) {
+    await this.usersRepository.delete({ id });
+
+    return { message: '회원탈퇴가 완료되었습니다.' };
+  }
+
   async emailExists(userEmail: UserEmailDTO) {
     const { email } = userEmail;
 
