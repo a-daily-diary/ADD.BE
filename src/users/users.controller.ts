@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -113,6 +114,17 @@ export class UsersController {
   @ApiResponse(responseExampleForUser.register)
   register(@Body() userRegisterDTO: UserRegisterDTO) {
     return this.usersService.register(userRegisterDTO);
+  }
+
+  @Delete('')
+  @ApiOperation({
+    summary: '회원탈퇴',
+  })
+  @ApiResponse(responseExampleForUser.unregister)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  unregister(@CurrentUser() currentUser: UserDTO) {
+    return this.usersService.unregister(currentUser.id);
   }
 
   @Post('login')

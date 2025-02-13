@@ -157,6 +157,9 @@ export const responseExampleForUser = {
   register: responseTemplate({
     message: '회원가입에 성공하였습니다.',
   }),
+  unregister: responseTemplate({
+    message: '회원탈퇴가 완료되었습니다.',
+  }),
   sendPasswordResetLink: responseTemplate({
     message: '비밀번호 재설정 메일이 발송되었습니다.',
   }),
