@@ -98,16 +98,22 @@ export class DiariesService {
           );
 
     if (searchKeyword) {
-      selectDiaryInstance
-        .where(`${tableAliasInfo.diaryAuthor}.username ILIKE :searchKeyword`, {
-          searchKeyword: `%${searchKeyword}%`,
-        })
-        .orWhere(`${tableAliasInfo.diary}.title ILIKE :searchKeyword`, {
-          searchKeyword: `%${searchKeyword}%`,
-        })
-        .orWhere(`${tableAliasInfo.diary}.content ILIKE :searchKeyword`, {
-          searchKeyword: `%${searchKeyword}%`,
-        });
+      selectDiaryInstance.andWhere(
+        new Brackets((qb) => {
+          qb.where(
+            `${tableAliasInfo.diaryAuthor}.username ILIKE :searchKeyword`,
+            {
+              searchKeyword: `%${searchKeyword}%`,
+            },
+          )
+            .orWhere(`${tableAliasInfo.diary}.title ILIKE :searchKeyword`, {
+              searchKeyword: `%${searchKeyword}%`,
+            })
+            .orWhere(`${tableAliasInfo.diary}.content ILIKE :searchKeyword`, {
+              searchKeyword: `%${searchKeyword}%`,
+            });
+        }),
+      );
     }
 
     if (sortByConverter[sortBy] === undefined)
@@ -171,16 +177,22 @@ export class DiariesService {
       );
 
     if (searchKeyword) {
-      diariesByUsername
-        .where(`${tableAliasInfo.diaryAuthor}.username ILIKE :searchKeyword`, {
-          searchKeyword: `%${searchKeyword}%`,
-        })
-        .orWhere(`${tableAliasInfo.diary}.title ILIKE :searchKeyword`, {
-          searchKeyword: `%${searchKeyword}%`,
-        })
-        .orWhere(`${tableAliasInfo.diary}.content ILIKE :searchKeyword`, {
-          searchKeyword: `%${searchKeyword}%`,
-        });
+      diariesByUsername.andWhere(
+        new Brackets((qb) => {
+          qb.where(
+            `${tableAliasInfo.diaryAuthor}.username ILIKE :searchKeyword`,
+            {
+              searchKeyword: `%${searchKeyword}%`,
+            },
+          )
+            .orWhere(`${tableAliasInfo.diary}.title ILIKE :searchKeyword`, {
+              searchKeyword: `%${searchKeyword}%`,
+            })
+            .orWhere(`${tableAliasInfo.diary}.content ILIKE :searchKeyword`, {
+              searchKeyword: `%${searchKeyword}%`,
+            });
+        }),
+      );
     }
 
     if (sortByConverter[sortBy] === undefined)
