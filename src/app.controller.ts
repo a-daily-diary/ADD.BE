@@ -1,5 +1,4 @@
-import { Body, Controller, Get, Post, UseFilters } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { Controller, Get, UseFilters } from '@nestjs/common';
 import { AppService } from './app.service';
 import { HttpApiExceptionFilter } from './common/exceptions/http-api-exceptions.filter';
 
@@ -11,13 +10,5 @@ export class AppController {
   @Get()
   getHello(): string {
     return this.appService.getHello();
-  }
-
-  @Post()
-  @ApiOperation({
-    summary: '약관동의, 뱃지 데이터 설정 API',
-  })
-  setInitDataSet(@Body() adminKey: { adminKey: string }) {
-    return this.appService.setInitDataSet(adminKey);
   }
 }

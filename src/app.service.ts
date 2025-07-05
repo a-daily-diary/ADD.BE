@@ -14,12 +14,7 @@ export class AppService {
   getHello(): string {
     return 'Hello World!';
   }
-
-  async setInitDataSet(adminKey: { adminKey: string }) {
-    const correctAdminToken = process.env.ADMIN_KEY;
-    if (adminKey.adminKey !== correctAdminToken)
-      throw new BadRequestException(exceptionMessage.INCORRECT_KEY);
-
+  async setInitDataSet() {
     const adminUser = await this.usersService.generateAdminAccount();
 
     if (adminUser.isAdmin === false)

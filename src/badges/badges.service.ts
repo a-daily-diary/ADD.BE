@@ -165,6 +165,9 @@ export class BadgesService {
   }
 
   async setInitDataSetForBadges(requestUser: UserDTO) {
+    const count = await this.badgeRepository.count();
+    if (count > 0) return true; // 이미 있으면 무시
+
     try {
       await this.createBadge(requestUser, steady0Badge);
       await this.createBadge(requestUser, steady1Badge);

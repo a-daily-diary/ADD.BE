@@ -101,6 +101,9 @@ export class TermsAgreementsService {
   }
 
   async setInitDataSetForTermsAgreements() {
+    const count = await this.termsAgreementRepository.count();
+    if (count > 0) return true; // 이미 있으면 무시
+
     try {
       await this.createTermsAgreement(serviceTermsAgreementDataSet);
       await this.createTermsAgreement(privacyTermsAgreementDataSet);
