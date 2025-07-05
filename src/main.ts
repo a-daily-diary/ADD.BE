@@ -12,6 +12,7 @@ import * as path from 'path';
 import { AppModule } from './app.module';
 import { HttpApiExceptionFilter } from './common/exceptions/http-api-exceptions.filter';
 import { SuccessInterceptor } from './common/interceptors/success.interceptor';
+import { AppService } from './app.service';
 
 class Application {
   private logger = new Logger(Application.name);
@@ -95,6 +96,18 @@ class Application {
 
   async bootstrap() {
     await this.setUpGlobalMiddleware();
+
+    // 데이터 시드 자동 실행
+    const appService = this.server.get(AppService);
+    try {
+      await appService.setInitDataSet();
+
+      console.log('데이터 시드 자동 실행 완료');
+    } catch (e) {
+      // 이미 데이터가 있거나 에러가 발생해도 무시하고 계속 진행
+      console.log('Seed error:', e.message);
+    }
+
     await this.server.listen(this.PORT);
   }
 
